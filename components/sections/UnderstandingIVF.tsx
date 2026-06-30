@@ -53,7 +53,7 @@ export function UnderstandingIVF() {
 
         {/* Simple Process */}
         <div className="bg-ivf-white rounded-2xl border border-ivf-border p-12 mb-12">
-          <h3 className="text-2xl font-semibold text-ivf-dark mb-8 text-center">The IVF Process In Simple Steps</h3>
+          <h3 className="text-2xl font-semibold text-ivf-dark mb-8 text-center">The IVF process in simple steps</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             {[

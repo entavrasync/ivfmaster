@@ -1,4 +1,3 @@
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { StickyWhatsApp } from '@/components/shared/StickyWhatsApp';
 import { StickyConsultation } from '@/components/shared/StickyConsultation';
@@ -20,8 +19,6 @@ import { FinalCTA } from '@/components/sections/FinalCTA';
 export default function Home() {
   return (
     <>
-      <Navigation />
-
       <main className="min-h-screen">
         {/* Section 1: Hero */}
         <Hero />

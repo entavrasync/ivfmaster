@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { procedures } from '@/lib/content/procedures';
 
@@ -11,7 +10,6 @@ export const metadata = {
 export default function ProceduresPage() {
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-b from-ivf-mauve to-ivf-pink">
@@ -73,7 +71,7 @@ export default function ProceduresPage() {
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Unsure Which Option Is Right For You?</h2>
+            <h2 className="text-4xl font-bold mb-4">Unsure which option is right for you?</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Our doctors will review your situation and recommend the best approach.
             </p>

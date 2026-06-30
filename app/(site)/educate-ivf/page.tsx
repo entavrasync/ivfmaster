@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { articles } from '@/lib/content/articles';
 
@@ -11,7 +10,6 @@ export const metadata = {
 export default function EducateIVFPage() {
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink to-ivf-mauve">
@@ -29,7 +27,7 @@ export default function EducateIVFPage() {
         <section className="section-padding bg-ivf-cream">
           <div className="section-max-width">
             <div className="mb-12">
-              <h2 className="text-3xl font-bold text-ivf-dark mb-2">Featured Articles</h2>
+              <h2 className="text-3xl font-bold text-ivf-dark mb-2">Featured articles</h2>
               <p className="text-ivf-dark/70">
                 Learn about IVF, fertility challenges, and treatment options in simple terms.
               </p>
@@ -70,7 +68,7 @@ export default function EducateIVFPage() {
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Have More Questions?</h2>
+            <h2 className="text-4xl font-bold mb-4">Have more questions?</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Our doctors are available for personalized consultations about your specific situation.
             </p>

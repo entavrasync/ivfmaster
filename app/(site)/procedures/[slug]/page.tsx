@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { procedures } from '@/lib/content/procedures';
 
@@ -29,7 +28,6 @@ export default function ProcedureDetailPage({ params }: { params: { slug: string
 
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Header */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink/10 to-ivf-cream">
@@ -51,7 +49,7 @@ export default function ProcedureDetailPage({ params }: { params: { slug: string
           <div className="section-max-width max-w-3xl space-y-12">
             {/* Is This For Us */}
             <div>
-              <h2 className="text-3xl font-bold text-ivf-dark mb-4">Is This For Us?</h2>
+              <h2 className="text-3xl font-bold text-ivf-dark mb-4">Is this for us?</h2>
               <p className="text-ivf-dark/80 mb-4">
                 {procedure.name} may be recommended if you have any of the following:
               </p>
@@ -90,14 +88,14 @@ export default function ProcedureDetailPage({ params }: { params: { slug: string
 
             {/* What To Expect */}
             <div>
-              <h2 className="text-3xl font-bold text-ivf-dark mb-4">What To Expect</h2>
+              <h2 className="text-3xl font-bold text-ivf-dark mb-4">What to expect</h2>
               <p className="text-ivf-dark/80">{procedure.whatToExpect}</p>
             </div>
 
             {/* Common Concerns */}
             {procedure.commonConcerns.length > 0 && (
               <div>
-                <h2 className="text-3xl font-bold text-ivf-dark mb-4">Common Concerns</h2>
+                <h2 className="text-3xl font-bold text-ivf-dark mb-4">Common concerns</h2>
                 <div className="space-y-4">
                   {procedure.commonConcerns.map((concern, idx) => (
                     <div key={idx} className="bg-ivf-cream rounded-lg p-6">
@@ -111,14 +109,14 @@ export default function ProcedureDetailPage({ params }: { params: { slug: string
 
             {/* Success Rate */}
             <div className="bg-gradient-to-r from-ivf-pink/10 to-ivf-mauve/10 rounded-lg p-6 border border-ivf-border">
-              <h3 className="font-bold text-ivf-dark mb-2">Success Rate</h3>
+              <h3 className="font-bold text-ivf-dark mb-2">Success rate</h3>
               <p className="text-ivf-dark/80">{procedure.successRate}</p>
             </div>
 
             {/* FAQs */}
             {procedure.faqs.length > 0 && (
               <div>
-                <h2 className="text-3xl font-bold text-ivf-dark mb-4">Frequently Asked Questions</h2>
+                <h2 className="text-3xl font-bold text-ivf-dark mb-4">Frequently asked questions</h2>
                 <div className="space-y-4">
                   {procedure.faqs.map((faq, idx) => (
                     <div key={idx} className="bg-ivf-cream rounded-lg p-6">
@@ -135,7 +133,7 @@ export default function ProcedureDetailPage({ params }: { params: { slug: string
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Want To Discuss This Procedure?</h2>
+            <h2 className="text-4xl font-bold mb-4">Want to discuss this procedure?</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Our doctors can explain how this procedure applies to your specific situation.
             </p>

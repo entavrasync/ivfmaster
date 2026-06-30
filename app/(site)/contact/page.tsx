@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { Phone, Mail, MapPin, MessageCircle, Clock } from 'lucide-react';
 
@@ -30,7 +29,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink to-ivf-mauve">
@@ -47,7 +45,7 @@ export default function ContactPage() {
         {/* What Happens Next */}
         <section className="section-padding bg-ivf-cream">
           <div className="section-max-width max-w-3xl text-center">
-            <h2 className="text-3xl font-bold text-ivf-dark mb-8">What Happens Next</h2>
+            <h2 className="text-3xl font-bold text-ivf-dark mb-8">What happens next</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {[
                 { step: 1, title: 'You Reach Out', desc: 'Contact us via form, phone, or WhatsApp' },
@@ -73,7 +71,7 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Contact Form */}
               <div>
-                <h2 className="text-3xl font-bold text-ivf-dark mb-6">Send Us A Message</h2>
+                <h2 className="text-3xl font-bold text-ivf-dark mb-6">Send us a message</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-ivf-dark mb-2">
@@ -145,7 +143,7 @@ export default function ContactPage() {
 
               {/* Contact Info */}
               <div>
-                <h2 className="text-3xl font-bold text-ivf-dark mb-6">Other Ways To Reach Us</h2>
+                <h2 className="text-3xl font-bold text-ivf-dark mb-6">Other ways to reach us</h2>
 
                 <div className="space-y-6">
                   <div className="flex gap-4">

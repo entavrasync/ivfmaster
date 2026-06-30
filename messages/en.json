@@ -1,0 +1,62 @@
+{
+  "Nav": {
+    "home": "Home",
+    "educateIVF": "Educate IVF",
+    "procedures": "Procedures",
+    "about": "About",
+    "team": "Team",
+    "contact": "Contact",
+    "talkToExperts": "Talk to our experts",
+    "switchLanguage": "Switch language",
+    "language": "Language"
+  },
+  "Hero": {
+    "eyebrow": "Your fertility journey",
+    "headline": "Trying to conceive is rarely simple.",
+    "subheadline": "Understanding why doesn't have to be.",
+    "body": "At IVF Master, we guide every couple with honest answers, unhurried consultations, and a care plan built around your specific situation — not a protocol.",
+    "ctaPrimary": "Start your fertility journey",
+    "ctaSecondary": "Understand your options first",
+    "ctaMicroTrust": "A calm, unhurried conversation about your situation — no pressure to proceed.",
+    "trustCouples": "2,000+ couples",
+    "trustYears": "20+ years",
+    "trustCare": "Pune-trained care"
+  },
+  "Stats": {
+    "couplesGuided": "Couples guided",
+    "successRate": "Clinical success rate",
+    "yearsExpertise": "Years of expertise",
+    "cyclesCompleted": "Cycles completed"
+  },
+  "About": {
+    "metaTitle": "About IVF Master - Our Story & Mission",
+    "metaDescription": "Learn about IVF Master fertility clinic in Sangli and our commitment to compassionate fertility care."
+  },
+  "Contact": {
+    "metaTitle": "Contact IVF Master",
+    "metaDescription": "Get in touch with IVF Master fertility clinic in Sangli, Maharashtra."
+  },
+  "EducateIVF": {
+    "metaTitle": "Educate IVF - Learn About Fertility Treatment",
+    "metaDescription": "Expert articles and guides about IVF and fertility treatment from IVF Master doctors.",
+    "backToArticles": "Back to Articles",
+    "minRead": "{minutes} min read",
+    "commonQuestions": "Common questions",
+    "relatedArticles": "Related articles",
+    "readyNextStep": "Ready to take the next step?",
+    "consultationPrompt": "Book a consultation with our doctors to discuss your specific situation.",
+    "bookConsultation": "Book a Consultation"
+  },
+  "Procedures": {
+    "metaTitle": "Fertility Procedures - IVF Master",
+    "metaDescription": "Learn about IVF, IUI, egg freezing, and other fertility procedures at IVF Master."
+  },
+  "Team": {
+    "metaTitle": "Our Medical Team - IVF Master",
+    "metaDescription": "Meet the experienced fertility specialists at IVF Master, Sangli."
+  },
+  "Meta": {
+    "siteTitle": "IVF Master - Premium Fertility Care in Sangli",
+    "siteDescription": "Personalized IVF and fertility treatment at IVF Master. Experience compassionate care from expert doctors in Sangli, Maharashtra."
+  }
+}

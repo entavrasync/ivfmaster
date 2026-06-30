@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { doctors } from '@/lib/content/team';
 
@@ -11,7 +10,6 @@ export const metadata = {
 export default function TeamPage() {
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink to-ivf-mauve">
@@ -71,7 +69,7 @@ export default function TeamPage() {
         {/* Philosophy Section */}
         <section className="section-padding bg-ivf-cream">
           <div className="section-max-width max-w-3xl text-center">
-            <h2 className="text-4xl font-bold text-ivf-dark mb-6">Our Shared Philosophy</h2>
+            <h2 className="text-4xl font-bold text-ivf-dark mb-6">Our shared philosophy</h2>
             <p className="text-lg text-ivf-dark/80 mb-8 leading-relaxed">
               Each of our doctors brings unique expertise, but we all share a core belief: 
               every couple deserves clear information, personalized care, and emotional support. 
@@ -80,17 +78,17 @@ export default function TeamPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-ivf-white rounded-lg p-6 border border-ivf-border">
                 <p className="text-3xl mb-3">🧠</p>
-                <h3 className="font-bold text-ivf-dark mb-2">Education First</h3>
+                <h3 className="font-bold text-ivf-dark mb-2">Education first</h3>
                 <p className="text-sm text-ivf-dark/70">You&apos;ll understand every step of your treatment.</p>
               </div>
               <div className="bg-ivf-white rounded-lg p-6 border border-ivf-border">
                 <p className="text-3xl mb-3">❤️</p>
-                <h3 className="font-bold text-ivf-dark mb-2">Compassion Always</h3>
+                <h3 className="font-bold text-ivf-dark mb-2">Compassion always</h3>
                 <p className="text-sm text-ivf-dark/70">We recognize the emotional complexity of fertility.</p>
               </div>
               <div className="bg-ivf-white rounded-lg p-6 border border-ivf-border">
                 <p className="text-3xl mb-3">✓</p>
-                <h3 className="font-bold text-ivf-dark mb-2">Results Matter</h3>
+                <h3 className="font-bold text-ivf-dark mb-2">Results matter</h3>
                 <p className="text-sm text-ivf-dark/70">Expertise focused on achieving your goal.</p>
               </div>
             </div>
@@ -100,7 +98,7 @@ export default function TeamPage() {
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Ready To Meet Our Team?</h2>
+            <h2 className="text-4xl font-bold mb-4">Ready to meet our team?</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Book a consultation to discuss your fertility journey with one of our doctors.
             </p>

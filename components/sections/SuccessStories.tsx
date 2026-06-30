@@ -79,7 +79,7 @@ export function SuccessStories() {
 
         {/* Call to Hope */}
         <div className="mt-16 bg-gradient-to-r from-ivf-pink to-ivf-mauve rounded-2xl p-12 text-center text-ivf-white">
-          <h3 className="text-3xl font-bold mb-4">Your Story Could Be Next</h3>
+          <h3 className="text-3xl font-bold mb-4">Your story could be next</h3>
           <p className="text-lg text-ivf-white/90 max-w-2xl mx-auto">
             Every person&apos;s fertility journey is different. These stories represent different ages, 
             different diagnoses, and different paths—but they all led to parenthood with expert guidance and support.

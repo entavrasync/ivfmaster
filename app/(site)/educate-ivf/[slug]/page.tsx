@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { articles } from '@/lib/content/articles';
 
@@ -33,7 +32,6 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
 
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Article Header */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink/10 to-ivf-cream">
@@ -82,7 +80,7 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
             {/* FAQs */}
             {article.faqs.length > 0 && (
               <div className="mt-16 pt-12 border-t-2 border-ivf-border">
-                <h2 className="text-3xl font-bold text-ivf-dark mb-8">Common Questions</h2>
+                <h2 className="text-3xl font-bold text-ivf-dark mb-8">Common questions</h2>
 
                 <div className="space-y-6">
                   {article.faqs.map((faq, idx) => (
@@ -101,7 +99,7 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
         {relatedArticles.length > 0 && (
           <section className="section-padding bg-ivf-cream">
             <div className="section-max-width">
-              <h2 className="text-3xl font-bold text-ivf-dark mb-8">Related Articles</h2>
+              <h2 className="text-3xl font-bold text-ivf-dark mb-8">Related articles</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedArticles.map((relatedArticle) => (
@@ -124,7 +122,7 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Ready To Take The Next Step?</h2>
+            <h2 className="text-4xl font-bold mb-4">Ready to take the next step?</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Book a consultation with our doctors to discuss your specific situation.
             </p>

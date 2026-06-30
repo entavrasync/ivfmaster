@@ -1,134 +1,336 @@
-'use client';
+'use client'
 
-import { ArrowRight, HeartHandshake, MessageCircle, Sparkles } from 'lucide-react';
-import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
+import { Container } from '@/components/layout/Container'
+import { Pressable } from '@/components/motion'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import gsap from 'gsap'
+import ScrollTrigger from 'gsap/ScrollTrigger'
 
-export function Hero() {
-  const whatsappNumber = '919876543210';
-  const message = encodeURIComponent(
-    "Hi IVF Master! I'd like to know more about fertility treatment options."
-  );
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+gsap.registerPlugin(ScrollTrigger)
+
+/* ─── Stats config ───────────────────────────────────────────────────────── */
+const STATS_CONFIG = [
+  { value: 2000, suffix: '+', labelKey: 'couplesGuided'   as const },
+  { value: 87,   suffix: '%', labelKey: 'successRate'     as const },
+  { value: 20,   suffix: '+', labelKey: 'yearsExpertise'  as const },
+  { value: 4800, suffix: '+', labelKey: 'cyclesCompleted' as const },
+]
+
+/* ─── Count-up hook (GSAP-triggered) ─────────────────────────────────────── */
+function useCountUp(target: number, duration: number, active: boolean): number {
+  const reduced = useReducedMotion()
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (!active) return
+    if (reduced) { setCount(target); return }
+    const start = performance.now()
+    let raf: number
+    function tick(now: number) {
+      const t = Math.min((now - start) / duration, 1)
+      const eased = 1 - (1 - t) ** 3
+      setCount(Math.round(eased * target))
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, duration, active, reduced])
+
+  return count
+}
+
+/* ─── Single stat card ───────────────────────────────────────────────────── */
+function StatCard({ value, suffix, label, active }: Readonly<{ value: number; suffix: string; label: string; active: boolean }>) {
+  const count = useCountUp(value, 2000, active)
+  return (
+    <div className="flex flex-col items-center lg:items-start gap-1 px-6 py-6 lg:py-8">
+      <span style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.875rem, 2.5vw + 0.5rem, 2.75rem)', fontWeight: 500, lineHeight: 1, letterSpacing: '-0.03em', color: '#2E4F8E', fontVariationSettings: '"opsz" 48' }}>
+        {count >= 1000 ? count.toLocaleString('en-IN') : count}{suffix}
+      </span>
+      <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.8125rem', fontWeight: 500, color: '#8A8F9C', letterSpacing: '0.01em' }}>
+        {label}
+      </span>
+    </div>
+  )
+}
+
+/* ─── Stats bar ──────────────────────────────────────────────────────────── */
+function StatBar() {
+  const t = useTranslations('Stats')
+  const [active, setActive] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
+
+  useEffect(() => {
+    if (!ref.current) return
+    if (reduced) { setActive(true); return }
+
+    const trigger = ScrollTrigger.create({
+      trigger: ref.current,
+      start: 'top 90%',
+      onEnter: () => setActive(true),
+      once: true,
+    })
+    return () => trigger.kill()
+  }, [reduced])
 
   return (
-    <section className="relative bg-ivf-cream overflow-hidden">
-      {/* Premium Gradient Background */}
-      <div className="absolute inset-0">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-ivf-pink/8 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-ivf-mauve/6 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-ivf-pink/4 rounded-full blur-3xl" />
+    <div
+      ref={ref}
+      style={{ borderTop: '1px solid rgba(216,204,190,0.50)', background: 'rgba(251,247,241,0.70)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
+    >
+      <Container>
+        <div className="grid grid-cols-2 lg:grid-cols-4">
+          {STATS_CONFIG.map((s, i) => (
+            <div key={s.labelKey} style={i < STATS_CONFIG.length - 1 ? { borderRight: '1px solid rgba(216,204,190,0.40)' } : {}}>
+              <StatCard value={s.value} suffix={s.suffix} label={t(s.labelKey)} active={active} />
+            </div>
+          ))}
+        </div>
+      </Container>
+    </div>
+  )
+}
+
+/* ─── Hero ───────────────────────────────────────────────────────────────── */
+export function Hero() {
+  const t = useTranslations('Hero')
+  const reduced = useReducedMotion()
+
+  const sectionRef  = useRef<HTMLElement>(null)
+  const bgRef       = useRef<HTMLDivElement>(null)
+  const contentRef  = useRef<HTMLDivElement>(null)
+  const eyebrowRef  = useRef<HTMLParagraphElement>(null)
+  const headlineRef = useRef<HTMLHeadingElement>(null)
+  const subRef      = useRef<HTMLParagraphElement>(null)
+  const bodyRef     = useRef<HTMLParagraphElement>(null)
+  const ctaRef      = useRef<HTMLDivElement>(null)
+  const trustRef    = useRef<HTMLDivElement>(null)
+
+  const trustItems = [t('trustCouples'), t('trustYears'), t('trustCare')]
+
+  /* ── GSAP animations ── */
+  useEffect(() => {
+    if (reduced || !sectionRef.current || !bgRef.current) return
+
+    const ctx = gsap.context(() => {
+
+      /* Parallax — bg image drifts up at half scroll speed */
+      gsap.to(bgRef.current, {
+        y: '18%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      })
+
+      /* Hero content fades + drifts up as user scrolls away */
+      gsap.to(contentRef.current, {
+        y: -60,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: '40% top',
+          scrub: true,
+        },
+      })
+
+      /* Staggered entrance — elements animate in on load */
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      tl.from(eyebrowRef.current,  { y: 20, opacity: 0, duration: 0.7 }, 0.2)
+        .from(headlineRef.current, { y: 40, opacity: 0, duration: 0.9 }, 0.35)
+        .from(subRef.current,      { y: 30, opacity: 0, duration: 0.8 }, 0.5)
+        .from(bodyRef.current,     { y: 24, opacity: 0, duration: 0.7 }, 0.65)
+        .from(ctaRef.current,      { y: 20, opacity: 0, duration: 0.7 }, 0.78)
+        .from(trustRef.current,    { y: 16, opacity: 0, duration: 0.6 }, 0.9)
+
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [reduced])
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative flex flex-col overflow-hidden"
+      style={{ minHeight: '100svh', backgroundColor: '#EEE9E2' }}
+    >
+      {/* ── Background images ── */}
+      <div ref={bgRef} className="absolute inset-0 will-change-transform" aria-hidden="true">
+        {/* Mobile image */}
+        <Image
+          src="/hero-bg-mobile.png"
+          alt=""
+          fill
+          priority
+          className="object-cover object-right-top lg:hidden"
+          sizes="100vw"
+        />
+        {/* Desktop image */}
+        <Image
+          src="/hero-bg-desktop.png"
+          alt=""
+          fill
+          priority
+          className="object-cover object-right hidden lg:block"
+          sizes="100vw"
+        />
+        {/* Subtle left-side scrim so text stays readable */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(90deg, rgba(251,247,241,0.55) 0%, rgba(251,247,241,0.25) 55%, transparent 100%)' }}
+        />
+        {/* Mobile: top scrim for text readability */}
+        <div
+          className="absolute inset-0 lg:hidden"
+          style={{ background: 'linear-gradient(180deg, rgba(251,247,241,0.60) 0%, rgba(251,247,241,0.20) 50%, transparent 100%)' }}
+        />
       </div>
 
-      <div className="relative z-10 section-max-width px-6 sm:px-8 lg:px-16 py-12 sm:py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.9fr)] gap-8 lg:gap-12 items-center">
-          {/* Editorial Content - Large and Expressive */}
-          <div className="space-y-6 animate-fade-in-up">
-            {/* Eyebrow Text */}
-            <div className="inline-block">
-              <p className="text-xs font-light tracking-widest uppercase text-ivf-mauve/80">Your Fertility Journey</p>
-            </div>
+      {/* ── Content ── */}
+      <div ref={contentRef} className="relative flex-1 flex items-center">
+        <Container className="w-full">
 
-            {/* Main Headline - Editorial Scale */}
-            <h1 className="text-5xl sm:text-6xl font-bold text-ivf-dark leading-tight">
-              Trying To Conceive Is Rarely Simple.
+          {/* Desktop */}
+          <div className="hidden lg:block" style={{ paddingTop: '9rem', paddingBottom: '4rem' }}>
+            <div className="flex flex-col" style={{ gap: '1.75rem', maxWidth: '560px' }}>
+              <p ref={eyebrowRef} style={{ fontFamily: 'var(--font-body)', fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase' as const, color: '#97A6D2' }}>
+                {t('eyebrow')}
+              </p>
+              <h1 ref={headlineRef} style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 4vw + 0.25rem, 5rem)', fontWeight: 500, lineHeight: 1.04, letterSpacing: '-0.02em', color: '#1C2A48', fontOpticalSizing: 'auto' as const, fontVariationSettings: '"opsz" 72' }}>
+                {t('headline')}
+              </h1>
+              <p ref={subRef} style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.25rem, 1.5vw + 0.25rem, 1.625rem)', fontWeight: 400, lineHeight: 1.35, letterSpacing: '-0.015em', color: '#2E4F8E', fontVariationSettings: '"opsz" 32' }}>
+                {t('subheadline')}
+              </p>
+              <p ref={bodyRef} style={{ fontFamily: 'var(--font-body)', fontSize: '1.125rem', lineHeight: 1.82, color: '#4A5568', maxWidth: '46ch' }}>
+                {t('body')}
+              </p>
+              {/* ── CTA block ── */}
+              <div ref={ctaRef} className="flex flex-col" style={{ gap: '0.75rem', paddingTop: '0.5rem' }}>
+                {/* Primary + secondary on one row */}
+                <div className="flex flex-wrap items-center" style={{ gap: '1.5rem' }}>
+                  <Pressable haptic>
+                    <Link
+                      href="/contact"
+                      className="inline-flex items-center rounded-full transition-all duration-200 hover:-translate-y-px"
+                      style={{
+                        background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)',
+                        color: '#ffffff',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: '0.9375rem',
+                        fontWeight: 600,
+                        letterSpacing: '-0.01em',
+                        padding: '0.875rem 2rem',
+                        boxShadow: '0 8px 26px -5px rgba(194,78,106,0.52)',
+                      }}
+                    >
+                      {t('ctaPrimary')}
+                    </Link>
+                  </Pressable>
+
+                  {/* Secondary — text link only, no button chrome */}
+                  <Link
+                    href="/educate-ivf"
+                    className="group inline-flex items-center gap-1"
+                    style={{ fontFamily: 'var(--font-body)', fontSize: '0.9375rem', fontWeight: 500, color: '#2E4F8E', letterSpacing: '-0.01em', textDecoration: 'none' }}
+                  >
+                    <span className="border-b border-transparent group-hover:border-current transition-colors duration-200">
+                      {t('ctaSecondary')}
+                    </span>
+                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true"> →</span>
+                  </Link>
+                </div>
+
+                {/* Micro-trust reassurance */}
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: '#7B8494', lineHeight: 1.6, letterSpacing: '0.005em' }}>
+                  {t('ctaMicroTrust')}
+                </p>
+              </div>
+
+              {/* Trust indicators */}
+              <div ref={trustRef} className="flex flex-wrap items-center gap-x-4 gap-y-1.5" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: '#6B7280' }}>
+                {trustItems.map((item, i) => (
+                  <span key={item} className="flex items-center gap-4">
+                    {item}
+                    {i < trustItems.length - 1 && <span style={{ color: '#C8BEB4', fontSize: '0.75rem' }} aria-hidden="true">●</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile */}
+          <div className="lg:hidden flex flex-col" style={{ paddingTop: '8.5rem', paddingBottom: '2.5rem', gap: '1.5rem' }}>
+
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: '#97A6D2' }}>
+              {t('eyebrow')}
+            </p>
+
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 8vw + 0.25rem, 3.5rem)', fontWeight: 500, lineHeight: 1.05, letterSpacing: '-0.025em', color: '#1C2A48', fontOpticalSizing: 'auto' as const, fontVariationSettings: '"opsz" 72' }}>
+              {t('headline')}
             </h1>
 
-            {/* Subheading */}
-            <p className="text-lg sm:text-xl text-ivf-dark/70 font-light">
-              {"Understanding why doesn't have to be either."}
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.1875rem, 4vw + 0.125rem, 1.5rem)', fontWeight: 400, lineHeight: 1.38, letterSpacing: '-0.015em', color: '#2E4F8E', fontVariationSettings: '"opsz" 32' }}>
+              {t('subheadline')}
             </p>
 
-            {/* Body Copy */}
-            <p className="text-base text-ivf-dark/75 leading-relaxed max-w-lg">
-              At IVF Master, we believe that clear understanding comes before any decision. Our approach is built on compassion, transparency, and personalized care—guiding couples through their fertility journey with confidence and hope.
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '1.0625rem', lineHeight: 1.8, color: '#4A5568' }}>
+              {t('body')}
             </p>
 
-            {/* Premium Trust Indicators */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-start gap-3">
-                <div className="text-ivf-pink text-xl flex-shrink-0 pt-0.5">✓</div>
-                <div>
-                  <p className="font-semibold text-sm text-ivf-dark">15+ Years of Excellence</p>
-                  <p className="text-xs text-ivf-dark/60">Trusted by thousands of families</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="text-ivf-pink text-xl flex-shrink-0 pt-0.5">🤝</div>
-                <div>
-                  <p className="font-semibold text-sm text-ivf-dark">2500+ Success Stories</p>
-                  <p className="text-xs text-ivf-dark/60">Real journeys, real results, real hope</p>
-                </div>
-              </div>
-            </div>
+            {/* Mobile CTA stack */}
+            <div className="flex flex-col" style={{ gap: '1rem', marginTop: '0.125rem' }}>
+              <Pressable haptic>
+                <Link
+                  href="/contact"
+                  className="flex items-center justify-center w-full rounded-full"
+                  style={{ background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)', color: '#ffffff', fontFamily: 'var(--font-body)', fontSize: '1.0625rem', fontWeight: 600, letterSpacing: '-0.01em', padding: '1.0625rem 1.5rem', boxShadow: '0 8px 28px -5px rgba(194,78,106,0.52)' }}
+                >
+                  {t('ctaPrimary')}
+                </Link>
+              </Pressable>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6">
               <Link
                 href="/educate-ivf"
-                className="btn-primary flex items-center justify-center gap-3 group"
+                className="group flex items-center justify-center gap-1"
+                style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', fontWeight: 500, color: '#2E4F8E', textDecoration: 'none' }}
               >
-                Explore Your Options
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <span className="border-b border-transparent group-hover:border-current transition-colors duration-200">
+                  {t('ctaSecondary')}
+                </span>
+                <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true"> →</span>
               </Link>
 
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary flex items-center justify-center gap-3"
-              >
-                <MessageCircle className="w-5 h-5" />
-                Chat With Us
-              </a>
+              <p className="text-center" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: '#7B8494', lineHeight: 1.6, letterSpacing: '0.005em' }}>
+                {t('ctaMicroTrust')}
+              </p>
+            </div>
+
+            {/* Trust indicators */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: '#6B7280', paddingTop: '0.375rem' }}>
+              {trustItems.map((item, i) => (
+                <span key={item} className="flex items-center gap-4">
+                  {item}
+                  {i < trustItems.length - 1 && <span style={{ color: '#C8BEB4', fontSize: '0.75rem' }} aria-hidden="true">●</span>}
+                </span>
+              ))}
             </div>
           </div>
 
-          {/* Visual/Imagery Side - Asymmetrical */}
-          <div className="relative hidden min-h-[520px] items-center justify-center self-stretch lg:flex">
-            <div className="relative flex min-h-[520px] w-full items-center justify-center animate-fade-in-scale" style={{animationDelay: '0.2s'}}>
-              {/* Layered Visual Elements */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Large Background Shape */}
-                <div className="absolute h-72 w-72 rounded-[44px] bg-gradient-to-br from-ivf-pink/10 to-ivf-mauve/7 blur-3xl" />
-                
-                {/* Mid-layer Shape */}
-                <div className="absolute h-56 w-56 animate-float rounded-[34px] bg-ivf-pink/7 blur-2xl" />
-                
-                {/* Premium Care Card */}
-                <div className="relative w-52 overflow-hidden rounded-2xl bg-white/90 px-6 py-7 text-center shadow-[0_8px_14px_rgba(43,43,43,0.07)] outline outline-1 outline-white/70">
-                  <div className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-ivf-pink/50 to-transparent" />
-                  <div className="absolute -right-8 -top-8 h-20 w-20 rounded-full bg-ivf-pink/10 blur-2xl" />
-
-                  <div className="relative flex flex-col items-center">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-ivf-pink/10 text-ivf-pink ring-1 ring-ivf-pink/15">
-                      <HeartHandshake className="h-6 w-6" strokeWidth={1.7} />
-                    </div>
-
-                    <p className="mb-2 flex items-center gap-1.5 text-[10px] font-medium tracking-[0.16em] text-ivf-mauve">
-                      <Sparkles className="h-3 w-3" strokeWidth={1.8} />
-                      IVF MASTER
-                    </p>
-                    <div className="space-y-1">
-                      <p className="text-base font-semibold leading-tight text-ivf-dark">here will be the hero section,</p>
-                      <p className="text-base font-semibold leading-tight text-ivf-pink">Photo</p>
-                    </div>
-
-                    <div className="my-4 h-px w-14 bg-ivf-border" />
-
-                    <p className="max-w-40 text-xs leading-relaxed text-ivf-dark/65">
-                      Consultant-led fertility care with clarity at every step.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Accent Elements */}
-                <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-ivf-pink/8 rounded-full blur-2xl" />
-                <div className="absolute -top-6 -left-6 w-16 h-16 bg-ivf-mauve/6 rounded-full blur-2xl" />
-              </div>
-            </div>
-          </div>
-        </div>
+        </Container>
       </div>
+
+      <StatBar />
     </section>
-  );
+  )
 }

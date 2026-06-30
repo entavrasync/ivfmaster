@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 import { doctors } from '@/lib/content/team';
 
@@ -31,7 +30,6 @@ export default function DoctorDetailPage({ params }: { params: { doctor: string 
 
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Header */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink/10 to-ivf-cream">
@@ -74,7 +72,7 @@ export default function DoctorDetailPage({ params }: { params: { doctor: string 
         {/* Philosophy */}
         <section className="section-padding bg-ivf-white">
           <div className="section-max-width max-w-3xl">
-            <h2 className="text-4xl font-bold text-ivf-dark mb-8">My Approach To Fertility Care</h2>
+            <h2 className="text-4xl font-bold text-ivf-dark mb-8">My approach to fertility care</h2>
 
             <div className="prose prose-lg max-w-none">
               <div
@@ -88,11 +86,11 @@ export default function DoctorDetailPage({ params }: { params: { doctor: string 
         {/* Qualifications */}
         <section className="section-padding bg-ivf-cream">
           <div className="section-max-width max-w-3xl">
-            <h2 className="text-4xl font-bold text-ivf-dark mb-8">Qualifications & Expertise</h2>
+            <h2 className="text-4xl font-bold text-ivf-dark mb-8">Qualifications & expertise</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="font-bold text-ivf-dark mb-4">Education & Training</h3>
+                <h3 className="font-bold text-ivf-dark mb-4">Education & training</h3>
                 <ul className="space-y-3">
                   {doc.qualifications.map((qual, idx) => (
                     <li key={idx} className="flex items-start gap-3 text-ivf-dark/80">
@@ -118,7 +116,7 @@ export default function DoctorDetailPage({ params }: { params: { doctor: string 
         {otherDoctors.length > 0 && (
           <section className="section-padding bg-ivf-white">
             <div className="section-max-width">
-              <h2 className="text-3xl font-bold text-ivf-dark mb-8 text-center">Meet Our Other Doctors</h2>
+              <h2 className="text-3xl font-bold text-ivf-dark mb-8 text-center">Meet our other doctors</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {otherDoctors.map((otherDoc) => (
@@ -147,7 +145,7 @@ export default function DoctorDetailPage({ params }: { params: { doctor: string 
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Ready To Consult?</h2>
+            <h2 className="text-4xl font-bold mb-4">Ready to consult?</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Book a consultation to discuss your fertility journey.
             </p>

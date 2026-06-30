@@ -69,7 +69,7 @@ export function WhyIVFMaster() {
 
         {/* Core Promise */}
         <div className="mt-16 bg-gradient-to-r from-ivf-pink/5 to-ivf-mauve/5 border border-ivf-border rounded-2xl p-12">
-          <h3 className="text-3xl font-bold text-ivf-dark mb-6 text-center">Our Core Promise</h3>
+          <h3 className="text-3xl font-bold text-ivf-dark mb-6 text-center">Our core promise</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <p className="text-lg font-semibold text-ivf-pink mb-2">You Will Understand</p>

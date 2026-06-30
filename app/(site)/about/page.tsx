@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Navigation } from '@/components/shared/Navigation';
 import { Footer } from '@/components/shared/Footer';
 
 export const metadata = {
@@ -10,7 +9,6 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <>
-      <Navigation />
       <main className="min-h-screen">
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-b from-ivf-pink to-ivf-mauve">
@@ -27,7 +25,7 @@ export default function AboutPage() {
         {/* Our Story */}
         <section className="section-padding bg-ivf-cream">
           <div className="section-max-width max-w-3xl">
-            <h2 className="text-4xl font-bold text-ivf-dark mb-6">Our Story</h2>
+            <h2 className="text-4xl font-bold text-ivf-dark mb-6">Our story</h2>
             <div className="space-y-4 text-ivf-dark/80 leading-relaxed">
               <p>
                 IVF Master was founded on a simple belief: fertility treatment should be about more than medical protocols. 
@@ -51,7 +49,7 @@ export default function AboutPage() {
           <div className="section-max-width max-w-3xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
-                <h3 className="text-2xl font-bold text-ivf-dark mb-4">Our Mission</h3>
+                <h3 className="text-2xl font-bold text-ivf-dark mb-4">Our mission</h3>
                 <div className="bg-gradient-to-br from-ivf-pink/10 to-ivf-mauve/10 rounded-lg p-6 border-l-4 border-ivf-pink">
                   <p className="text-ivf-dark/80 leading-relaxed">
                     To guide couples through their fertility journey with clarity, compassion, and cutting-edge science—
@@ -61,7 +59,7 @@ export default function AboutPage() {
               </div>
 
               <div>
-                <h3 className="text-2xl font-bold text-ivf-dark mb-4">Our Values</h3>
+                <h3 className="text-2xl font-bold text-ivf-dark mb-4">Our values</h3>
                 <ul className="space-y-3">
                   {[
                     { title: 'Compassion', desc: 'Every couple deserves genuine care' },
@@ -86,7 +84,7 @@ export default function AboutPage() {
         {/* Our Commitment */}
         <section className="section-padding bg-ivf-cream">
           <div className="section-max-width max-w-3xl">
-            <h2 className="text-4xl font-bold text-ivf-dark mb-8 text-center">Our Commitment To You</h2>
+            <h2 className="text-4xl font-bold text-ivf-dark mb-8 text-center">Our commitment to you</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
@@ -134,7 +132,7 @@ export default function AboutPage() {
         {/* Community Impact */}
         <section className="section-padding bg-ivf-white">
           <div className="section-max-width max-w-3xl text-center">
-            <h2 className="text-4xl font-bold text-ivf-dark mb-6">Our Community Impact</h2>
+            <h2 className="text-4xl font-bold text-ivf-dark mb-6">Our community impact</h2>
             <p className="text-lg text-ivf-dark/80 mb-8 leading-relaxed">
               Beyond clinical excellence, IVF Master is committed to advancing fertility awareness and education 
               in Sangli and Maharashtra. We host community workshops, provide educational resources, and support 
@@ -146,7 +144,7 @@ export default function AboutPage() {
         {/* CTA */}
         <section className="section-padding bg-ivf-pink text-ivf-white text-center">
           <div className="section-max-width max-w-2xl">
-            <h2 className="text-4xl font-bold mb-4">Join Our Community</h2>
+            <h2 className="text-4xl font-bold mb-4">Join our community</h2>
             <p className="text-xl mb-8 text-ivf-white/90">
               Start your fertility journey with a team that genuinely cares about your success.
             </p>
