@@ -1,114 +1,194 @@
-import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+'use client'
+
+import { useRef, useEffect, useState } from 'react'
+import { motion, useInView } from 'motion/react'
+import { Container } from '@/components/layout/Container'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+
+const EASE = [0.22, 1, 0.36, 1] as const
+
+/* ─── Count-up ────────────────────────────────────────────────────────────── */
+
+function useCountUp(target: number, active: boolean, reduced: boolean): number {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (reduced) { setCount(target); return }
+    if (!active) return
+
+    const DURATION_MS = 1400
+    const start = performance.now()
+    let raf: number
+
+    function tick(now: number) {
+      const t = Math.min((now - start) / DURATION_MS, 1)
+      setCount(Math.round((1 - (1 - t) ** 3) * target))
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, active, reduced])
+
+  return count
+}
+
+/* ─── Data ───────────────────────────────────────────────────────────────── */
+
+const STATS = [
+  {
+    value:   20,
+    suffix:  '+',
+    label:   'Years of practice',
+    subtext: 'Reproductive medicine, Pune',
+  },
+  {
+    value:   2500,
+    suffix:  '+',
+    label:   'Couples guided',
+    subtext: 'Across Maharashtra and beyond',
+  },
+  {
+    value:   40,
+    suffix:  '%',
+    label:   'IVF success rate',
+    subtext: 'Above the national average',
+  },
+  {
+    value:   100,
+    suffix:  '%',
+    label:   'Confidential, always',
+    subtext: 'Every visit, every conversation',
+  },
+] as const
+
+/* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function TrustIndicators() {
-  const indicators = [
-    {
-      id: 'experience',
-      value: 15,
-      suffix: '+',
-      label: 'Years of Experience',
-      description: 'Trusted expertise in reproductive medicine',
-    },
-    {
-      id: 'couples',
-      value: 2500,
-      suffix: '+',
-      label: 'Couples Guided',
-      description: 'Real people, real results',
-    },
-    {
-      id: 'consultations',
-      value: 100,
-      suffix: '%',
-      label: 'Confidential Consultations',
-      description: 'Your privacy, always protected',
-    },
-    {
-      id: 'success',
-      value: 40,
-      suffix: '%',
-      label: 'IVF Success Rate',
-      description: 'Above national average for our patient demographic',
-    },
-  ];
+  const reduced = useReducedMotion()
+
+  /* Anchor ref on the always-visible grid wrapper so IntersectionObserver
+   * fires correctly before the motion.divs have faded in. */
+  const statsRef   = useRef<HTMLDivElement>(null)
+  const statsInView = useInView(statsRef, { once: true, margin: '-60px' })
+
+  const c1 = useCountUp(STATS[0].value, statsInView, reduced)
+  const c2 = useCountUp(STATS[1].value, statsInView, reduced)
+  const c3 = useCountUp(STATS[2].value, statsInView, reduced)
+  const c4 = useCountUp(STATS[3].value, statsInView, reduced)
+  const counts = [c1, c2, c3, c4]
 
   return (
-    <section className="relative bg-gradient-to-b from-ivf-white via-ivf-cream to-ivf-white overflow-hidden">
-      {/* Premium Background Decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/3 w-96 h-96 bg-ivf-pink/6 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-ivf-mauve/5 rounded-full blur-3xl" />
-      </div>
+    <section
+      aria-labelledby="trust-indicators-heading"
+      style={{
+        background:    'linear-gradient(180deg, #F6F3EA 0%, #F0EAE0 100%)',
+        paddingTop:    'clamp(5rem, 10vw, 9rem)',
+        paddingBottom: 'clamp(5rem, 10vw, 9rem)',
+      }}
+    >
+      <Container>
 
-      <div className="relative z-10 section-max-width px-6 sm:px-8 lg:px-16 py-24 sm:py-32 lg:py-40">
-        {/* Header */}
-        <div className="mb-20 max-w-3xl">
-          <div className="mb-5 inline-flex flex-col items-center gap-2.5">
-            <p className="text-sm font-light tracking-[0.24em] uppercase text-ivf-mauve/80">
-              Proven Expertise
-            </p>
-            <div className="relative h-px w-20 bg-gradient-to-r from-transparent via-ivf-pink/70 to-transparent">
-              <span className="absolute left-1/2 top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ivf-pink" />
-            </div>
-          </div>
-          <h2 className="headline-lg text-ivf-dark mb-6">
-            The Metrics That Matter
-          </h2>
-          <p className="body-lg text-ivf-dark/75">
-            {"These aren't just numbers—they're stories of families, dreams realized, and lives changed. Every metric represents real couples who chose to understand their fertility options with IVF Master."}
-          </p>
-        </div>
+        {/* ── Eyebrow ───────────────────────────────────────────────────── */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: EASE }}
+          style={{
+            fontFamily:    'var(--font-body)',
+            fontSize:      '0.875rem',
+            fontWeight:    600,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color:         '#6478B0',
+            marginBottom:  '1.25rem',
+          }}
+        >
+          In numbers
+        </motion.p>
 
-        {/* Premium Stats Grid - Floating with Glassmorphism */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-          {indicators.map((indicator, index) => (
-            <div
-              key={indicator.id}
-              className="glassmorphic p-8 text-center group hover:bg-white/15 transition-all duration-300 transform hover:-translate-y-2"
-              style={{animationDelay: `${index * 0.1}s`}}
+        {/* ── Headline ──────────────────────────────────────────────────── */}
+        <motion.h2
+          id="trust-indicators-heading"
+          initial={{ opacity: 0, y: reduced ? 0 : 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.78, delay: 0.1, ease: EASE }}
+          style={{
+            fontFamily:            'var(--font-display)',
+            fontSize:              'clamp(2rem, 3vw + 0.5rem, 3.25rem)',
+            fontWeight:            500,
+            lineHeight:            1.1,
+            letterSpacing:         '-0.024em',
+            color:                 '#1C2A48',
+            fontVariationSettings: '"opsz" 48',
+            marginBottom:          'clamp(3.5rem, 7vw, 6rem)',
+            maxWidth:              '22ch',
+          }}
+        >
+          Two decades of care, in four numbers.
+        </motion.h2>
+
+        {/* ── Stat grid — pure typographic, no cards ────────────────────
+         *  2 columns on sm+ (stacked on mobile).
+         *  Count-up starts when statsRef enters the viewport.
+         * ──────────────────────────────────────────────────────────── */}
+        <div
+          ref={statsRef}
+          className="grid grid-cols-1 sm:grid-cols-2"
+          style={{ gap: 'clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem)' }}
+        >
+          {STATS.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: reduced ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.72, delay: i * 0.08, ease: EASE }}
             >
-              <div className="mb-6 relative">
-                <div className="text-5xl md:text-6xl font-bold text-ivf-pink mb-2">
-                  <AnimatedCounter
-                    value={indicator.value}
-                    suffix={indicator.suffix}
-                    duration={2500}
-                  />
-                </div>
-              </div>
-              <h3 className="font-semibold text-ivf-dark mb-2 leading-tight">{indicator.label}</h3>
-              <p className="text-sm text-ivf-dark/60 leading-relaxed">{indicator.description}</p>
-            </div>
+              {/* Number */}
+              <p style={{
+                fontFamily:            'var(--font-display)',
+                fontSize:              'clamp(3.5rem, 7vw, 5.5rem)',
+                fontWeight:            500,
+                lineHeight:            1,
+                letterSpacing:         '-0.03em',
+                color:                 '#1C2A48',
+                fontVariationSettings: '"opsz" 72',
+                marginBottom:          '0.75rem',
+              }}>
+                <span aria-hidden="true">{counts[i].toLocaleString('en-IN')}</span>
+                <span aria-hidden="true" style={{ color: '#6478B0' }}>{stat.suffix}</span>
+                {/* Screen-reader text: final value only */}
+                <span className="sr-only">{stat.value}{stat.suffix}</span>
+              </p>
+
+              {/* Label */}
+              <p style={{
+                fontFamily:   'var(--font-body)',
+                fontSize:     'clamp(1rem, 0.8vw + 0.5rem, 1.125rem)',
+                fontWeight:   600,
+                color:        '#1C2A48',
+                marginBottom: '0.375rem',
+              }}>
+                {stat.label}
+              </p>
+
+              {/* Subtext */}
+              <p style={{
+                fontFamily: 'var(--font-body)',
+                fontSize:   '0.9375rem',
+                lineHeight: 1.6,
+                color:      '#8A8897',
+              }}>
+                {stat.subtext}
+              </p>
+            </motion.div>
           ))}
         </div>
 
-        {/* Premium Trust Message - Editorial Style */}
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="space-y-6">
-            <h3 className="headline-md text-center text-ivf-dark">
-              We Don&apos;t Just Treat Conditions
-            </h3>
-            <p className="body-lg text-center text-ivf-dark/75 leading-relaxed">
-              We guide whole people through their most important life decisions. Every consultation, every test, every conversation is shaped by one principle: your wellbeing comes first. We believe in earning your trust through expertise, compassion, and transparency.
-            </p>
-          </div>
-          
-          {/* Three Core Values */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            {[
-              {title: 'Expertise', desc: 'Decades of reproductive medicine experience'},
-              {title: 'Compassion', desc: 'Understanding your emotional journey'},
-              {title: 'Transparency', desc: 'Complete honesty about all options'}
-            ].map((value, i) => (
-              <div key={i} className="text-center space-y-3">
-                <div className="text-3xl text-ivf-pink">✓</div>
-                <h4 className="font-semibold text-ivf-dark text-lg">{value.title}</h4>
-                <p className="text-ivf-dark/60 text-sm">{value.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </Container>
     </section>
-  );
+  )
 }

@@ -50,10 +50,6 @@ export default function Home() {
         <WhyTrust />
 
         <RevealSection y={48}>
-          <TrustIndicators />
-        </RevealSection>
-
-        <RevealSection y={48}>
           <HiddenCost />
         </RevealSection>
 
