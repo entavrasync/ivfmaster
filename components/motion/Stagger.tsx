@@ -15,6 +15,7 @@ const containerVariants = {
 interface StaggerProps {
   children: React.ReactNode
   className?: string
+  style?: React.CSSProperties
   /** Seconds before the first child starts animating */
   delay?: number
   /** Override stagger interval between children (seconds) */
@@ -25,7 +26,13 @@ interface StaggerProps {
  * Container that staggers its <StaggerItem> children into view.
  * Triggers once when the container scrolls into the viewport.
  */
-export function Stagger({ children, className, delay = 0, stagger = 0.1 }: StaggerProps) {
+export function Stagger({
+  children,
+  className,
+  style,
+  delay = 0,
+  stagger = 0.1,
+}: StaggerProps) {
   const variants = {
     hidden: {},
     visible: {
@@ -36,6 +43,7 @@ export function Stagger({ children, className, delay = 0, stagger = 0.1 }: Stagg
   return (
     <motion.div
       className={className}
+      style={style}
       variants={variants}
       initial="hidden"
       whileInView="visible"

@@ -15,12 +15,12 @@ export interface DayHours {
 
 // ⚠️  FLAG — confirm actual clinic operating hours before launch
 export const CLINIC_WEEKLY_HOURS: ReadonlyArray<DayHours> = [
-  { day: 'mon', open: '10:00', close: '20:00' },
-  { day: 'tue', open: '10:00', close: '20:00' },
-  { day: 'wed', open: '10:00', close: '20:00' },
-  { day: 'thu', open: '10:00', close: '20:00' },
-  { day: 'fri', open: '10:00', close: '20:00' },
-  { day: 'sat', open: '10:00', close: '20:00' },
+  { day: 'mon', open: '10:00', close: '18:00' },
+  { day: 'tue', open: '10:00', close: '18:00' },
+  { day: 'wed', open: '10:00', close: '18:00' },
+  { day: 'thu', open: '10:00', close: '18:00' },
+  { day: 'fri', open: '10:00', close: '18:00' },
+  { day: 'sat', open: '10:00', close: '18:00' },
   { day: 'sun', open: null,    close: null    },
 ]
 
@@ -32,8 +32,8 @@ export const CLINIC_HOLIDAYS: ReadonlyArray<{ date: string; name: string }> = [
 
 // ⚠️  FLAG — replace with real contact details before launch
 export const CLINIC_CONTACT = {
-  whatsappNumber: '919999999999',    // international format, no + or spaces
-  phoneNumber:    '+91 XXXXX XXXXX',
+  whatsappNumber: '+91 95610 96416',    // international format, no + or spaces
+  phoneNumber:    '+91 95610 96416',
 } as const
 
 /* ─── Status types ───────────────────────────────────────────────── */

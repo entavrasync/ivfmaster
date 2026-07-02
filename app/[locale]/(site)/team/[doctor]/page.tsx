@@ -3,20 +3,23 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Footer } from '@/components/shared/Footer';
 import { doctors } from '@/lib/content/team';
-import { routing } from '@/i18n/routing';
+import { routing, type Locale } from '@/i18n/routing';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; doctor: string }>
 }): Promise<Metadata> {
-  const { doctor: slug } = await params;
+  const { locale, doctor: slug } = await params;
   const doc = doctors.find((d) => d.slug === slug);
   if (!doc) return { title: 'Doctor Not Found' };
-  return {
-    title: `${doc.name} - IVF Master`,
-    description: `Meet ${doc.name}, ${doc.title} at IVF Master fertility clinic.`,
-  };
+  return buildPageMetadata({
+    locale: locale as Locale,
+    path: '/team/' + slug,
+    title: doc.name,
+    description: 'Meet ' + doc.name + ', ' + doc.title + ' at IVF Master fertility clinic.',
+  });
 }
 
 export async function generateStaticParams() {
