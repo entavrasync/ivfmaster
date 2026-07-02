@@ -1,26 +1,30 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useReadingProgress } from '@/components/providers/ReadingProgressContext'
 import Image from 'next/image'
 import { Link, usePathname } from '@/i18n/navigation'
 import { motion } from 'motion/react'
 import { Pressable } from '@/components/motion'
-import { useLenis } from '@/components/providers/SmoothScrollProvider'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileNav } from './MobileNav'
+import { ProceduresDropdown } from './ProceduresDropdown'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const SCROLL_THRESHOLD = 80
 
-const NAV_LINKS = [
-  { label: 'Home',        href: '/'            },
-  { label: 'Educate IVF', href: '/educate-ivf' },
-  { label: 'Procedures',  href: '/procedures'  },
-  { label: 'About',       href: '/about'       },
-  { label: 'Team',        href: '/team'        },
-  { label: 'Contact',     href: '/contact'     },
+type NavKey = 'home' | 'educateIVF' | 'procedures' | 'about' | 'team' | 'contact'
+
+const NAV_LINKS: { key: NavKey; href: string }[] = [
+  { key: 'home',       href: '/'            },
+  { key: 'educateIVF', href: '/educate-ivf' },
+  { key: 'procedures', href: '/procedures'  },
+  { key: 'about',      href: '/about'       },
+  { key: 'team',       href: '/team'        },
+  { key: 'contact',    href: '/contact'     },
 ]
 
 /* ─── Hamburger → X morph ──────────────────────────────────────────────── */
@@ -60,6 +64,7 @@ interface DesktopNavLinkProps {
 }
 
 function DesktopNavLink({ href, label, active, isHovered, onMouseEnter }: Readonly<DesktopNavLinkProps>) {
+
   const reduced = useReducedMotion()
 
   return (
@@ -137,14 +142,29 @@ function LogoLockup() {
 /* ─── Main Navbar ──────────────────────────────────────────────────────── */
 export function Navbar() {
   const pathname   = usePathname()
-  const lenis      = useLenis()
   const reduced    = useReducedMotion()
+  const t          = useTranslations('Nav')
 
   const [scrolled,   setScrolled]   = useState(false)
   const [hidden,     setHidden]     = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [hoveredHref, setHoveredHref] = useState<string | null>(null)
-  const lastScrollY = useRef(0)
+  const [progress, setProgress]       = useState(0)
+  const lastScrollY       = useRef(0)
+  const { enabled: progressEnabled } = useReadingProgress()
+  const progressEnabledRef = useRef(progressEnabled)
+
+  // Keep ref in sync so the scroll handler can read the latest value without re-registering
+  useEffect(() => {
+    progressEnabledRef.current = progressEnabled
+    const y   = window.scrollY
+    const max = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    setProgress(
+      progressEnabled && max > 0
+        ? Math.min(100, Math.round((y / max) * 100))
+        : 0
+    )
+  }, [progressEnabled])
 
   useEffect(() => {
     function onScroll() {
@@ -153,19 +173,25 @@ export function Navbar() {
       setScrolled(y > SCROLL_THRESHOLD)
       setHidden(y > SCROLL_THRESHOLD && dir === 'down')
       lastScrollY.current = y
+      if (progressEnabledRef.current) {
+        const max = document.documentElement.scrollHeight - document.documentElement.clientHeight
+        setProgress(max > 0 ? Math.min(100, Math.round((y / max) * 100)) : 0)
+      }
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
-    if (!lenis) return
-    if (mobileOpen) {
-      lenis.stop()
-    } else {
-      lenis.start()
+    if (!mobileOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
     }
-  }, [mobileOpen, lenis])
+  }, [mobileOpen])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -196,6 +222,7 @@ export function Navbar() {
               WebkitBackdropFilter: 'blur(20px) saturate(150%)',
               border: '1px solid rgba(216,204,190,0.60)',
               padding: '10px 18px',
+              position: 'relative',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
@@ -208,13 +235,23 @@ export function Navbar() {
                 aria-label="Main navigation"
                 onMouseLeave={() => setHoveredHref(null)}
               >
-                {NAV_LINKS.map(({ label, href }) => {
+                {NAV_LINKS.map(({ key, href }) => {
                   const active = pathname === href || (href !== '/' && pathname.startsWith(href))
+                  if (href === '/procedures') {
+                    return (
+                      <ProceduresDropdown
+                        key={href}
+                        active={active}
+                        isHovered={hoveredHref === href}
+                        onHoverEnter={() => setHoveredHref(href)}
+                      />
+                    )
+                  }
                   return (
                     <DesktopNavLink
                       key={href}
                       href={href}
-                      label={label}
+                      label={t(key)}
                       active={active}
                       isHovered={hoveredHref === href}
                       onMouseEnter={() => setHoveredHref(href)}
@@ -242,7 +279,7 @@ export function Navbar() {
                       boxShadow: '0 8px 24px -4px rgba(194,78,106,0.60), 0 3px 8px -2px rgba(194,78,106,0.35)',
                     }}
                   >
-                    Talk to our experts
+                    {t('talkToExperts')}
                   </Link>
                 </Pressable>
               </div>
@@ -258,6 +295,30 @@ export function Navbar() {
                 </button>
               </Pressable>
             </div>
+
+            {/* ── Reading progress bar — bottom edge of the pill ── */}
+            {progressEnabled && (
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  bottom:   0,
+                  left:     0,
+                  right:    0,
+                  height:   '2px',
+                  background: 'rgba(216,204,190,0.22)',
+                }}
+              >
+                <div
+                  style={{
+                    height:     '100%',
+                    width:      `${progress}%`,
+                    background: '#E2849C',
+                    transition: reduced ? 'none' : 'width 0.06s linear',
+                  }}
+                />
+              </div>
+            )}
           </motion.div>
         </div>
       </motion.div>

@@ -1,22 +1,147 @@
 'use client'
 
+import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { AnimatePresence, motion } from 'motion/react'
-import { X, ChevronRight } from 'lucide-react'
+import { X, ChevronRight, ChevronDown } from 'lucide-react'
 import { Stagger, StaggerItem, Pressable } from '@/components/motion'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { PROCEDURES, ProcedureMark } from './procedures-data'
 import { cn } from '@/lib/utils'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-const NAV_LINKS = [
-  { label: 'Home',        href: '/'            },
-  { label: 'Educate IVF', href: '/educate-ivf' },
-  { label: 'Procedures',  href: '/procedures'  },
-  { label: 'About',       href: '/about'       },
-  { label: 'Team',        href: '/team'        },
-  { label: 'Contact',     href: '/contact'     },
+type NavKey = 'home' | 'educateIVF' | 'procedures' | 'about' | 'team' | 'contact'
+
+const NAV_LINKS: { key: NavKey; href: string }[] = [
+  { key: 'home',       href: '/'            },
+  { key: 'educateIVF', href: '/educate-ivf' },
+  { key: 'procedures', href: '/procedures'  },
+  { key: 'about',      href: '/about'       },
+  { key: 'team',       href: '/team'        },
+  { key: 'contact',    href: '/contact'     },
 ]
+
+/* ─── Procedures accordion — used inside the Stagger list ───────────────── */
+
+interface ProceduresMobileItemProps {
+  onClose: () => void
+}
+
+function ProceduresMobileItem({ onClose }: Readonly<ProceduresMobileItemProps>) {
+  const pathname = usePathname()
+  const reduced  = useReducedMotion()
+  const t        = useTranslations('Nav')
+  const [open, setOpen] = useState(false)
+  const active = pathname === '/procedures' || pathname.startsWith('/procedures/')
+
+  return (
+    <div>
+      {/* Accordion trigger */}
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="mobile-procedures-list"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center justify-between w-full"
+        style={{
+          padding:         '13px 20px',
+          borderBottom:    open ? 'none' : '1px solid rgba(236,239,249,0.6)',
+          backgroundColor: active ? 'rgba(46,79,142,0.04)' : 'transparent',
+          cursor:          'pointer',
+          background:      active ? 'rgba(46,79,142,0.04)' : 'transparent',
+        }}
+      >
+        <span
+          style={{
+            fontFamily:    'var(--font-body)',
+            fontSize:      '0.9375rem',
+            fontWeight:    active ? 600 : 400,
+            color:         active ? '#2E4F8E' : '#374151',
+            letterSpacing: '-0.01em',
+          }}
+        >
+          {t('procedures')}
+        </span>
+        <motion.span
+          animate={reduced ? {} : { rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.25, ease: EASE }}
+          style={{ display: 'flex', color: open ? '#2E4F8E' : '#C4C9D4' }}
+        >
+          <ChevronDown size={15} strokeWidth={2} />
+        </motion.span>
+      </button>
+
+      {/* Accordion body */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            id="mobile-procedures-list"
+            key="mobile-procedures"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: reduced ? 0 : 0.30, ease: EASE }}
+            style={{ overflow: 'hidden' }}
+          >
+            {PROCEDURES.map((proc) => {
+              const procActive = pathname === proc.href || pathname.startsWith(proc.href + '/')
+              return (
+                <Link
+                  key={proc.id}
+                  href={proc.href}
+                  onClick={onClose}
+                  style={{
+                    display:         'flex',
+                    alignItems:      'center',
+                    gap:             '0.75rem',
+                    padding:         '10px 20px',
+                    borderBottom:    '1px solid rgba(236,239,249,0.6)',
+                    backgroundColor: procActive ? 'rgba(46,79,142,0.05)' : 'rgba(46,79,142,0.015)',
+                    textDecoration:  'none',
+                  }}
+                >
+                  <ProcedureMark proc={proc} size={32} />
+                  <div style={{ minWidth: 0 }}>
+                    <span
+                      style={{
+                        display:       'block',
+                        fontFamily:    'var(--font-body)',
+                        fontSize:      '0.9375rem',
+                        fontWeight:    procActive ? 600 : 500,
+                        color:         procActive ? '#2E4F8E' : '#374151',
+                        letterSpacing: '-0.01em',
+                        lineHeight:    1.25,
+                      }}
+                    >
+                      {proc.label}
+                    </span>
+                    <span
+                      style={{
+                        display:    'block',
+                        fontFamily: 'var(--font-body)',
+                        fontSize:   '0.75rem',
+                        color:      'rgba(55,65,81,0.52)',
+                        lineHeight: 1.45,
+                        marginTop:  '0.125rem',
+                      }}
+                    >
+                      {proc.description}
+                    </span>
+                  </div>
+                </Link>
+              )
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+/* ─── Main mobile nav ────────────────────────────────────────────────────── */
 
 interface MobileNavProps {
   isOpen: boolean
@@ -25,6 +150,7 @@ interface MobileNavProps {
 
 export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
   const pathname = usePathname()
+  const t        = useTranslations('Nav')
 
   return (
     <AnimatePresence>
@@ -87,7 +213,7 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
               {/* Language */}
               <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(236,239,249,0.8)' }}>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9AA0AC', marginBottom: '10px' }}>
-                  Language
+                  {t('language')}
                 </p>
                 <LanguageSwitcher variant="panel" />
               </div>
@@ -95,7 +221,16 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
               {/* Nav links */}
               <nav style={{ padding: '8px 0' }}>
                 <Stagger stagger={0.055} delay={0.04}>
-                  {NAV_LINKS.map(({ label, href }) => {
+                  {NAV_LINKS.map(({ key, href }) => {
+                    /* Procedures gets its own expandable accordion */
+                    if (href === '/procedures') {
+                      return (
+                        <StaggerItem key={href}>
+                          <ProceduresMobileItem onClose={onClose} />
+                        </StaggerItem>
+                      )
+                    }
+
                     const active = pathname === href || (href !== '/' && pathname.startsWith(href))
                     return (
                       <StaggerItem key={href}>
@@ -104,21 +239,21 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
                             href={href}
                             className={cn('flex items-center justify-between group')}
                             style={{
-                              padding: '13px 20px',
-                              borderBottom: '1px solid rgba(236,239,249,0.6)',
+                              padding:         '13px 20px',
+                              borderBottom:    '1px solid rgba(236,239,249,0.6)',
                               backgroundColor: active ? 'rgba(46,79,142,0.04)' : 'transparent',
                             }}
                           >
                             <span
                               style={{
-                                fontFamily: 'var(--font-body)',
-                                fontSize: '0.9375rem',
-                                fontWeight: active ? 600 : 400,
-                                color: active ? '#2E4F8E' : '#374151',
+                                fontFamily:    'var(--font-body)',
+                                fontSize:      '0.9375rem',
+                                fontWeight:    active ? 600 : 400,
+                                color:         active ? '#2E4F8E' : '#374151',
                                 letterSpacing: '-0.01em',
                               }}
                             >
-                              {label}
+                              {t(key)}
                             </span>
                             <ChevronRight
                               size={15}
@@ -155,7 +290,7 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
                     boxShadow: '0 6px 20px -4px rgba(194,78,106,0.45)',
                   }}
                 >
-                  Talk to our experts
+                  {t('talkToExperts')}
                 </Link>
               </Pressable>
             </div>

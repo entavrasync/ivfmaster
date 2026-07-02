@@ -123,15 +123,15 @@ Do not introduce a separate hospital-style visual language. Avoid generic blue m
 
 ## Abstract Image Direction
 
-Create real raster artwork through ImageGen because no doctor or team photography is available in the supplied documents or workspace.
+Reuse the project's existing abstract `assets/cost` raster sequence because it already supplies coordinated desktop and mobile compositions in the approved palette. No doctor or team photography is available, and the artwork must never imply a likeness.
 
 The images should be sophisticated editorial abstractions using soft biomorphic forms, gentle light, translucent layers, and tactile paper or frosted-material depth. They may suggest a protected cell, a growing form, care passing between hands, or coordinated clinical attention, but must avoid literal embryos, synthetic doctor portraits, hospital stock imagery, DNA helices, babies, and sentimental clichés.
 
-Create compositions for their actual slots:
+Select matched compositions for their actual slots:
 
-- hero: landscape desktop composition plus portrait mobile composition
-- doctor chapter support: two distinct abstract images with shared art direction
-- team section: one wide collaborative composition with a mobile crop or variant
+- hero: matched landscape desktop and portrait mobile assets
+- doctor chapter support: two distinct matched desktop/mobile abstract pairs
+- team section: one matched wide/portrait abstract pair
 
 All meaningful visuals require useful alt text; decorative texture layers use empty alt text.
 
@@ -223,4 +223,3 @@ Implementation is complete only when all of the following pass:
 - Content is audited against the supplied documents before handoff.
 
 Browser preview remains off by default in accordance with the user's preference. It may be requested only if a visual defect cannot be responsibly evaluated through code and build checks alone.
-

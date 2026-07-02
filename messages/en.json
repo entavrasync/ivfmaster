@@ -1,62 +1,322 @@
 {
   "Nav": {
-    "home": "Home",
-    "educateIVF": "Educate IVF",
-    "procedures": "Procedures",
-    "about": "About",
-    "team": "Team",
-    "contact": "Contact",
-    "talkToExperts": "Talk to our experts",
+    "home":           "Home",
+    "educateIVF":     "Educate IVF",
+    "procedures":     "Procedures",
+    "about":          "About",
+    "team":           "Team",
+    "contact":        "Contact",
+    "talkToExperts":  "Talk to our experts",
     "switchLanguage": "Switch language",
-    "language": "Language"
+    "language":       "Language",
+    "closeMenu":      "Close menu",
+    "openMenu":       "Open menu"
   },
-  "Hero": {
-    "eyebrow": "Your fertility journey",
-    "headline": "Trying to conceive is rarely simple.",
-    "subheadline": "Understanding why doesn't have to be.",
-    "body": "At IVF Master, we guide every couple with honest answers, unhurried consultations, and a care plan built around your specific situation — not a protocol.",
-    "ctaPrimary": "Start your fertility journey",
-    "ctaSecondary": "Understand your options first",
-    "ctaMicroTrust": "A calm, unhurried conversation about your situation — no pressure to proceed.",
-    "trustCouples": "2,000+ couples",
-    "trustYears": "20+ years",
-    "trustCare": "Pune-trained care"
+
+  "Meta": {
+    "siteTitle":       "IVF Master - Premium Fertility Care in Sangli",
+    "siteDescription": "Personalized IVF and fertility treatment at IVF Master. Experience compassionate care from expert doctors in Sangli, Maharashtra."
   },
-  "Stats": {
-    "couplesGuided": "Couples guided",
-    "successRate": "Clinical success rate",
-    "yearsExpertise": "Years of expertise",
-    "cyclesCompleted": "Cycles completed"
-  },
+
   "About": {
-    "metaTitle": "About IVF Master - Our Story & Mission",
-    "metaDescription": "Learn about IVF Master fertility clinic in Sangli and our commitment to compassionate fertility care."
+    "metaTitle":       "About IVF Master - Care, Clarity & Reproductive Medicine",
+    "metaDescription": "Meet the doctors and care team behind IVF Master and learn how listening, education and evidence shape each fertility journey."
   },
+
   "Contact": {
-    "metaTitle": "Contact IVF Master",
+    "metaTitle":       "Contact IVF Master",
     "metaDescription": "Get in touch with IVF Master fertility clinic in Sangli, Maharashtra."
   },
-  "EducateIVF": {
-    "metaTitle": "Educate IVF - Learn About Fertility Treatment",
-    "metaDescription": "Expert articles and guides about IVF and fertility treatment from IVF Master doctors.",
-    "backToArticles": "Back to Articles",
-    "minRead": "{minutes} min read",
-    "commonQuestions": "Common questions",
-    "relatedArticles": "Related articles",
-    "readyNextStep": "Ready to take the next step?",
-    "consultationPrompt": "Book a consultation with our doctors to discuss your specific situation.",
-    "bookConsultation": "Book a Consultation"
-  },
-  "Procedures": {
-    "metaTitle": "Fertility Procedures - IVF Master",
-    "metaDescription": "Learn about IVF, IUI, egg freezing, and other fertility procedures at IVF Master."
-  },
+
   "Team": {
-    "metaTitle": "Our Medical Team - IVF Master",
+    "metaTitle":       "Our Medical Team - IVF Master",
     "metaDescription": "Meet the experienced fertility specialists at IVF Master, Sangli."
   },
-  "Meta": {
-    "siteTitle": "IVF Master - Premium Fertility Care in Sangli",
-    "siteDescription": "Personalized IVF and fertility treatment at IVF Master. Experience compassionate care from expert doctors in Sangli, Maharashtra."
+
+  "Hero": {
+    "eyebrow":        "Your fertility journey",
+    "headline":       "Trying to conceive is rarely simple.",
+    "subheadline":    "Understanding why doesn't have to be.",
+    "body":           "At IVF Master, we guide every couple with honest answers, unhurried consultations, and a care plan built around your specific situation — not a protocol.",
+    "ctaPrimary":     "Start your fertility journey",
+    "ctaSecondary":   "Understand your options first",
+    "ctaMicroTrust":  "A calm, unhurried conversation about your situation — no pressure to proceed.",
+    "trustCouples":   "2,000+ couples",
+    "trustYears":     "20+ years",
+    "trustCare":      "Pune-trained care"
+  },
+
+  "Stats": {
+    "couplesGuided":    "Couples guided",
+    "successRate":      "Clinical success rate",
+    "yearsExpertise":   "Years of expertise",
+    "cyclesCompleted":  "Cycles completed"
+  },
+
+  "PainRecognition": {
+    "eyebrow":  "Before anything else",
+    "headline": "You've been carrying this quietly for a long time.",
+    "body":     "The waiting, the questions, the hope that keeps starting over. We understand — and you don't have to carry it alone anymore."
+  },
+
+  "WhyTrust": {
+    "eyebrow":  "Why couples choose us",
+    "heading":  "Trust isn't claimed. It's earned, quietly, over time.",
+    "body":     "For over twenty years, couples have walked in carrying fear — and walked out with clarity. This is the conversation that changes everything.",
+    "card0": {
+      "label":    "What couples fear",
+      "worry":    "Will we just be another case on a conveyor belt?",
+      "response": "Never. Your first visit isn't a verdict — it's a conversation. We listen to your whole story before we say a single word about treatment."
+    },
+    "card1": {
+      "label":    "What couples dread",
+      "worry":    "We won't understand anything they tell us.",
+      "response": "You'll understand every step before it happens. No jargon, no feeling lost — because understanding is what quietens fear."
+    },
+    "card2": {
+      "label":    "What couples need",
+      "worry":    "Just tell us the truth — even if it's hard.",
+      "response": "Always. We won't inflate your chances to win your trust. You'll get the real picture, with compassion — hope built on honesty, never pressure."
+    },
+    "statYears":       "20+ years of care",
+    "statCouples":     "2,000+ couples guided",
+    "statSpecialists": "Pune-trained specialists",
+    "statYearsLabel":  "years of care",
+    "statCouplesLabel":"couples guided",
+    "gestosisNote":   "Our lead specialist developed the HDP Gestosis Score — now adopted by India's National Health Mission.",
+    "ctaButton":      "Book your first conversation",
+    "ctaSub":         "An unhurried first visit to understand your story."
+  },
+
+  "CostOfWaiting": {
+    "eyebrow":  "The cost of waiting",
+    "line1":    "It rarely feels like a decision.",
+    "line2":    "It feels like “next year”.",
+    "line3":    "Then next year becomes the year after.",
+    "line4":    "And the hardest part —",
+    "line5":    "is that time is the one thing fertility can’t give back.",
+    "hopeLine1":"But waiting isn’t failing.",
+    "hopeLine2":"Understanding sooner simply gives you more of your story to write.",
+    "closeBody":"Wherever you are in your journey, it’s not too late to understand it.",
+    "ctaButton":"Understand your timeline",
+    "ctaSub":   "An honest, unhurried look at where you stand."
+  },
+
+  "UnderstandingIVF": {
+    "eyebrow": "How IVF works",
+    "heading": "What happens, step by step — and why.",
+    "body":    "IVF can feel overwhelming from the outside. Here are the six steps as they actually unfold, in plain language.",
+    "steps": {
+      "stimulation": {
+        "heading": "Preparing your body",
+        "body":    "A gentle head start. Light medication helps your ovaries prepare more eggs than usual, with care at every check-in."
+      },
+      "retrieval": {
+        "heading": "Collecting the eggs",
+        "body":    "A short, calm procedure under anesthesia. The matured eggs are gently collected — most people feel only mild discomfort."
+      },
+      "fertilisation": {
+        "heading": "Egg meets sperm",
+        "body":    "In the lab, egg and sperm are brought together — the quiet beginning of a possible embryo."
+      },
+      "culture": {
+        "heading": "The embryo grows",
+        "body":    "Over a few days, embryos develop under close watch, and the healthiest is chosen with care."
+      },
+      "transfer": {
+        "heading": "The transfer",
+        "body":    "A quick, painless step. The embryo is gently placed in the womb — no anesthesia, no bed rest needed."
+      },
+      "wait": {
+        "heading": "The wait, together",
+        "body":    "About two weeks until the test. The hardest wait — and the one we walk through with you."
+      }
+    },
+    "closeBody": "By the time treatment begins, you’ll understand every step — and that clarity changes everything.",
+    "ctaButton": "Talk us through it",
+    "ctaSub":    "Explained simply, at your pace."
+  },
+
+  "MythsFacts": {
+    "eyebrow": "The things couples wonder",
+    "heading": "The questions almost everyone asks.",
+    "body":    "If something here has been on your mind, you’re not alone — these are the things couples ask us most. Honest answers, in plain language.",
+    "faqs": {
+      "q1": {
+        "q": "Are IVF babies as healthy as other babies?",
+        "a": "Yes. Millions of healthy children have been born through IVF worldwide. An IVF baby is just as healthy — and just as loved — as any other."
+      },
+      "q2": {
+        "q": "Does IVF always mean twins?",
+        "a": "Not anymore. We usually transfer a single healthy embryo, so most IVF pregnancies are a single baby."
+      },
+      "q3": {
+        "q": "Is IVF very painful?",
+        "a": "Most people feel only mild discomfort. The egg-collection step is done under anesthesia, so you won’t feel pain during it."
+      },
+      "q4": {
+        "q": "Is IVF only about the woman?",
+        "a": "No. Fertility challenges are just as often related to the man — or both partners. We look at the whole picture, together, without blame."
+      },
+      "q5": {
+        "q": "Does age really matter?",
+        "a": "It’s one of the most important factors — which is exactly why understanding your options early gives you the most choices. But every story is different, and 40 is not a closed door."
+      },
+      "q6": {
+        "q": "Do I need complete bed rest after the embryo transfer?",
+        "a": "No. Normal daily life is safe. We may simply ask you to avoid heavy lifting or intense exercise for a short while."
+      },
+      "q7": {
+        "q": "How do I even begin?",
+        "a": "With a conversation — no commitment. We listen to your story, answer your questions, and only then talk about what (if anything) comes next."
+      }
+    },
+    "closeBody": "Still wondering about something? The best answers are the ones about your situation.",
+    "ctaButton": "Ask us your question",
+    "ctaSub":    "No pressure — just honest answers."
+  },
+
+  "PatientJourney": {
+    "eyebrow": "Your journey with us",
+    "heading": "From the first question to the last step — with you.",
+    "body":    "This is how the journey unfolds when care comes first — one step at a time, in plain language, at your pace.",
+    "steps": {
+      "s1": {
+        "heading": "An unhurried first conversation",
+        "body":    "We listen to your whole story before we say a single word about treatment. No hurry, no judgement."
+      },
+      "s2": {
+        "heading": "Careful, thorough evaluation",
+        "body":    "The right tests, thoughtfully chosen. We look at the whole picture — medical, emotional, personal — before drawing any conclusions."
+      },
+      "s3": {
+        "heading": "Your results in plain language",
+        "body":    "We explain what we found, what it means, and what your options are — in words you can actually understand."
+      },
+      "s4": {
+        "heading": "A plan built around you",
+        "body":    "Together, we shape a path that fits your goals, your timeline, and your life — not a protocol off a shelf."
+      },
+      "s5": {
+        "heading": "Precise, supported treatment",
+        "body":    "When the time comes, we move with care and expertise. Nothing happens without your full understanding and readiness."
+      },
+      "s6": {
+        "heading": "With you, however it unfolds",
+        "body":    "Wherever the journey leads, we stay — not just for outcomes, but for every moment of uncertainty along the way."
+      }
+    },
+    "closeBody": "By the time treatment begins, you understand everything that’s happening and why. That clarity changes everything.",
+    "ctaButton": "Take the first step"
+  },
+
+  "MeetTheDoctors": {
+    "eyebrow":      "The people behind your care",
+    "heading":      "You won’t be a case number here.",
+    "body":         "For over twenty years, two doctors — and a marriage — have devoted themselves to one thing: helping couples become parents, with honesty and care. Meet the people who’ll walk beside you.",
+    "gorakhEssence":"The doctor who explains until it finally makes sense.",
+    "gorakhIntro":  "Gorakh believes no one should feel lost in their own treatment. He’ll sit with you, draw the picture, and answer every question — twice if you need — until the fear gives way to understanding.",
+    "gorakhCred1":  "Gold Medallist, Pune University",
+    "gorakhCred2":  "20+ years in IVF & reproductive medicine",
+    "gorakhCred3":  "2,000+ couples helped become parents",
+    "gorakhCred4":  "Developed the HDP Gestosis Score — adopted by India’s National Health Mission",
+    "gorakhCta":    "Talk with Dr. Gorakh",
+    "gorakhStory":  "Read Gorakh’s full story",
+    "saieEssence":  "Gentle with people, fierce about their care.",
+    "saieIntro":    "Saie looks after the moments that matter most — the high-risk, the delicate, the frightening. Couples remember how calm she makes them feel when it counts.",
+    "saieCred1":    "Pune University",
+    "saieCred2":    "20+ years in high-risk obstetrics & reproductive medicine",
+    "saieCred3":    "2,000+ couples guided to parenthood",
+    "saieCta":      "Talk with Dr. Saie",
+    "saieStory":    "Read Saie’s full story",
+    "coupleNote":   "Married for over twenty years — and partners in every couple’s care."
+  },
+
+  "SuccessStories": {
+    "eyebrow": "Real journeys",
+    "heading": "What patients say",
+    "body":    "These aren’t selected quotes. These are real people who came to us scared, and left with their families complete."
+  },
+
+  "FinalCTA": {
+    "eyebrow":        "Get in touch",
+    "headline":       "Ready to talk? Let’s start with understanding.",
+    "body":           "You don’t have to decide anything today. Visit us, call, or message — we’ll explain everything, gently, before anything begins.",
+    "clinicLabel":    "Our clinic",
+    "clinicAddress":  "Mandrupkar Clinic, Ishwarpur, Sangli, Maharashtra",
+    "hoursLabel":     "Hours",
+    "hoursDetail":    "Mon–Sat, 10 AM – 8 PM",
+    "reachLabel":     "Reach us",
+    "reachPhone":     "+91 XXXXX XXXXX",
+    "whatsappCta":    "Message us on WhatsApp",
+    "contactFormCta": "Open the contact form"
+  },
+
+  "Footer": {
+    "tagline":       "Premium fertility care, with compassion — guiding couples toward parenthood.",
+    "byline":        "by Mandrupkar Clinic",
+    "colExplore":    "Explore",
+    "colClinic":     "Clinic",
+    "colContact":    "Get in touch",
+    "colLanguage":   "Language",
+    "navHome":       "Home",
+    "navLearnIVF":   "Learn about IVF",
+    "navProcedures": "Our procedures",
+    "navTeam":       "Our team",
+    "navAbout":      "About us",
+    "navContact":    "Contact",
+    "navFaq":        "FAQ",
+    "address":       "Ishwarpur, Sangli, Maharashtra",
+    "hours":         "Mon–Sat, 10 AM – 8 PM",
+    "phone":         "+91 XXXXX XXXXX",
+    "email":         "info@ivfmaster.in",
+    "copyright":     "© 2026 IVF Master · Mandrupkar Clinic. All rights reserved.",
+    "privacyPolicy": "Privacy policy",
+    "termsOfService":"Terms of service"
+  },
+
+  "Procedures": {
+    "metaTitle":       "Fertility Procedures - IVF Master",
+    "metaDescription": "Learn about IVF, IUI, egg freezing, and other fertility procedures at IVF Master.",
+    "hubEyebrow":  "Treatments, explained simply",
+    "hubHeading":  "Every path to parenthood, in plain language.",
+    "hubBody":     "You may have heard these names from a doctor or a friend. Here’s what each one really means — gently, and without the jargon.",
+    "hubCloseText":"Not sure which path is yours? That’s exactly what a first conversation is for.",
+    "hubCtaButton":"Talk through your options",
+    "detailBack":          "Back to procedures",
+    "detailIsRightForYou": "Is this right for you?",
+    "detailProcessEyebrow":"The process",
+    "detailProcessHeading":"The journey, step by step.",
+    "detailWhatToExpect":  "What to expect",
+    "detailHonestExp":     "Honest about the experience.",
+    "detailFaqEyebrow":    "Common questions",
+    "detailFaqHeading":    "Questions couples ask about {name}.",
+    "detailOtherEyebrow":  "Other treatments",
+    "detailOtherHeading":  "Explore other paths.",
+    "detailCtaText":       "Want to talk through whether {name} is right for you?",
+    "detailCtaSub":        "An unhurried conversation about your situation.",
+    "detailCtaButton":     "Book your consultation",
+    "photoComingSoon":     "Photo coming soon"
+  },
+
+  "EducateIVF": {
+    "metaTitle":       "Educate IVF - Learn About Fertility Treatment",
+    "metaDescription": "Expert articles and guides about IVF and fertility treatment from IVF Master doctors.",
+    "hubMetaTitle":    "Educate IVF — Understanding fertility, one question at a time",
+    "hubMetaDesc":     "Honest, plain-language articles on IVF, fertility conditions, and common myths — written by the team who will care for you.",
+    "hubEyebrow":      "Learn, at your pace",
+    "hubHeading":      "Understanding, one question at a time.",
+    "hubBody":         "Honest, plain-language answers to the things couples wonder about most — written by the people who will care for you.",
+    "hubCtaQuestion":  "Still have a question we haven’t answered?",
+    "hubCtaButton":    "Ask our specialists",
+    "backLink":        "Back to Educate IVF",
+    "inShort":         "In short",
+    "endCtaHeading":   "Have a question about your situation?",
+    "endCtaButton":    "Talk to our specialists",
+    "endCtaMicro":     "No pressure — just honest answers.",
+    "keepReading":     "Keep reading.",
+    "readArticle":     "Read article",
+    "readMore":        "Read more",
+    "minRead":         "{minutes} min read"
   }
 }

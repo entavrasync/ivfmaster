@@ -1,30 +1,69 @@
-import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
+import { getRequestConfig } from 'next-intl/server'
+import { routing } from './routing'
 
-// Called once per request on the server. Returns the locale and its messages.
-// next-intl reads the path prefix (or cookie) to determine requestLocale.
-export default getRequestConfig(async ({ requestLocale }) => {
-  let locale = await requestLocale;
-
-  // Fall back to default locale if the segment is missing or invalid.
-  if (!locale || !(routing.locales as ReadonlyArray<string>).includes(locale)) {
-    locale = routing.defaultLocale;
+// Recursively merge two objects — base first, override on top.
+// This lets hi.json / mr.json only carry the keys that have been
+// professionally translated; everything else falls back to English.
+function mergeMessages(
+  base: Record<string, unknown>,
+  override: Record<string, unknown>,
+): Record<string, unknown> {
+  const out = { ...base }
+  for (const key of Object.keys(override)) {
+    const bv = base[key]
+    const ov = override[key]
+    if (
+      ov !== null &&
+      typeof ov === 'object' &&
+      !Array.isArray(ov) &&
+      bv !== null &&
+      typeof bv === 'object' &&
+      !Array.isArray(bv)
+    ) {
+      out[key] = mergeMessages(
+        bv as Record<string, unknown>,
+        ov as Record<string, unknown>,
+      )
+    } else {
+      out[key] = ov
+    }
   }
+  return out
+}
+
+export default getRequestConfig(async ({ requestLocale }) => {
+  let locale = await requestLocale
+
+  if (!locale || !(routing.locales as ReadonlyArray<string>).includes(locale)) {
+    locale = routing.defaultLocale
+  }
+
+  // Always load English as the base so no key ever shows as blank or raw.
+  const enMessages = (await import('../messages/en.json')).default as Record<string, unknown>
+
+  const messages =
+    locale === 'en'
+      ? enMessages
+      : mergeMessages(
+          enMessages,
+          (await import(`../messages/${locale}.json`)).default as Record<string, unknown>,
+        )
 
   return {
     locale,
-    // Dynamic import keeps each locale's JSON out of the shared bundle.
-    messages: (await import(`../messages/${locale}.json`)).default,
-    // Ensures date/time formatting matches IST throughout the app.
+    messages,
     timeZone: 'Asia/Kolkata',
     formats: {
       dateTime: {
-        short: { day: 'numeric' as const, month: 'short' as const, year: 'numeric' as const },
+        short: {
+          day:   'numeric'  as const,
+          month: 'short'    as const,
+          year:  'numeric'  as const,
+        },
       },
       number: {
-        // Useful for displaying large stat numbers like "4,800"
         compact: { notation: 'compact' as const, maximumFractionDigits: 1 },
       },
     },
-  };
-});
+  }
+})

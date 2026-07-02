@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -35,33 +36,17 @@ function useCountUp(target: number, active: boolean, reduced: boolean): number {
   return count
 }
 
-/* ─── Conversation data ───────────────────────────────────────────────────── */
-
-const CONVERSATION = [
-  {
-    side:     'left'  as const,
-    label:    'What couples fear',
-    worry:    'Will we just be another case on a conveyor belt?',
-    response: 'Never. Your first visit isn’t a verdict — it’s a conversation. We listen to your whole story before we say a single word about treatment.',
-  },
-  {
-    side:     'right' as const,
-    label:    'What couples dread',
-    worry:    'We won’t understand anything they tell us.',
-    response: 'You’ll understand every step before it happens. No jargon, no feeling lost — because understanding is what quietens fear.',
-  },
-  {
-    side:     'left'  as const,
-    label:    'What couples need',
-    worry:    'Just tell us the truth — even if it’s hard.',
-    response: 'Always. We won’t inflate your chances to win your trust. You’ll get the real picture, with compassion — hope built on honesty, never pressure.',
-  },
-] as const
-
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function WhyTrust() {
   const reduced = useReducedMotion()
+  const t       = useTranslations('WhyTrust')
+
+  const conversation = [
+    { side: 'left'  as const, label: t('card0.label'), worry: t('card0.worry'), response: t('card0.response') },
+    { side: 'right' as const, label: t('card1.label'), worry: t('card1.worry'), response: t('card1.response') },
+    { side: 'left'  as const, label: t('card2.label'), worry: t('card2.worry'), response: t('card2.response') },
+  ]
 
   /* Proof anchor: always-visible wrapper so IntersectionObserver fires
    * before the motion.p has faded in — count-up starts at the right moment. */
@@ -69,6 +54,10 @@ export function WhyTrust() {
   const proofInView = useInView(proofRef, { once: true, margin: '-60px' })
   const yearsCount   = useCountUp(20,   proofInView, reduced)
   const couplesCount = useCountUp(2000, proofInView, reduced)
+
+  const statLine1 = `${yearsCount}+ ${t('statYearsLabel')}`
+  const statLine2 = `${couplesCount >= 1000 ? couplesCount.toLocaleString('en-IN') : couplesCount}+ ${t('statCouplesLabel')}`
+  const statLine3 = t('statSpecialists')
 
   /* Intro stagger: eyebrow → headline → lead, 0.12 s apart */
   const introContainerV = {
@@ -111,7 +100,7 @@ export function WhyTrust() {
               marginBottom:  '1.25rem',
             }}
           >
-            Why couples choose us
+            {t('eyebrow')}
           </motion.p>
 
           <motion.h2
@@ -129,7 +118,7 @@ export function WhyTrust() {
               maxWidth:              '24ch',
             }}
           >
-            Trust isn&apos;t claimed. It&apos;s earned, quietly, over time.
+            {t('heading')}
           </motion.h2>
 
           <motion.p
@@ -142,8 +131,7 @@ export function WhyTrust() {
               maxWidth:   '50ch',
             }}
           >
-            For over twenty years, couples have walked in carrying fear &mdash; and walked
-            out with clarity. This is the conversation that changes everything.
+            {t('body')}
           </motion.p>
         </motion.div>
 
@@ -162,7 +150,7 @@ export function WhyTrust() {
             marginBottom:  'clamp(4rem, 8vw, 7rem)',
           }}
         >
-          {CONVERSATION.map((card) => (
+          {conversation.map((card) => (
             <motion.div
               key={card.label}
               initial={{
@@ -254,19 +242,15 @@ export function WhyTrust() {
               letterSpacing: '0.01em',
             }}
           >
-            {/* Mobile: vertical dot list — display/flexDirection in className so lg:hidden can override */}
+            {/* Mobile: vertical dot list */}
             <ul className="flex flex-col lg:hidden" style={{
               listStyle: 'none',
               padding:   0,
               margin:    0,
               gap:       '0.5rem',
             }}>
-              {[
-                `${yearsCount}+ years of care`,
-                `${couplesCount >= 1000 ? couplesCount.toLocaleString('en-IN') : couplesCount}+ couples guided`,
-                'Pune-trained specialists',
-              ].map((item) => (
-                <li key={item} style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+              {[statLine1, statLine2, statLine3].map((item, i) => (
+                <li key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
                   <span aria-hidden="true" style={{ opacity: 0.5 }}>·</span>
                   {item}
                 </li>
@@ -275,13 +259,11 @@ export function WhyTrust() {
 
             {/* Desktop: inline with separator dots */}
             <p className="hidden lg:block" style={{ margin: 0 }}>
-              {yearsCount}+ years of care
+              {statLine1}
               <span aria-hidden="true" style={{ margin: '0 0.75rem', opacity: 0.45 }}>·</span>
-              {couplesCount >= 1000
-                ? couplesCount.toLocaleString('en-IN')
-                : couplesCount}+ couples guided
+              {statLine2}
               <span aria-hidden="true" style={{ margin: '0 0.75rem', opacity: 0.45 }}>·</span>
-              Pune-trained specialists
+              {statLine3}
             </p>
           </motion.div>
 
@@ -311,8 +293,7 @@ export function WhyTrust() {
               color:      '#334B80',
               margin:     0,
             }}>
-              Our lead specialist developed the HDP Gestosis Score &mdash; now adopted by
-              India&apos;s National Health Mission.
+              {t('gestosisNote')}
             </p>
           </motion.div>
         </div>
@@ -353,7 +334,7 @@ export function WhyTrust() {
                 whiteSpace:     'nowrap',
               }}
             >
-              Book your first conversation
+              {t('ctaButton')}
             </Link>
           </Pressable>
 
@@ -363,7 +344,7 @@ export function WhyTrust() {
             lineHeight: 1.6,
             color:      '#8A8897',
           }}>
-            An unhurried first visit to understand your story.
+            {t('ctaSub')}
           </p>
         </motion.div>
 

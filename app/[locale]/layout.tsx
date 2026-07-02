@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
-import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
 import { Navbar } from '@/components/nav/Navbar'
+import { ReadingProgressProvider } from '@/components/providers/ReadingProgressContext'
 import { routing } from '@/i18n/routing'
 import '@/app/globals.css'
 
@@ -66,10 +66,10 @@ export function generateStaticParams() {
 export default async function LocaleLayout({
   children,
   params,
-}: {
+}: Readonly<{
   children: React.ReactNode
   params: Promise<{ locale: string }>
-}) {
+}>) {
   const { locale } = await params
 
   // Guard: unknown locale segments → 404 instead of broken render
@@ -88,12 +88,12 @@ export default async function LocaleLayout({
       suppressHydrationWarning
       className={`${figtree.variable} ${fraunces.variable}`}
     >
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className={figtree.className}>
         <NextIntlClientProvider messages={messages}>
-          <SmoothScrollProvider>
+          <ReadingProgressProvider>
             <Navbar />
             {children}
-          </SmoothScrollProvider>
+          </ReadingProgressProvider>
         </NextIntlClientProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

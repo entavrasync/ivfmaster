@@ -1,20 +1,19 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-/* Split headline into words for the per-word stagger. */
-const HEADLINE = "You've been carrying this quietly for a long time."
-const HEADLINE_WORDS = HEADLINE.split(' ')
-
-/* How long all headline words take to stream in, so sub-line waits its turn. */
-const HEADLINE_DONE = 0.3 + HEADLINE_WORDS.length * 0.08 // ≈ 1.1 s
-
 export function PainRecognition() {
-  const reduced = useReducedMotion()
+  const reduced       = useReducedMotion()
+  const t             = useTranslations('PainRecognition')
+  const headline      = t('headline')
+  const headlineWords = headline.split(' ')
+  /* How long all headline words take to stream in, so sub-line waits its turn. */
+  const headlineDone  = 0.3 + headlineWords.length * 0.08
 
   /* ─── Variants ────────────────────────────────────────────────────────── */
 
@@ -41,7 +40,7 @@ export function PainRecognition() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.85, delay: reduced ? 0.1 : HEADLINE_DONE, ease: EASE },
+      transition: { duration: 0.85, delay: reduced ? 0.1 : headlineDone, ease: EASE },
     },
   }
 
@@ -86,7 +85,7 @@ export function PainRecognition() {
               marginBottom: '1.25rem',
             }}
           >
-            Before anything else
+            {t('eyebrow')}
           </motion.p>
 
           {/* ── Headline — word-by-word stagger ── */}
@@ -114,7 +113,7 @@ export function PainRecognition() {
               marginBottom: '1.75rem',
             }}
           >
-            {HEADLINE_WORDS.map((word, i) => (
+            {headlineWords.map((word, i) => (
               <motion.span
                 key={i}
                 variants={wordV}
@@ -139,8 +138,7 @@ export function PainRecognition() {
               letterSpacing: '-0.005em',
             }}
           >
-            The waiting, the questions, the hope that keeps starting over.{' '}
-            We understand — and you don&apos;t have to carry it alone anymore.
+            {t('body')}
           </motion.p>
         </motion.div>
       </Container>
