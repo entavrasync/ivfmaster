@@ -1,13 +1,13 @@
 'use client'
 
-import type { LucideIcon } from 'lucide-react'
-import { motion } from 'motion/react'
-import { MapPin, Clock, Phone, Mail, MessageCircle, Globe } from 'lucide-react'
-import { useLocale, useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { type Locale } from '@/i18n/routing'
+import type { LucideIcon } from 'lucide-react'
+import { Clock, Globe, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { motion } from 'motion/react'
+import { useLocale, useTranslations } from 'next-intl'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -37,7 +37,7 @@ const SOCIAL: ReadonlyArray<{ Icon: LucideIcon; label: string; href: string }> =
   { Icon: MessageCircle, label: 'WhatsApp', href: WA_URL                     },
   { Icon: Phone,         label: 'Call',     href: PHONE_HREF                 },
   { Icon: Globe,         label: 'Website',  href: '#'                        },
-  { Icon: Mail,          label: 'Email',    href: 'mailto:info@ivfmaster.in' },
+  { Icon: Mail,          label: 'Email',    href: 'mailto:ivfmaster.in@gmail.com' },
 ]
 
 const LOCALES: ReadonlyArray<{ code: Locale; label: string }> = [
@@ -125,7 +125,7 @@ export function Footer() {
     { Icon: MapPin, text: t('address')                                              },
     { Icon: Clock,  text: t('hours')                                                },
     { Icon: Phone,  text: t('phone'), /* TODO: real number */ href: PHONE_HREF      },
-    { Icon: Mail,   text: t('email'), href: 'mailto:info@ivfmaster.in'              },
+    { Icon: Mail,   text: t('email'), href: 'mailto:ivfmaster.in@gmail.com'              },
   ]
 
   return (

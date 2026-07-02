@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
-import { MessageCircle, Phone, Mail, MapPin, Clock } from 'lucide-react'
 import { buildWhatsappMessage } from '@/lib/buildWhatsappMessage'
-import { getClinicStatus, CLINIC_CONTACT, type ClinicStatus } from '@/lib/clinicHours'
+import { CLINIC_CONTACT, getClinicStatus, type ClinicStatus } from '@/lib/clinicHours'
+import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
 
 const IG_URL = 'https://www.instagram.com/ivfmaster?utm_source=ig_web_button_share_sheet'
 
@@ -437,7 +437,7 @@ export function ContactPage() {
                   <ContactRow icon={<Phone size={18} strokeWidth={1.75} />} label={t('panelCall')} sub={t('panelCallSub')} href={telHref} target="_self" />
                 </div>
                 <div style={{ borderBottom: '1px solid rgba(216,204,190,0.40)' }}>
-                  <ContactRow icon={<Mail size={18} strokeWidth={1.75} />} label={t('panelEmail')} sub={t('panelEmailSub')} href="mailto:info@ivfmaster.in" />
+                  <ContactRow icon={<Mail size={18} strokeWidth={1.75} />} label={t('panelEmail')} sub={t('panelEmailSub')} href="mailto:ivfmaster.in@gmail.com" />
                 </div>
                 <ContactRow icon={<InstagramIcon size={18} />} label={t('panelInstagram')} sub={t('panelInstagramSub')} href={IG_URL} />
               </div>

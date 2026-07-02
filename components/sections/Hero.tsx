@@ -111,7 +111,7 @@ export function Hero() {
   const ctaRef      = useRef<HTMLDivElement>(null)
   const trustRef    = useRef<HTMLDivElement>(null)
 
-  const trustItems = [t('trustCouples'), t('trustYears'), t('trustCare')]
+  const trustItems = [t('trustCouples'), t('trustYears')]
 
   /* ── GSAP animations ── */
   useEffect(() => {
