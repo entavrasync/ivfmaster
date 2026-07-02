@@ -159,6 +159,50 @@ export const procedures: Procedure[] = [
     ],
   },
   {
+    id: 'embryo-freezing',
+    slug: 'embryo-freezing',
+    name: 'Embryo Freezing (Cryopreservation)',
+    description: 'Fertilised embryos are carefully frozen and stored so that the best ones can be used when the time is right for you.',
+    shortDescription: 'Preserve your best embryos for the future',
+    isForUs: [
+      'Couples with remaining embryos after an IVF cycle',
+      'Those who want to delay embryo transfer for health or timing reasons',
+      'Women at risk of ovarian hyperstimulation syndrome (OHSS)',
+      'Couples planning multiple future pregnancies from one retrieval cycle',
+      'Medical situations requiring a break before transfer',
+    ],
+    process: [
+      'Embryos are created through a standard IVF or ICSI cycle',
+      'High-quality embryos are selected by the embryologist',
+      'Embryos are vitrified (flash-frozen) and placed in secure storage',
+      'When you are ready, an embryo is thawed and transferred in a gentle FET cycle',
+      'Pregnancy test 12–14 days after transfer',
+    ],
+    timeline: 'Freezing happens during your IVF cycle; transfer can happen weeks or years later',
+    whatToExpect: 'The freezing step adds very little to the IVF process — it happens in the lab after egg retrieval. A frozen embryo transfer cycle is simpler than a full IVF cycle: you take medication to prepare the uterus, the embryo is thawed on transfer day, and the procedure itself is brief.',
+    commonConcerns: [
+      {
+        concern: 'Will freezing damage the embryo?',
+        answer: 'Modern vitrification achieves survival rates above 95 %. The embryo is exactly the same biological age when it is thawed as when it was frozen.',
+      },
+      {
+        concern: 'How long can embryos stay frozen?',
+        answer: 'Research shows no time limit on storage. Many healthy babies have been born from embryos frozen for more than ten years.',
+      },
+    ],
+    successRate: 'Comparable to fresh embryo transfer; outcomes depend on embryo quality and age at freezing',
+    faqs: [
+      {
+        question: 'Is a frozen embryo transfer as successful as a fresh transfer?',
+        answer: 'Yes — in many cases frozen transfers have equal or better outcomes because the uterus has had time to recover from stimulation.',
+      },
+      {
+        question: 'What happens to embryos we do not use?',
+        answer: 'Unused embryos can remain in storage, be donated to research, or be donated to other couples. Your team will discuss the options with you.',
+      },
+    ],
+  },
+  {
     id: 'egg-freezing',
     slug: 'egg-freezing',
     name: 'Egg Freezing (Oocyte Cryopreservation)',
