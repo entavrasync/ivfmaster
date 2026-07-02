@@ -6,11 +6,12 @@
     "about":          "आमच्याबद्दल",
     "team":           "आमची टीम",
     "contact":        "संपर्क करा",
-    "talkToExperts":  "तज्ञांशी बोला",
-    "switchLanguage": "भाषा बदला",
-    "language":       "भाषा",
-    "closeMenu":      "मेनू बंद करा",
-    "openMenu":       "मेनू उघडा"
+    "talkToExperts":     "तज्ञांशी बोला",
+    "switchLanguage":    "भाषा बदला",
+    "language":          "भाषा",
+    "closeMenu":         "मेनू बंद करा",
+    "openMenu":          "मेनू उघडा",
+    "patientHelpCentre": "Patient help centre"
   },
 
   "Meta": {
@@ -25,7 +26,55 @@
 
   "Contact": {
     "metaTitle":       "IVF Master शी संपर्क करा",
-    "metaDescription": "सांगली, महाराष्ट्रातील IVF Master फर्टिलिटी क्लिनिकशी संपर्क करा."
+    "metaDescription": "सांगली, महाराष्ट्रातील IVF Master फर्टिलिटी क्लिनिकशी संपर्क करा.",
+    "eyebrow":                 "तुम्ही तयार असाल तेव्हा आम्ही येथे आहोत",
+    "headline":                "चला, एका संवादाने सुरुवात करूया.",
+    "lead":                    "तुमच्याकडे सर्व उत्तरे असण्याची गरज नाही. तुम्ही सध्या कुठे आहात याबद्दल थोडे सांगा — पुढचा प्रवास आपण हळुवारपणे एकत्र करू.",
+    "formNameLabel":           "तुमचे नाव",
+    "formNamePlaceholder":     "आम्ही तुम्हाला कोणत्या नावाने बोलवावे?",
+    "formNameRequired":        "कृपया तुमचे नाव सांगा.",
+    "formReachingAsLabel":     "तुम्ही संपर्क करत आहात",
+    "formReachingAsCouple":    "दाम्पत्य म्हणून",
+    "formReachingAsIndividual":"वैयक्तिकरित्या",
+    "formDurationLabel":       "तुम्ही किती काळापासून प्रयत्न करत आहात?",
+    "formDuration6m":          "6 महिन्यांपेक्षा कमी",
+    "formDuration6to12m":      "6 महिने – 1 वर्ष",
+    "formDuration1to2y":       "1 – 2 वर्षे",
+    "formDuration2yPlus":      "2 वर्षांपेक्षा जास्त",
+    "formReasonLabel":         "तुम्ही येथे कशासाठी आला आहात?",
+    "formReasonIVF":           "IVF बद्दल जाणून घेणे",
+    "formReasonSecondOpinion": "दुसरे मत",
+    "formReasonTests":         "तपासण्या आणि मूल्यमापन",
+    "formReasonOther":         "इतर काही",
+    "formContactLabel":        "आम्ही तुमच्याशी कसा संपर्क साधावा?",
+    "formContactWhatsApp":     "WhatsApp",
+    "formContactCall":         "फोन कॉल",
+    "formTimeLabel":           "तुमच्याशी संपर्क साधण्याची योग्य वेळ",
+    "formTimeMorning":         "सकाळ (10 – 1 वाजता)",
+    "formTimeAfternoon":       "दुपार (1 – 5 वाजता)",
+    "formTimeEvening":         "संध्याकाळ (5 – 8 वाजता)",
+    "formMessageLabel":        "तुम्हाला आम्हाला आणखी काही सांगायचे आहे का?",
+    "formMessagePlaceholder":  "तुमच्या मनात काय आहे ते सांगा — किंवा अजून ठरले नसेल तर हे रिकामे सोडा.",
+    "formSubmit":              "WhatsApp वर पाठवा",
+    "formSubmitSecondary":     "त्याऐवजी क्लिनिकला कॉल करा",
+    "panelTitle":              "आमच्याशी संपर्क साधण्याचे इतर मार्ग",
+    "panelWhatsapp":           "WhatsApp वर संदेश पाठवा",
+    "panelWhatsappSub":        "आम्ही शक्य तितक्या लवकर उत्तर देऊ",
+    "panelCall":               "क्लिनिकला कॉल करा",
+    "panelCallSub":            "सोम–शनि, सकाळी 10 – रात्री 8",
+    "panelEmail":              "आम्हाला ईमेल करा",
+    "panelEmailSub":           "info@ivfmaster.in",
+    "panelInstagram":          "Instagram",
+    "panelInstagramSub":       "लाइव्ह केस स्टडीज आणि अपडेट्स",
+    "panelAddressLabel":       "आमचे क्लिनिक",
+    "panelAddress":            "मंद्रुपकर क्लिनिक, ईश्वरपूर, सांगली, महाराष्ट्र",
+    "panelHoursLabel":         "वेळ",
+    "panelHours":              "सोम–शनि, सकाळी 10 – रात्री 8",
+    "panelMapCta":             "Google Maps वर पहा",
+    "statusOpen":              "आत्ता उघडे आहे · {time} पर्यंत",
+    "statusClosedToday":       "आत्ता बंद आहे · {when} ला उघडेल",
+    "statusHoliday":           "आज बंद आहे · {name}",
+    "statusWeeklyOff":         "आज बंद आहे · {when} ला उघडेल"
   },
 
   "Team": {
@@ -61,6 +110,19 @@
   "EducateIVF": {
     "metaTitle":       "IVF जाणून घ्या - प्रजनन उपचार",
     "metaDescription": "IVF Master च्या डॉक्टरांचे IVF आणि प्रजनन उपचारावरील तज्ञ लेख आणि मार्गदर्शक.",
-    "minRead":         "{minutes} मिनिट वाचन"
+    "minRead":         "{minutes} मिनिट वाचन",
+    "noArticles":      "या श्रेणीत अद्याप कोणतेही लेख नाहीत."
+  },
+
+  "FloatingCTA": {
+    "contact":           "आमच्याशी संपर्क करा",
+    "instagramTooltip":  "लाइव्ह केस स्टडीज",
+    "statusOpen":        "आत्ता उघडे आहे · {time} पर्यंत",
+    "statusClosedToday": "आत्ता बंद आहे · {when} ला उघडेल",
+    "statusHoliday":     "आज बंद आहे · {name}",
+    "statusWeeklyOff":   "आज बंद आहे · {when} ला उघडेल",
+    "whatsapp":          "WhatsApp वर संदेश पाठवा",
+    "call":              "क्लिनिकला कॉल करा",
+    "close":             "बंद करा"
   }
 }

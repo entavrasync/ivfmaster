@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { ArrowLeft, ArrowRight, Plus } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
@@ -16,7 +17,7 @@ const SHADOW_LIFT = '0 36px 68px -12px rgba(46,79,142,0.24), 0 10px 22px -8px rg
 
 /* ─── Hero image placeholder ─────────────────────────────────────────────── */
 
-function HeroImage({ proc }: { proc: Procedure }) {
+function HeroImage({ proc, photoComingSoon }: { proc: Procedure; photoComingSoon: string }) {
   return (
     <div
       aria-hidden="true"
@@ -69,19 +70,19 @@ function HeroImage({ proc }: { proc: Procedure }) {
       </div>
       <p
         style={{
-          position:    'absolute',
-          bottom:      '1.125rem',
-          left:        0,
-          right:       0,
-          textAlign:   'center',
-          fontFamily:  'var(--font-body)',
-          fontSize:    '0.6875rem',
+          position:      'absolute',
+          bottom:        '1.125rem',
+          left:          0,
+          right:         0,
+          textAlign:     'center',
+          fontFamily:    'var(--font-body)',
+          fontSize:      '0.6875rem',
           letterSpacing: '0.06em',
-          color:       'rgba(28,42,72,0.30)',
-          margin:      0,
+          color:         'rgba(28,42,72,0.30)',
+          margin:        0,
         }}
       >
-        Photo coming soon
+        {photoComingSoon}
       </p>
     </div>
   )
@@ -98,20 +99,28 @@ const STEP_GRADIENTS = [
   'linear-gradient(148deg, rgba(100,120,200,0.07) 0%, #F0EEF8 50%, #EAE8F5 100%)',
 ]
 
-function StepImage({ index, proc }: { index: number; proc: Procedure }) {
+function StepImage({
+  index,
+  proc,
+  photoComingSoon,
+}: {
+  index:           number
+  proc:            Procedure
+  photoComingSoon: string
+}) {
   return (
     <div
       aria-hidden="true"
       style={{
-        width:        '100%',
-        aspectRatio:  '4 / 3',
-        borderRadius: '20px',
-        background:   STEP_GRADIENTS[index % STEP_GRADIENTS.length],
-        boxShadow:    SHADOW_REST,
-        position:     'relative',
-        overflow:     'hidden',
-        display:      'flex',
-        alignItems:   'center',
+        width:          '100%',
+        aspectRatio:    '4 / 3',
+        borderRadius:   '20px',
+        background:     STEP_GRADIENTS[index % STEP_GRADIENTS.length],
+        boxShadow:      SHADOW_REST,
+        position:       'relative',
+        overflow:       'hidden',
+        display:        'flex',
+        alignItems:     'center',
         justifyContent: 'center',
       }}
     >
@@ -132,19 +141,19 @@ function StepImage({ index, proc }: { index: number; proc: Procedure }) {
       </span>
       <p
         style={{
-          position:     'absolute',
-          bottom:       '1rem',
-          left:         0,
-          right:        0,
-          textAlign:    'center',
-          fontFamily:   'var(--font-body)',
-          fontSize:     '0.6875rem',
+          position:      'absolute',
+          bottom:        '1rem',
+          left:          0,
+          right:         0,
+          textAlign:     'center',
+          fontFamily:    'var(--font-body)',
+          fontSize:      '0.6875rem',
           letterSpacing: '0.06em',
-          color:        'rgba(28,42,72,0.28)',
-          margin:       0,
+          color:         'rgba(28,42,72,0.28)',
+          margin:        0,
         }}
       >
-        Photo coming soon
+        {photoComingSoon}
       </p>
     </div>
   )
@@ -152,7 +161,17 @@ function StepImage({ index, proc }: { index: number; proc: Procedure }) {
 
 /* ─── Hero section ───────────────────────────────────────────────────────── */
 
-function HeroSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
+function HeroSection({
+  proc,
+  reduced,
+  backLabel,
+  photoComingSoon,
+}: {
+  proc:            Procedure
+  reduced:         boolean
+  backLabel:       string
+  photoComingSoon: string
+}) {
   return (
     <section>
       <Container>
@@ -185,7 +204,7 @@ function HeroSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
               className="hover:text-[#1C2A48]"
             >
               <ArrowLeft size={14} strokeWidth={2} />
-              Back to procedures
+              {backLabel}
             </Link>
           </motion.div>
 
@@ -243,10 +262,10 @@ function HeroSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
               {/* Quick facts */}
               <div
                 style={{
-                  display:   'flex',
-                  flexWrap:  'wrap',
-                  gap:       '0.75rem 2.5rem',
-                  borderTop: '1px solid rgba(216,204,190,0.50)',
+                  display:    'flex',
+                  flexWrap:   'wrap',
+                  gap:        '0.75rem 2.5rem',
+                  borderTop:  '1px solid rgba(216,204,190,0.50)',
                   paddingTop: '1.75rem',
                 }}
               >
@@ -288,7 +307,7 @@ function HeroSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.90, ease: EASE, delay: reduced ? 0 : 0.10 }}
             >
-              <HeroImage proc={proc} />
+              <HeroImage proc={proc} photoComingSoon={photoComingSoon} />
             </motion.div>
           </div>
         </div>
@@ -299,7 +318,15 @@ function HeroSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
 
 /* ─── Who it's for ───────────────────────────────────────────────────────── */
 
-function WhoItsForSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
+function WhoItsForSection({
+  proc,
+  reduced,
+  isRightLabel,
+}: {
+  proc:         Procedure
+  reduced:      boolean
+  isRightLabel: string
+}) {
   return (
     <section
       style={{
@@ -330,7 +357,7 @@ function WhoItsForSection({ proc, reduced }: { proc: Procedure; reduced: boolean
               margin:        '0 0 1rem',
             }}
           >
-            Is this right for you?
+            {isRightLabel}
           </p>
 
           <h2
@@ -351,12 +378,12 @@ function WhoItsForSection({ proc, reduced }: { proc: Procedure; reduced: boolean
 
           <ul
             style={{
-              listStyle: 'none',
-              padding:   0,
-              margin:    0,
-              display:   'grid',
+              listStyle:           'none',
+              padding:             0,
+              margin:              0,
+              display:             'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 36ch), 1fr))',
-              gap:       '0.875rem 3rem',
+              gap:                 '0.875rem 3rem',
             }}
           >
             {proc.whoItsFor.map((item) => (
@@ -395,7 +422,19 @@ function WhoItsForSection({ proc, reduced }: { proc: Procedure; reduced: boolean
 
 /* ─── Process — alternating layout ──────────────────────────────────────── */
 
-function ProcessSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
+function ProcessSection({
+  proc,
+  reduced,
+  processEyebrow,
+  processHeading,
+  photoComingSoon,
+}: {
+  proc:            Procedure
+  reduced:         boolean
+  processEyebrow:  string
+  processHeading:  string
+  photoComingSoon: string
+}) {
   return (
     <section>
       <Container>
@@ -423,7 +462,7 @@ function ProcessSection({ proc, reduced }: { proc: Procedure; reduced: boolean }
                 margin:        '0 0 1rem',
               }}
             >
-              The process
+              {processEyebrow}
             </p>
             <h2
               style={{
@@ -437,7 +476,7 @@ function ProcessSection({ proc, reduced }: { proc: Procedure; reduced: boolean }
                 margin:                0,
               }}
             >
-              The journey, step by step.
+              {processHeading}
             </h2>
           </motion.div>
 
@@ -456,16 +495,16 @@ function ProcessSection({ proc, reduced }: { proc: Procedure; reduced: boolean }
                 >
                   {/* Image — always first child (top on mobile) */}
                   <div className="w-full lg:w-1/2">
-                    <StepImage index={i} proc={proc} />
+                    <StepImage index={i} proc={proc} photoComingSoon={photoComingSoon} />
                   </div>
 
                   {/* Text */}
                   <div className="w-full lg:w-1/2">
                     <div
                       style={{
-                        display:     'flex',
-                        alignItems:  'baseline',
-                        gap:         '1rem',
+                        display:      'flex',
+                        alignItems:   'baseline',
+                        gap:          '1rem',
                         marginBottom: '1.125rem',
                       }}
                     >
@@ -524,7 +563,17 @@ function ProcessSection({ proc, reduced }: { proc: Procedure; reduced: boolean }
 
 /* ─── What to expect ─────────────────────────────────────────────────────── */
 
-function WhatToExpectSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
+function WhatToExpectSection({
+  proc,
+  reduced,
+  whatToExpect,
+  honestExp,
+}: {
+  proc:         Procedure
+  reduced:      boolean
+  whatToExpect: string
+  honestExp:    string
+}) {
   return (
     <section
       style={{
@@ -556,7 +605,7 @@ function WhatToExpectSection({ proc, reduced }: { proc: Procedure; reduced: bool
                   margin:        '0 0 1rem',
                 }}
               >
-                What to expect
+                {whatToExpect}
               </p>
               <h2
                 style={{
@@ -570,16 +619,16 @@ function WhatToExpectSection({ proc, reduced }: { proc: Procedure; reduced: bool
                   margin:                0,
                 }}
               >
-                Honest about the experience.
+                {honestExp}
               </h2>
             </div>
 
             <div
               style={{
-                background:    'rgba(236,234,244,0.40)',
-                borderRadius:  '16px',
-                padding:       'clamp(1.75rem, 3vw, 2.5rem)',
-                borderLeft:    `3px solid ${proc.accentEdge}`,
+                background:   'rgba(236,234,244,0.40)',
+                borderRadius: '16px',
+                padding:      'clamp(1.75rem, 3vw, 2.5rem)',
+                borderLeft:   `3px solid ${proc.accentEdge}`,
               }}
             >
               <p
@@ -621,16 +670,16 @@ function FAQItem({
         onClick={onToggle}
         aria-expanded={isOpen}
         style={{
-          width:           '100%',
-          display:         'flex',
-          alignItems:      'center',
-          justifyContent:  'space-between',
-          gap:             '1.5rem',
-          padding:         '1.375rem 0',
-          background:      'none',
-          border:          'none',
-          cursor:          'pointer',
-          textAlign:       'left',
+          width:          '100%',
+          display:        'flex',
+          alignItems:     'center',
+          justifyContent: 'space-between',
+          gap:            '1.5rem',
+          padding:        '1.375rem 0',
+          background:     'none',
+          border:         'none',
+          cursor:         'pointer',
+          textAlign:      'left',
         }}
       >
         <span
@@ -667,12 +716,12 @@ function FAQItem({
           >
             <p
               style={{
-                fontFamily: 'var(--font-body)',
-                fontSize:   'clamp(1rem, 0.4vw + 0.75rem, 1.125rem)',
-                lineHeight: 1.82,
-                color:      'rgba(28,42,72,0.68)',
+                fontFamily:    'var(--font-body)',
+                fontSize:      'clamp(1rem, 0.4vw + 0.75rem, 1.125rem)',
+                lineHeight:    1.82,
+                color:         'rgba(28,42,72,0.68)',
                 paddingBottom: '1.375rem',
-                margin:     0,
+                margin:        0,
               }}
             >
               {faq.a}
@@ -684,7 +733,17 @@ function FAQItem({
   )
 }
 
-function FAQSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
+function FAQSection({
+  proc,
+  reduced,
+  faqEyebrow,
+  faqHeading,
+}: {
+  proc:       Procedure
+  reduced:    boolean
+  faqEyebrow: string
+  faqHeading: string
+}) {
   const [openIdx, setOpenIdx] = useState<number | null>(null)
 
   return (
@@ -717,7 +776,7 @@ function FAQSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
               margin:        '0 0 1rem',
             }}
           >
-            Common questions
+            {faqEyebrow}
           </p>
           <h2
             style={{
@@ -731,7 +790,7 @@ function FAQSection({ proc, reduced }: { proc: Procedure; reduced: boolean }) {
               margin:                '0 0 2.5rem',
             }}
           >
-            Questions couples ask about {proc.name.toLowerCase()}.
+            {faqHeading}
           </h2>
 
           <div style={{ maxWidth: '72ch' }}>
@@ -893,10 +952,14 @@ function OtherProceduresSection({
   proc,
   allProcs,
   reduced,
+  otherEyebrow,
+  otherHeading,
 }: {
-  proc:     Procedure
-  allProcs: ReadonlyArray<Procedure>
-  reduced:  boolean
+  proc:         Procedure
+  allProcs:     ReadonlyArray<Procedure>
+  reduced:      boolean
+  otherEyebrow: string
+  otherHeading: string
 }) {
   const others = allProcs.filter((p) => p.slug !== proc.slug)
 
@@ -927,7 +990,7 @@ function OtherProceduresSection({
                 margin:        '0 0 1rem',
               }}
             >
-              Other treatments
+              {otherEyebrow}
             </p>
             <h2
               style={{
@@ -941,7 +1004,7 @@ function OtherProceduresSection({
                 margin:                0,
               }}
             >
-              Explore other paths.
+              {otherHeading}
             </h2>
           </motion.div>
 
@@ -967,7 +1030,15 @@ function OtherProceduresSection({
 
 /* ─── Closing CTA ────────────────────────────────────────────────────────── */
 
-function ClosingCTA({ proc }: { proc: Procedure }) {
+function ClosingCTA({
+  ctaText,
+  ctaSub,
+  ctaButton,
+}: {
+  ctaText:   string
+  ctaSub:    string
+  ctaButton: string
+}) {
   return (
     <section
       style={{
@@ -978,12 +1049,12 @@ function ClosingCTA({ proc }: { proc: Procedure }) {
       <Container>
         <div
           style={{
-            paddingTop:     'clamp(4rem, 7vw, 5.5rem)',
-            paddingBottom:  'clamp(4rem, 7vw, 5.5rem)',
-            textAlign:      'center',
-            display:        'flex',
-            flexDirection:  'column',
-            alignItems:     'center',
+            paddingTop:    'clamp(4rem, 7vw, 5.5rem)',
+            paddingBottom: 'clamp(4rem, 7vw, 5.5rem)',
+            textAlign:     'center',
+            display:       'flex',
+            flexDirection: 'column',
+            alignItems:    'center',
           }}
         >
           <p
@@ -999,7 +1070,7 @@ function ClosingCTA({ proc }: { proc: Procedure }) {
               margin:                '0 0 0.875rem',
             }}
           >
-            Want to talk through whether {proc.name.toLowerCase()} is right for you?
+            {ctaText}
           </p>
 
           <p
@@ -1011,7 +1082,7 @@ function ClosingCTA({ proc }: { proc: Procedure }) {
               margin:     '0 0 2.25rem',
             }}
           >
-            An unhurried conversation about your situation.
+            {ctaSub}
           </p>
 
           <Pressable haptic>
@@ -1034,7 +1105,7 @@ function ClosingCTA({ proc }: { proc: Procedure }) {
                 whiteSpace:     'nowrap',
               }}
             >
-              Book your consultation
+              {ctaButton}
               <ArrowRight size={15} strokeWidth={2} />
             </Link>
           </Pressable>
@@ -1053,16 +1124,67 @@ interface ProcedureDetailProps {
 
 export function ProcedureDetail({ proc, allProcs }: Readonly<ProcedureDetailProps>) {
   const reduced = useReducedMotion()
+  const t       = useTranslations('Procedures')
+
+  const photoComingSoon = t('photoComingSoon')
+  const backLabel       = t('detailBack')
+  const isRightLabel    = t('detailIsRightForYou')
+  const processEyebrow  = t('detailProcessEyebrow')
+  const processHeading  = t('detailProcessHeading')
+  const whatToExpect    = t('detailWhatToExpect')
+  const honestExp       = t('detailHonestExp')
+  const faqEyebrow      = t('detailFaqEyebrow')
+  const faqHeading      = t('detailFaqHeading', { name: proc.name.toLowerCase() })
+  const otherEyebrow    = t('detailOtherEyebrow')
+  const otherHeading    = t('detailOtherHeading')
+  const ctaText         = t('detailCtaText', { name: proc.name.toLowerCase() })
+  const ctaSub          = t('detailCtaSub')
+  const ctaButton       = t('detailCtaButton')
 
   return (
     <div style={{ background: '#FBF7F1', minHeight: '100vh' }}>
-      <HeroSection        proc={proc}     reduced={reduced} />
-      <WhoItsForSection   proc={proc}     reduced={reduced} />
-      <ProcessSection     proc={proc}     reduced={reduced} />
-      <WhatToExpectSection proc={proc}    reduced={reduced} />
-      <FAQSection         proc={proc}     reduced={reduced} />
-      <OtherProceduresSection proc={proc} allProcs={allProcs} reduced={reduced} />
-      <ClosingCTA         proc={proc} />
+      <HeroSection
+        proc={proc}
+        reduced={reduced}
+        backLabel={backLabel}
+        photoComingSoon={photoComingSoon}
+      />
+      <WhoItsForSection
+        proc={proc}
+        reduced={reduced}
+        isRightLabel={isRightLabel}
+      />
+      <ProcessSection
+        proc={proc}
+        reduced={reduced}
+        processEyebrow={processEyebrow}
+        processHeading={processHeading}
+        photoComingSoon={photoComingSoon}
+      />
+      <WhatToExpectSection
+        proc={proc}
+        reduced={reduced}
+        whatToExpect={whatToExpect}
+        honestExp={honestExp}
+      />
+      <FAQSection
+        proc={proc}
+        reduced={reduced}
+        faqEyebrow={faqEyebrow}
+        faqHeading={faqHeading}
+      />
+      <OtherProceduresSection
+        proc={proc}
+        allProcs={allProcs}
+        reduced={reduced}
+        otherEyebrow={otherEyebrow}
+        otherHeading={otherHeading}
+      />
+      <ClosingCTA
+        ctaText={ctaText}
+        ctaSub={ctaSub}
+        ctaButton={ctaButton}
+      />
     </div>
   )
 }

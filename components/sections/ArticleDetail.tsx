@@ -193,6 +193,7 @@ export function ArticleDetail({
   allArticles: ReadonlyArray<Article>
 }) {
   const reduced = useReducedMotion()
+  const t       = useTranslations('EducateIVF')
   const cs      = CATEGORY_STYLES[article.category]
   const { enableProgress, disableProgress } = useReadingProgress()
 
@@ -236,7 +237,7 @@ export function ArticleDetail({
             }}
           >
             <ArrowLeft size={14} strokeWidth={2} />
-            Back to Educate IVF
+            {t('backLink')}
           </Link>
         </div>
       </Container>
@@ -270,7 +271,7 @@ export function ArticleDetail({
             >
               {formatted}
               <span aria-hidden="true" style={{ color: 'rgba(28,42,72,0.25)' }}>·</span>
-              {article.readTime} min read
+              {t('minRead', { minutes: article.readTime })}
             </span>
           </div>
 
@@ -391,7 +392,7 @@ export function ArticleDetail({
                   margin:                '0 0 1.125rem',
                 }}
               >
-                In short
+                {t('inShort')}
               </p>
               <ul
                 style={{
@@ -473,7 +474,7 @@ export function ArticleDetail({
                 margin:                0,
               }}
             >
-              Have a question about your situation?
+              {t('endCtaHeading')}
             </h2>
 
             <Pressable haptic>
@@ -496,7 +497,7 @@ export function ArticleDetail({
                   whiteSpace:     'nowrap',
                 }}
               >
-                Talk to our specialists
+                {t('endCtaButton')}
                 <ArrowRight size={15} strokeWidth={2} />
               </Link>
             </Pressable>
@@ -509,7 +510,7 @@ export function ArticleDetail({
                 margin:     0,
               }}
             >
-              No pressure &mdash; just honest answers.
+              {t('endCtaMicro')}
             </p>
           </motion.div>
         </Container>
@@ -540,7 +541,7 @@ export function ArticleDetail({
                 margin:                '0 0 2rem',
               }}
             >
-              Keep reading.
+              {t('keepReading')}
             </h2>
 
             <div

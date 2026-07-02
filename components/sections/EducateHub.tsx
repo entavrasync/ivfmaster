@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
@@ -33,7 +34,7 @@ function CoverPlaceholder({
   article,
   featured = false,
 }: {
-  article:  Article
+  article:   Article
   featured?: boolean
 }) {
   const cs = CATEGORY_STYLES[article.category]
@@ -41,19 +42,18 @@ function CoverPlaceholder({
     <div
       aria-hidden="true"
       style={{
-        width:        '100%',
-        height:       '100%',
-        minHeight:    featured ? '280px' : undefined,
-        aspectRatio:  featured ? undefined : '3 / 2',
-        background:   COVER_GRADIENTS[article.category],
-        position:     'relative',
-        overflow:     'hidden',
-        display:      'flex',
-        alignItems:   'center',
+        width:          '100%',
+        height:         '100%',
+        minHeight:      featured ? '280px' : undefined,
+        aspectRatio:    featured ? undefined : '3 / 2',
+        background:     COVER_GRADIENTS[article.category],
+        position:       'relative',
+        overflow:       'hidden',
+        display:        'flex',
+        alignItems:     'center',
         justifyContent: 'center',
       }}
     >
-      {/* Decorative blobs */}
       <div
         style={{
           position:     'absolute',
@@ -78,7 +78,6 @@ function CoverPlaceholder({
           opacity:      0.9,
         }}
       />
-      {/* Category initial watermark */}
       <span
         style={{
           fontFamily:            'var(--font-display)',
@@ -125,10 +124,11 @@ function CategoryBadge({ category }: { category: ArticleCategory }) {
   )
 }
 
-/* ─── Date + read time meta ──────────────────────────────────────────────── */
+/* ─── Date + read-time meta ──────────────────────────────────────────────── */
 
 function MetaRow({ article }: { article: Article }) {
-  const d = new Date(article.date)
+  const t         = useTranslations('EducateIVF')
+  const d         = new Date(article.date)
   const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
   return (
     <p
@@ -144,14 +144,22 @@ function MetaRow({ article }: { article: Article }) {
     >
       {formatted}
       <span aria-hidden="true" style={{ color: 'rgba(28,42,72,0.25)' }}>·</span>
-      {article.readTime} min read
+      {t('minRead', { minutes: article.readTime })}
     </p>
   )
 }
 
 /* ─── Featured card ──────────────────────────────────────────────────────── */
 
-function FeaturedCard({ article, reduced }: { article: Article; reduced: boolean }) {
+function FeaturedCard({
+  article,
+  reduced,
+  readArticle,
+}: {
+  article:     Article
+  reduced:     boolean
+  readArticle: string
+}) {
   const [hovered, setIsHovered] = useState(false)
   const h = !reduced && hovered
 
@@ -169,23 +177,17 @@ function FeaturedCard({ article, reduced }: { article: Article; reduced: boolean
         }}
         transition={{ type: 'spring', stiffness: 250, damping: 26, mass: 0.9 }}
         style={{
-          background:   '#FEFCF9',
-          borderRadius: '20px',
-          overflow:     'hidden',
-          cursor:       'pointer',
-          display:      'grid',
+          background:          '#FEFCF9',
+          borderRadius:        '20px',
+          overflow:            'hidden',
+          cursor:              'pointer',
+          display:             'grid',
           gridTemplateColumns: '1fr',
         }}
         className="lg:grid-cols-[5fr_7fr]"
       >
         {/* Image */}
-        <div
-          style={{
-            overflow:   'hidden',
-            minHeight:  '260px',
-          }}
-          className="lg:min-h-0"
-        >
+        <div style={{ overflow: 'hidden', minHeight: '260px' }} className="lg:min-h-0">
           <motion.div
             animate={{ scale: h ? 1.04 : 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 30 }}
@@ -198,11 +200,11 @@ function FeaturedCard({ article, reduced }: { article: Article; reduced: boolean
         {/* Text */}
         <div
           style={{
-            padding:       'clamp(2rem, 4vw, 2.75rem)',
-            display:       'flex',
-            flexDirection: 'column',
+            padding:        'clamp(2rem, 4vw, 2.75rem)',
+            display:        'flex',
+            flexDirection:  'column',
             justifyContent: 'center',
-            gap:           '1rem',
+            gap:            '1rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -250,7 +252,7 @@ function FeaturedCard({ article, reduced }: { article: Article; reduced: boolean
               marginTop:  '0.25rem',
             }}
           >
-            Read article
+            {readArticle}
             <motion.span
               animate={{ x: h ? 5 : 0 }}
               transition={{ duration: 0.20, ease: EASE }}
@@ -267,7 +269,15 @@ function FeaturedCard({ article, reduced }: { article: Article; reduced: boolean
 
 /* ─── Regular article card ───────────────────────────────────────────────── */
 
-function ArticleCard({ article, reduced }: { article: Article; reduced: boolean }) {
+function ArticleCard({
+  article,
+  reduced,
+  readMore,
+}: {
+  article:  Article
+  reduced:  boolean
+  readMore: string
+}) {
   const [hovered, setIsHovered] = useState(false)
   const h = !reduced && hovered
 
@@ -361,7 +371,7 @@ function ArticleCard({ article, reduced }: { article: Article; reduced: boolean 
               marginTop:  '0.25rem',
             }}
           >
-            Read more
+            {readMore}
             <motion.span
               animate={{ x: h ? 4 : 0 }}
               transition={{ duration: 0.20, ease: EASE }}
@@ -387,22 +397,20 @@ function CategoryFilter({
   onChange: (c: string) => void
   reduced:  boolean
 }) {
-  const pills = CATEGORIES
-
   return (
     <div
       style={{
-        display:    'flex',
-        gap:        '0.5rem',
-        flexWrap:   'nowrap',
-        overflowX:  'auto',
-        paddingBottom: '2px',
+        display:         'flex',
+        gap:             '0.5rem',
+        flexWrap:        'nowrap',
+        overflowX:       'auto',
+        paddingBottom:   '2px',
         msOverflowStyle: 'none',
         scrollbarWidth:  'none',
       }}
       className="hide-scrollbar"
     >
-      {pills.map((cat) => {
+      {CATEGORIES.map((cat) => {
         const isActive = active === cat
         return (
           <button
@@ -437,18 +445,18 @@ function CategoryFilter({
 /* ─── Hub ────────────────────────────────────────────────────────────────── */
 
 export function EducateHub() {
-  const reduced        = useReducedMotion()
+  const reduced                 = useReducedMotion()
+  const t                       = useTranslations('EducateIVF')
   const [activeFilter, setActiveFilter] = useState<string>('All')
+
+  const readArticle = t('readArticle')
+  const readMore    = t('readMore')
 
   const featured = ARTICLES.find((a) => a.slug === FEATURED_SLUG)!
   const rest      = ARTICLES.filter((a) => a.slug !== FEATURED_SLUG)
 
-  const showFeatured =
-    activeFilter === 'All' || activeFilter === featured.category
-
-  const visibleRest = rest.filter(
-    (a) => activeFilter === 'All' || a.category === activeFilter
-  )
+  const showFeatured  = activeFilter === 'All' || activeFilter === featured.category
+  const visibleRest   = rest.filter((a) => activeFilter === 'All' || a.category === activeFilter)
 
   const staggerV = {
     hidden:  {},
@@ -489,7 +497,7 @@ export function EducateHub() {
               margin:        '0 0 1.375rem',
             }}
           >
-            Learn, at your pace
+            {t('hubEyebrow')}
           </p>
 
           <h1
@@ -505,7 +513,7 @@ export function EducateHub() {
               maxWidth:              '24ch',
             }}
           >
-            Understanding, one question at a time.
+            {t('hubHeading')}
           </h1>
 
           <p
@@ -518,11 +526,9 @@ export function EducateHub() {
               margin:     '0 0 2.75rem',
             }}
           >
-            Honest, plain-language answers to the things couples wonder about
-            most&nbsp;&mdash; written by the people who will care for you.
+            {t('hubBody')}
           </p>
 
-          {/* Category filter */}
           <CategoryFilter
             active={activeFilter}
             onChange={setActiveFilter}
@@ -535,7 +541,6 @@ export function EducateHub() {
       <Container>
         <div style={{ paddingBottom: 'clamp(5rem, 8vw, 7rem)' }}>
 
-          {/* Featured card */}
           {showFeatured && (
             <motion.div
               initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 22 }}
@@ -543,11 +548,10 @@ export function EducateHub() {
               transition={{ duration: 0.72, ease: EASE, delay: reduced ? 0 : 0.08 }}
               style={{ marginBottom: 'clamp(1.5rem, 2.5vw, 2rem)' }}
             >
-              <FeaturedCard article={featured} reduced={reduced} />
+              <FeaturedCard article={featured} reduced={reduced} readArticle={readArticle} />
             </motion.div>
           )}
 
-          {/* Grid */}
           {visibleRest.length > 0 && (
             <motion.div
               variants={staggerV}
@@ -562,17 +566,16 @@ export function EducateHub() {
                   variants={revealV}
                   style={{ display: 'flex', flexDirection: 'column' }}
                 >
-                  <ArticleCard article={article} reduced={reduced} />
+                  <ArticleCard article={article} reduced={reduced} readMore={readMore} />
                 </motion.div>
               ))}
             </motion.div>
           )}
 
-          {/* Empty state (when filtering with no results) */}
           {!showFeatured && visibleRest.length === 0 && (
             <div style={{ textAlign: 'center', paddingTop: '3rem', paddingBottom: '3rem' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'rgba(28,42,72,0.46)' }}>
-                No articles in this category yet.
+                {t('noArticles')}
               </p>
             </div>
           )}
@@ -616,7 +619,7 @@ export function EducateHub() {
                 margin:                0,
               }}
             >
-              Still have a question we have not answered?
+              {t('hubCtaQuestion')}
             </p>
 
             <Pressable haptic>
@@ -639,7 +642,7 @@ export function EducateHub() {
                   whiteSpace:     'nowrap',
                 }}
               >
-                Ask our specialists
+                {t('hubCtaButton')}
                 <ArrowRight size={15} strokeWidth={2} />
               </Link>
             </Pressable>

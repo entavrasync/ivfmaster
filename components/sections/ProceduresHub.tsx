@@ -344,7 +344,7 @@ export function ProceduresHub() {
               margin:        '0 0 1.375rem',
             }}
           >
-            Treatments, explained simply
+            {t('hubEyebrow')}
           </p>
 
           <h1
@@ -360,7 +360,7 @@ export function ProceduresHub() {
               maxWidth:              '22ch',
             }}
           >
-            Every path to parenthood, in plain language.
+            {t('hubHeading')}
           </h1>
 
           <p
@@ -373,8 +373,7 @@ export function ProceduresHub() {
               margin:     0,
             }}
           >
-            You may have heard these names from a doctor or a friend. Here&apos;s what each one really
-            means&nbsp;— gently, and without the jargon.
+            {t('hubBody')}
           </p>
         </motion.div>
       </Container>
@@ -444,7 +443,7 @@ export function ProceduresHub() {
                 margin:                0,
               }}
             >
-              Not sure which path is yours? That&apos;s exactly what a first conversation is for.
+              {t('hubCloseText')}
             </p>
 
             <Pressable haptic>
@@ -467,7 +466,7 @@ export function ProceduresHub() {
                   whiteSpace:     'nowrap',
                 }}
               >
-                Talk through your options
+                {t('hubCtaButton')}
                 <ArrowRight size={15} strokeWidth={2} />
               </Link>
             </Pressable>
