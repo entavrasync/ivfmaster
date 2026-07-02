@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
 import { Navbar } from '@/components/nav/Navbar'
+import { FloatingContactCTA } from '@/components/shared/FloatingContactCTA'
 import { ReadingProgressProvider } from '@/components/providers/ReadingProgressContext'
 import { routing } from '@/i18n/routing'
 import '@/app/globals.css'
@@ -94,6 +95,7 @@ export default async function LocaleLayout({
             <Navbar />
             {children}
           </ReadingProgressProvider>
+          <FloatingContactCTA />
         </NextIntlClientProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

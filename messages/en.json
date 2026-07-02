@@ -6,11 +6,12 @@
     "about":          "About",
     "team":           "Team",
     "contact":        "Contact",
-    "talkToExperts":  "Talk to our experts",
-    "switchLanguage": "Switch language",
-    "language":       "Language",
-    "closeMenu":      "Close menu",
-    "openMenu":       "Open menu"
+    "talkToExperts":     "Talk to our experts",
+    "switchLanguage":    "Switch language",
+    "language":          "Language",
+    "closeMenu":         "Close menu",
+    "openMenu":          "Open menu",
+    "patientHelpCentre": "Patient help centre"
   },
 
   "Meta": {
@@ -25,7 +26,55 @@
 
   "Contact": {
     "metaTitle":       "Contact IVF Master",
-    "metaDescription": "Get in touch with IVF Master fertility clinic in Sangli, Maharashtra."
+    "metaDescription": "Get in touch with IVF Master fertility clinic in Sangli, Maharashtra.",
+    "eyebrow":                 "We're here when you're ready",
+    "headline":                "Let's start with a conversation.",
+    "lead":                    "You don't need to have all the answers. Just share a little about where you are — and we'll take it from there, gently.",
+    "formNameLabel":           "Your name",
+    "formNamePlaceholder":     "What should we call you?",
+    "formNameRequired":        "Please tell us your name.",
+    "formReachingAsLabel":     "Reaching out as",
+    "formReachingAsCouple":    "As a couple",
+    "formReachingAsIndividual":"As an individual",
+    "formDurationLabel":       "How long have you been trying?",
+    "formDuration6m":          "Less than 6 months",
+    "formDuration6to12m":      "6 months – 1 year",
+    "formDuration1to2y":       "1 – 2 years",
+    "formDuration2yPlus":      "More than 2 years",
+    "formReasonLabel":         "What brings you here?",
+    "formReasonIVF":           "Exploring IVF",
+    "formReasonSecondOpinion": "Second opinion",
+    "formReasonTests":         "Tests & evaluation",
+    "formReasonOther":         "Something else",
+    "formContactLabel":        "How would you like us to reach you?",
+    "formContactWhatsApp":     "WhatsApp",
+    "formContactCall":         "Phone call",
+    "formTimeLabel":           "Best time to reach you",
+    "formTimeMorning":         "Morning (10 AM – 1 PM)",
+    "formTimeAfternoon":       "Afternoon (1 – 5 PM)",
+    "formTimeEvening":         "Evening (5 – 8 PM)",
+    "formMessageLabel":        "Anything you'd like us to know?",
+    "formMessagePlaceholder":  "Tell us what's on your mind — or leave this blank if you're not sure yet.",
+    "formSubmit":              "Send on WhatsApp",
+    "formSubmitSecondary":     "Call the clinic instead",
+    "panelTitle":              "Other ways to reach us",
+    "panelWhatsapp":           "Message on WhatsApp",
+    "panelWhatsappSub":        "We'll reply as soon as we can",
+    "panelCall":               "Call the clinic",
+    "panelCallSub":            "Mon–Sat, 10 AM – 8 PM",
+    "panelEmail":              "Email us",
+    "panelEmailSub":           "info@ivfmaster.in",
+    "panelInstagram":          "Instagram",
+    "panelInstagramSub":       "Live case studies & updates",
+    "panelAddressLabel":       "Our clinic",
+    "panelAddress":            "Mandrupkar Clinic, Ishwarpur, Sangli, Maharashtra",
+    "panelHoursLabel":         "Hours",
+    "panelHours":              "Mon–Sat, 10 AM – 8 PM",
+    "panelMapCta":             "View on Google Maps",
+    "statusOpen":              "Open now · until {time}",
+    "statusClosedToday":       "Closed now · opens {when}",
+    "statusHoliday":           "Closed today · {name}",
+    "statusWeeklyOff":         "Closed today · opens {when}"
   },
 
   "Team": {
@@ -317,6 +366,19 @@
     "keepReading":     "Keep reading.",
     "readArticle":     "Read article",
     "readMore":        "Read more",
-    "minRead":         "{minutes} min read"
+    "minRead":         "{minutes} min read",
+    "noArticles":      "No articles in this category yet."
+  },
+
+  "FloatingCTA": {
+    "contact":           "Get in touch",
+    "instagramTooltip":  "Live case studies",
+    "statusOpen":        "Open now · until {time}",
+    "statusClosedToday": "Closed now · opens {when}",
+    "statusHoliday":     "Closed today · {name}",
+    "statusWeeklyOff":   "Closed today · opens {when}",
+    "whatsapp":          "Message on WhatsApp",
+    "call":              "Call the clinic",
+    "close":             "Close"
   }
 }
