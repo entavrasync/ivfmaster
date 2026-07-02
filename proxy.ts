@@ -7,10 +7,10 @@ import { routing } from './i18n/routing';
 // Also reads Accept-Language header on first visit to set the initial locale cookie.
 export default createMiddleware(routing);
 
+// Match application routes while leaving Next.js internals and every public
+// file (including Search Console verification HTML) untouched.
 export const config = {
-  // Match every path except Next.js internals and static assets.
-  // Without this, the middleware would run on /_next/static/... requests too.
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|json)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\..*).*)',
   ],
 };

@@ -1,10 +1,24 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { Footer } from '@/components/shared/Footer'
 import { EducateHub } from '@/components/sections/EducateHub'
+import type { Locale } from '@/i18n/routing'
+import { buildPageMetadata } from '@/lib/seo/metadata'
 
-export const metadata: Metadata = {
-  title:       'Educate IVF — Understanding fertility, one question at a time | IVF Master',
-  description: 'Honest, plain-language articles on IVF, fertility conditions, and common myths — written by the team who will care for you.',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'EducateIVF' })
+
+  return buildPageMetadata({
+    locale: locale as Locale,
+    path: '/educate-ivf',
+    title: t('hubMetaTitle'),
+    description: t('hubMetaDesc'),
+  })
 }
 
 export default async function EducateIVFPage() {

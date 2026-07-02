@@ -4,9 +4,12 @@ import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
+import { GoogleTagManager } from '@/components/Analytics/GoogleTagManager'
 import { Navbar } from '@/components/nav/Navbar'
 import { FloatingContactCTA } from '@/components/shared/FloatingContactCTA'
 import { ReadingProgressProvider } from '@/components/providers/ReadingProgressContext'
+import { StructuredData } from '@/components/SEO/StructuredData'
+import { siteConfig } from '@/config/site'
 import { routing } from '@/i18n/routing'
 import '@/app/globals.css'
 
@@ -31,23 +34,44 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Meta' })
-
   return {
+    metadataBase: new URL(siteConfig.url),
+    applicationName: siteConfig.name,
     title: {
       default: t('siteTitle'),
       // Page-level titles use: `{ title: 'Page Name' }` which becomes "Page Name | IVF Master"
       template: '%s | IVF Master',
     },
     description: t('siteDescription'),
+    category: 'healthcare',
     icons: {
       icon: [{ url: '/icon.jpg' }],
     },
-    // hreflang alternate links — critical for multilingual SEO
-    alternates: {
-      languages: {
-        en: '/',
-        hi: '/hi',
-        mr: '/mr',
+    openGraph: {
+      type: 'website',
+      url: siteConfig.url,
+      title: t('siteTitle'),
+      description: t('siteDescription'),
+      siteName: siteConfig.name,
+      locale: `${locale}_IN`,
+      alternateLocale: routing.locales
+        .filter((alternateLocale) => alternateLocale !== locale)
+        .map((alternateLocale) => `${alternateLocale}_IN`),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('siteTitle'),
+      description: t('siteDescription'),
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
       },
     },
   }
@@ -89,7 +113,9 @@ export default async function LocaleLayout({
       suppressHydrationWarning
       className={`${figtree.variable} ${fraunces.variable}`}
     >
+      <GoogleTagManager />
       <body suppressHydrationWarning className={figtree.className}>
+        <StructuredData />
         <NextIntlClientProvider messages={messages}>
           <ReadingProgressProvider>
             <Navbar />

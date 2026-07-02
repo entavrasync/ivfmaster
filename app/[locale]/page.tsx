@@ -1,3 +1,7 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from '@/i18n/routing';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 import { Footer } from '@/components/shared/Footer';
 import { Hero } from '@/components/sections/Hero';
 import { PainRecognition } from '@/components/sections/PainRecognition';
@@ -11,6 +15,22 @@ import { MythsFacts } from '@/components/sections/MythsFacts';
 import { SuccessStories } from '@/components/sections/SuccessStories';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 import { RevealSection } from '@/components/motion';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Meta' })
+
+  return buildPageMetadata({
+    locale: locale as Locale,
+    path: '/',
+    title: t('siteTitle'),
+    description: t('siteDescription'),
+  })
+}
 
 export default function Home() {
   return (

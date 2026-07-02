@@ -3,6 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { Footer } from '@/components/shared/Footer';
 import { doctors } from '@/lib/content/team';
+import type { Locale } from '@/i18n/routing';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 
 export async function generateMetadata({
   params,
@@ -11,10 +13,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Team' });
-  return {
+  return buildPageMetadata({
+    locale: locale as Locale,
+    path: '/team',
     title: t('metaTitle'),
     description: t('metaDescription'),
-  };
+  });
 }
 
 export default async function TeamPage({
