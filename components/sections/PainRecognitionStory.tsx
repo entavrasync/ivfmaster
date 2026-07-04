@@ -1,11 +1,15 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { Container } from '@/components/layout/Container'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Stagger, StaggerItem } from '@/components/motion'
+import silenceImg from '@/assets/pain/silence.png'
+import whatWeSeeImg from '@/assets/pain/what-we-see.png'
+import whereItLeadsImg from '@/assets/pain/where-it-leads.png'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,6 +20,7 @@ const CHAPTERS = [
     headline: "It's the part no one talks about.",
     body: "The questions at every gathering. The announcements that quietly sting. Carrying it month after month, mostly alone.",
     gradient: 'linear-gradient(148deg, #B4C3D6 0%, #8EA5BE 45%, #6C8AAA 100%)',
+    image: silenceImg,
     num: '01',
   },
   {
@@ -23,6 +28,7 @@ const CHAPTERS = [
     headline: "It's rarely one simple reason.",
     body: "Fertility is a story with many chapters — hormones, timing, age, sometimes nothing obvious at all. Confusion isn't your fault. It just means no one has explained it yet.",
     gradient: 'linear-gradient(148deg, #BEBAD6 0%, #9D94C5 45%, #7D6EAF 100%)',
+    image: whatWeSeeImg,
     num: '02',
   },
   {
@@ -30,6 +36,7 @@ const CHAPTERS = [
     headline: 'Understanding is where hope begins.',
     body: "When you finally see the full picture clearly, the fear quietens. That clarity is the first real step toward parenthood — and it's the one we take with you.",
     gradient: 'linear-gradient(148deg, #F2D9BE 0%, #E6BF94 45%, #D8A46E 100%)',
+    image: whereItLeadsImg,
     num: '03',
   },
 ] as const
@@ -87,7 +94,7 @@ function ChapterText({ chapter, active, mobile }: ChapterTextProps) {
           background: mobile ? 'rgba(151,166,210,0.7)' : '#97A6D2',
         }} />
         <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.6875rem', fontWeight: 600,
+          fontFamily: 'var(--font-body)', fontSize: '1.4rem', fontWeight: 600,
           letterSpacing: '0.16em', textTransform: 'uppercase',
           color: mobile ? 'rgba(151,166,210,0.88)' : '#97A6D2',
           margin: 0,
@@ -143,7 +150,19 @@ function ReducedMotionLayout() {
                 gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,300px),1fr))',
                 gap: '2.5rem', alignItems: 'center', marginBottom: '5rem',
               }}>
-                <div style={{ aspectRatio:'4/3', borderRadius:'16px', background: ch.gradient }} />
+                <div style={{ position:'relative', aspectRatio:'4/3', borderRadius:'16px', background: ch.gradient, overflow:'hidden' }}>
+                  <Image
+                    src={ch.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    draggable={false}
+                    style={{
+                      objectFit:'cover', objectPosition:'center',
+                      userSelect:'none', pointerEvents:'none',
+                    }}
+                  />
+                </div>
                 <ChapterText chapter={ch} active />
               </div>
             </StaggerItem>
@@ -326,7 +345,19 @@ export function PainRecognitionStory() {
                       opacity:    i === 0 ? 1 : 0,
                       willChange: 'opacity, transform',
                     }}
-                  />
+                  >
+                    <Image
+                      src={ch.image}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 46vw, 100vw"
+                      draggable={false}
+                      style={{
+                        objectFit: 'cover', objectPosition: 'center',
+                        userSelect: 'none', pointerEvents: 'none',
+                      }}
+                    />
+                  </div>
                 ))}
                 <ProgressTrack active={active} />
               </div>
@@ -408,7 +439,19 @@ export function PainRecognitionStory() {
               opacity:    i === 0 ? 1 : 0,
               willChange: 'opacity, transform',
             }}
-          />
+          >
+            <Image
+              src={ch.image}
+              alt=""
+              fill
+              sizes="100vw"
+              draggable={false}
+              style={{
+                objectFit: 'cover', objectPosition: 'center',
+                userSelect: 'none', pointerEvents: 'none',
+              }}
+            />
+          </div>
         ))}
 
         {/* Scrim: legible bottom, airy top */}

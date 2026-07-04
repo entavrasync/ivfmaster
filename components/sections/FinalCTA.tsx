@@ -8,6 +8,8 @@ import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
+import clinicFrontDoor from "@/assets/Clinic-photos/clinic-front-door.jpg"
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -310,103 +312,8 @@ export function FinalCTA() {
               width:        '100%',
             }}
           >
-            {/* Soft central radial warmth */}
-            <div
-              aria-hidden="true"
-              style={{
-                position:      'absolute',
-                inset:         0,
-                background:    'radial-gradient(ellipse 78% 60% at 50% 38%, rgba(100,120,176,0.26) 0%, transparent 65%)',
-                pointerEvents: 'none',
-              }}
-            />
+            <Image src={clinicFrontDoor.src} alt="Mandrupkar Clinic" fill style={{ objectFit: 'cover', objectPosition: 'center top' }}  />
 
-            {/* Blush warmth lower-right */}
-            <div
-              aria-hidden="true"
-              style={{
-                position:      'absolute',
-                bottom:        '-20%',
-                right:         '-10%',
-                width:         '55%',
-                height:        '55%',
-                borderRadius:  '50%',
-                background:    'radial-gradient(circle, rgba(226,132,156,0.14) 0%, transparent 65%)',
-                pointerEvents: 'none',
-              }}
-            />
-
-            {/* Decorative motif — two interlocking circles (connection/couple) */}
-            <div
-              aria-hidden="true"
-              style={{
-                position:       'absolute',
-                inset:          0,
-                display:        'flex',
-                alignItems:     'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="210" height="148" viewBox="0 0 210 148" fill="none">
-                <circle cx="84"  cy="74" r="52" stroke="rgba(226,132,156,0.18)" strokeWidth="1.2" />
-                <circle cx="126" cy="74" r="52" stroke="rgba(148,164,196,0.18)" strokeWidth="1.2" />
-                <circle cx="84"  cy="74" r="30" fill="rgba(226,132,156,0.07)"   />
-                <circle cx="126" cy="74" r="30" fill="rgba(148,164,196,0.07)"   />
-                {/* Heart at intersection */}
-                <path
-                  d="M105 58 Q113 47 122 53 Q131 59 122 69 L105 86 L88 69 Q79 59 88 53 Q97 47 105 58Z"
-                  stroke="rgba(226,132,156,0.30)"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            {/* Bottom vignette */}
-            <div
-              aria-hidden="true"
-              style={{
-                position:      'absolute',
-                bottom:        0,
-                left:          0,
-                right:         0,
-                height:        '36%',
-                background:    'linear-gradient(to top, rgba(28,42,72,0.72), transparent)',
-                pointerEvents: 'none',
-              }}
-            />
-
-            {/* Placeholder label */}
-            <p
-              aria-hidden="true"
-              style={{
-                position:      'absolute',
-                bottom:        '1.25rem',
-                left:          0,
-                right:         0,
-                textAlign:     'center',
-                fontFamily:    'var(--font-body)',
-                fontSize:      '0.75rem',
-                letterSpacing: '0.06em',
-                color:         'rgba(251,247,241,0.36)',
-              }}
-            >
-              Photo coming soon
-            </p>
-
-            <figcaption
-              style={{
-                position:   'absolute',
-                width:      1,
-                height:     1,
-                overflow:   'hidden',
-                clip:       'rect(0,0,0,0)',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Mandrupkar Clinic — warm, compassionate fertility care
-            </figcaption>
           </motion.figure>
         </div>
       </Container>

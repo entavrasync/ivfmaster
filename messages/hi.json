@@ -63,7 +63,7 @@
     "panelCall":               "क्लिनिक को कॉल करें",
     "panelCallSub":            "सोम–शनि, सुबह 10 – रात 8 बजे",
     "panelEmail":              "हमें ईमेल करें",
-    "panelEmailSub":           "info@ivfmaster.in",
+    "panelEmailSub":           "ivfmaster.in@gmail.com",
     "panelInstagram":          "Instagram",
     "panelInstagramSub":       "लाइव केस स्टडीज़ और अपडेट",
     "panelAddressLabel":       "हमारा क्लिनिक",
@@ -78,8 +78,104 @@
   },
 
   "Team": {
-    "metaTitle":       "हमारी मेडिकल टीम - IVF Master",
-    "metaDescription": "IVF Master, सांगली के अनुभवी प्रजनन विशेषज्ञों से मिलें।"
+    "metaTitle": "Meet the people behind your care - IVF Master",
+    "metaDescription": "Meet Dr. Gorakh Mandrupkar, Dr. Saie Mandrupkar, and the people who make fertility care at IVF Master feel personal, clear, and safe.",
+    "eyebrow": "The people behind your care",
+    "headline": "You’ll know us by name — and we’ll know you.",
+    "lead": "From the first hello at reception to the doctor who guides your treatment, the same people walk with you the whole way. Here they are.",
+    "doctorsEyebrow": "Your doctors",
+    "doctorsHeading": "The doctors who will know your story.",
+    "doctorsLead": "Warmth comes first. Decades of experience, careful medicine, and honest explanations are the quiet proof behind it.",
+    "coupleNote": "Married for over twenty years — and partners in every couple’s care.",
+    "portraitPlaceholder": "Portrait photo to be provided by the clinic.",
+    "doctorTalkCta": "Talk with Dr. {name}",
+    "doctorStoryCta": "Read {name}’s full story",
+    "careTeamEyebrow": "Around you at every step",
+    "careTeamHeading": "The people who’ll look after you.",
+    "careTeamLead": "These are the people who answer the phone, remember what you asked last time, and make the clinical parts of care feel human.",
+    "facilityEyebrow": "Inside IVF Master",
+    "facilityHeading": "Where you’ll be cared for.",
+    "facilityLead": "A calm, private, modern clinic designed to make difficult conversations and careful treatment feel a little easier.",
+    "facilitySwipeHint": "Swipe to see more of the clinic.",
+    "closingHeadline": "Come meet us — the first visit is just a conversation.",
+    "closingCta": "Book your consultation",
+    "closingNote": "No pressure — just the start of knowing each other.",
+    "detailBack": "Back to the team",
+    "detailCredentialsHeading": "Experience and quiet proof",
+    "doctors": {
+      "gorakh": {
+        "name": "Dr. Gorakh Mandrupkar",
+        "title": "Fertility specialist and obstetrician",
+        "essence": "The doctor who explains until it finally makes sense.",
+        "intro": "Dr. Gorakh believes that understanding your treatment is part of feeling safe in it. He takes time to explain the science plainly, answer every question, and build a plan around the couple in front of him.",
+        "credentials": [
+          "Gold Medallist, Pune University (2004)",
+          "20+ years in reproductive medicine",
+          "2,000+ couples cared for",
+          "Developed the HDP Gestosis Score, adopted by India’s National Health Mission",
+          "Former director of a FOGSI IVF training centre"
+        ],
+        "imageAlt": "Reserved portrait space for Dr. Gorakh Mandrupkar",
+        "metaDescription": "Meet Dr. Gorakh Mandrupkar, fertility specialist, Gold Medallist, and co-founder of IVF Master."
+      },
+      "saie": {
+        "name": "Dr. Saie Mandrupkar",
+        "title": "High-risk obstetrician and reproductive medicine specialist",
+        "essence": "Gentle with people, fierce about their care.",
+        "intro": "Dr. Saie brings steadiness to the moments that feel most uncertain. Her work in high-risk obstetrics and reproductive medicine is grounded in careful attention, calm communication, and the conviction that every patient deserves to feel heard.",
+        "credentials": [
+          "Pune University",
+          "20+ years in high-risk obstetrics and reproductive medicine",
+          "2,000+ couples cared for"
+        ],
+        "imageAlt": "Reserved portrait space for Dr. Saie Mandrupkar",
+        "metaDescription": "Meet Dr. Saie Mandrupkar, high-risk obstetrician and reproductive medicine specialist at IVF Master."
+      }
+    },
+    "careTeam": {
+      "coordinator": {
+        "name": "Name to be confirmed",
+        "role": "Patient coordinator",
+        "blurb": "The familiar face who helps every visit feel less unfamiliar.",
+        "imageAlt": "Reserved photo space for the patient coordinator"
+      },
+      "nurse": {
+        "name": "Name to be confirmed",
+        "role": "Fertility nurse",
+        "blurb": "The steady hand beside you through medicines, questions, and next steps.",
+        "imageAlt": "Reserved photo space for the fertility nurse"
+      },
+      "embryologist": {
+        "name": "Name to be confirmed",
+        "role": "Embryologist",
+        "blurb": "The careful specialist protecting the quiet work inside our laboratory.",
+        "imageAlt": "Reserved photo space for the embryologist"
+      },
+      "counsellor": {
+        "name": "Name to be confirmed",
+        "role": "Fertility counsellor",
+        "blurb": "The person who makes room for every feeling this journey can bring.",
+        "imageAlt": "Reserved photo space for the fertility counsellor"
+      }
+    },
+    "facilityPhotos": {
+      "reception": {
+        "caption": "Reception — a calm first hello.",
+        "imageAlt": "Reserved space for a real photograph of the clinic reception"
+      },
+      "consultation": {
+        "caption": "Consultation room — private space for unhurried conversations.",
+        "imageAlt": "Reserved space for a real photograph of a consultation room"
+      },
+      "laboratory": {
+        "caption": "Embryology laboratory — precise, protected, and closely monitored.",
+        "imageAlt": "Reserved space for a real photograph of the embryology laboratory"
+      },
+      "waiting": {
+        "caption": "Waiting area — designed for quiet and comfort.",
+        "imageAlt": "Reserved space for a real photograph of the waiting area"
+      }
+    }
   },
 
   "Hero": {

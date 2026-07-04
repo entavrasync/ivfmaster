@@ -2,10 +2,8 @@ import type { StaticImageData } from 'next/image'
 
 import heroDesktop from '@/assets/cost/cost-desktop-2.png'
 import heroMobile from '@/assets/cost/cost-mobile-2.png'
-import gorakhDesktop from '@/assets/cost/cost-desktop-3.png'
-import gorakhMobile from '@/assets/cost/cost-mobile-3.png'
-import saieDesktop from '@/assets/cost/cost-desktop-4.png'
-import saieMobile from '@/assets/cost/cost-mobile-4.png'
+import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
+import saiePhoto from '@/assets/doctor/saie.jpeg'
 import teamDesktop from '@/assets/cost/cost-desktop-5.png'
 import teamMobile from '@/assets/cost/cost-mobile-5.png'
 
@@ -103,9 +101,9 @@ export const aboutContent = {
       ],
       evidence: 'Clinical practice, research, and teaching are treated as one responsibility: improving the quality of the next decision.',
       image: {
-        desktop: gorakhDesktop,
-        mobile: gorakhMobile,
-        alt: 'A luminous sprout growing through a layered midnight landscape',
+        desktop: gorakhPhoto,
+        mobile: gorakhPhoto,
+        alt: 'Dr. Gorakh Mandrupkar',
       },
       ctaLabel: 'Talk with Dr. Gorakh',
       ctaHref: '/contact?doctor=gorakh',
@@ -122,9 +120,9 @@ export const aboutContent = {
       ],
       evidence: 'Continuity matters: fertility treatment and high-risk pregnancy care are understood as connected parts of one reproductive journey.',
       image: {
-        desktop: saieDesktop,
-        mobile: saieMobile,
-        alt: 'A warm luminous sprout rising through an expansive abstract landscape',
+        desktop: saiePhoto,
+        mobile: saiePhoto,
+        alt: 'Dr. Saie Mandrupkar',
       },
       ctaLabel: 'Talk with Dr. Saie',
       ctaHref: '/contact?doctor=saie',

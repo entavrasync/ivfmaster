@@ -14,8 +14,8 @@ gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Stats config ───────────────────────────────────────────────────────── */
 const STATS_CONFIG = [
-  { value: 2000, suffix: '+', labelKey: 'couplesGuided'   as const },
-  { value: 87,   suffix: '%', labelKey: 'successRate'     as const },
+  { value: 3000, suffix: '+', labelKey: 'couplesGuided'   as const },
+  { value: 67,   suffix: '%', labelKey: 'successRate'     as const },
   { value: 20,   suffix: '+', labelKey: 'yearsExpertise'  as const },
   { value: 4800, suffix: '+', labelKey: 'cyclesCompleted' as const },
 ]
@@ -111,7 +111,7 @@ export function Hero() {
   const ctaRef      = useRef<HTMLDivElement>(null)
   const trustRef    = useRef<HTMLDivElement>(null)
 
-  const trustItems = [t('trustCouples'), t('trustYears'), t('trustCare')]
+  const trustItems = [t('trustCouples'), t('trustYears')]
 
   /* ── GSAP animations ── */
   useEffect(() => {

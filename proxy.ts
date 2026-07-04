@@ -11,6 +11,6 @@ export default createMiddleware(routing);
 // file (including Search Console verification HTML) untouched.
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\..*).*)',
+    '/((?!_next/|favicon\\.ico|.*\\..*).*)',
   ],
 };

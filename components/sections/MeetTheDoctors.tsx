@@ -1,11 +1,14 @@
 'use client'
 
 import { motion } from 'motion/react'
+import Image, { type StaticImageData } from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
+import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
+import saiePhoto from '@/assets/doctor/saie.jpeg'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -17,78 +20,53 @@ const PORTRAIT_GRADIENT =
 
 type Credential = { text: string; accent: boolean }
 type Doctor = {
-  id:          string
-  monogram:    string
-  name:        string
-  essence:     string
-  intro:       string
-  credentials: Credential[]
-  ctaLabel:    string
-  ctaHref:     string
-  storyLabel:  string
-  storyHref:   string
+  id:             string
+  photo:          StaticImageData
+  objectPosition: string
+  name:           string
+  essence:        string
+  intro:          string
+  credentials:    Credential[]
+  ctaLabel:       string
+  ctaHref:        string
+  storyLabel:     string
+  storyHref:      string
 }
 
-/* ─── Portrait — intentional lavender placeholder, structured for <Image> swap ─
+/* ─── Portrait — real photo, matched framing ───────────────────────────────
  *
- *  Both doctors use the same gradient → they read as a matched pair, not strangers.
- *  The GM / SM monogram clearly signals "portrait coming" rather than a broken block.
- *  To swap in a real photo: replace the monogram <div> with
- *    <Image src={photo} alt={name} fill style={{ objectFit:'cover', objectPosition:'top center' }} />
+ *  Both doctors share the same box + lavender-ivory backdrop (shown while the
+ *  photo loads) so they read as a matched pair. objectPosition keeps each face
+ *  well-framed regardless of the box's crop.
  */
 
-function Portrait({ monogram, name }: Readonly<{ monogram: string; name: string }>) {
+function Portrait({ photo, name, objectPosition }: Readonly<{ photo: StaticImageData; name: string; objectPosition: string }>) {
   return (
     <figure
       style={{
         margin:       0,
         position:     'relative',
         width:        '100%',
-        height:       'clamp(220px, 35vw, 300px)',
+        /* Upright photo frame so portrait + landscape headshots both sit
+         * naturally; capped so it stays tasteful on wide columns. */
+        aspectRatio:  '4 / 5',
+        maxHeight:    'min(58vh, 30rem)',
         borderRadius: 'clamp(16px, 1.6vw, 22px)',
         overflow:     'hidden',
         background:   PORTRAIT_GRADIENT,
         boxShadow:    '0 24px 48px -12px rgba(46,79,142,0.22), 0 8px 20px -8px rgba(46,79,142,0.12)',
       }}
     >
-      {/* Monogram — clearly communicates "portrait coming", not a broken image */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:       'absolute',
-          inset:          0,
-          display:        'flex',
-          alignItems:     'center',
-          justifyContent: 'center',
-        }}
-      >
-        <span
-          style={{
-            fontFamily:            'var(--font-display)',
-            fontSize:              'clamp(2.5rem, 5vw, 4rem)',
-            fontWeight:            500,
-            letterSpacing:         '-0.02em',
-            color:                 'rgba(28,42,72,0.28)',
-            fontVariationSettings: '"opsz" 48',
-            userSelect:            'none',
-          }}
-        >
-          {monogram}
-        </span>
-      </div>
-
-      {/* Top-centre radial highlight — gives depth and warmth */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:      'absolute',
-          inset:         0,
-          background:    'radial-gradient(ellipse 70% 55% at 50% 22%, rgba(255,255,255,0.42) 0%, transparent 60%)',
-          pointerEvents: 'none',
-        }}
+      <Image
+        src={photo}
+        alt={name}
+        fill
+        sizes="(max-width: 639px) 100vw, 48vw"
+        placeholder="blur"
+        style={{ objectFit: 'cover', objectPosition }}
       />
 
-      {/* Subtle bottom vignette */}
+      {/* Subtle bottom vignette — grounds the portrait, adds depth */}
       <div
         aria-hidden="true"
         style={{
@@ -96,24 +74,11 @@ function Portrait({ monogram, name }: Readonly<{ monogram: string; name: string 
           bottom:        0,
           left:          0,
           right:         0,
-          height:        '30%',
-          background:    'linear-gradient(to top, rgba(40,36,72,0.12), transparent)',
+          height:        '28%',
+          background:    'linear-gradient(to top, rgba(40,36,72,0.18), transparent)',
           pointerEvents: 'none',
         }}
       />
-
-      <figcaption
-        style={{
-          position:  'absolute',
-          width:     1,
-          height:    1,
-          overflow:  'hidden',
-          clip:      'rect(0,0,0,0)',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {name}
-      </figcaption>
     </figure>
   )
 }
@@ -145,7 +110,7 @@ function DoctorCard({ doctor, reduced }: Readonly<{ doctor: Doctor; reduced: boo
     >
       {/* Portrait */}
       <motion.div variants={portraitV} style={{ marginBottom: '1.625rem' }}>
-        <Portrait monogram={doctor.monogram} name={doctor.name} />
+        <Portrait photo={doctor.photo} name={doctor.name} objectPosition={doctor.objectPosition} />
       </motion.div>
 
       {/* Essence — emotional hook before the name */}
@@ -336,9 +301,10 @@ export function MeetTheDoctors() {
 
   const doctors: Doctor[] = [
     {
-      id:          'gorakh',
-      monogram:    'GM',
-      name:        'Dr. Gorakh Mandrupkar',
+      id:             'gorakh',
+      photo:          gorakhPhoto,
+      objectPosition: 'center 20%',
+      name:           'Dr. Gorakh Mandrupkar',
       essence:     t('gorakhEssence'),
       intro:       t('gorakhIntro'),
       credentials: [
@@ -353,9 +319,10 @@ export function MeetTheDoctors() {
       storyHref:  '/team/gorakh-mandrupkar',
     },
     {
-      id:          'saie',
-      monogram:    'SM',
-      name:        'Dr. Saie Mandrupkar',
+      id:             'saie',
+      photo:          saiePhoto,
+      objectPosition: 'center 20%',
+      name:           'Dr. Saie Mandrupkar',
       essence:     t('saieEssence'),
       intro:       t('saieIntro'),
       credentials: [

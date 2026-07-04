@@ -5,9 +5,9 @@ import {
   buildAbsoluteUrl,
   buildLocalizedPath,
   getLocalizedAlternates,
-  localizedRoutes,
 } from '../lib/seo/routes.ts'
 import { buildPageMetadata } from '../lib/seo/metadata.ts'
+import { getLocalizedSitemapPaths } from '../lib/seo/sitemap.ts'
 
 test('builds canonical URLs with clean default-locale paths', () => {
   assert.equal(buildLocalizedPath('en', '/contact'), '/contact')
@@ -24,13 +24,15 @@ test('builds hreflang alternates for every configured locale', () => {
   })
 })
 
-test('enumerates all localized routes used by the sitemap', () => {
+test('enumerates all localized routes used by the sitemap', async () => {
+  const localizedRoutes = await getLocalizedSitemapPaths()
+
   assert(localizedRoutes.includes('/contact'))
   assert(localizedRoutes.includes('/hi/contact'))
   assert(localizedRoutes.includes('/mr/contact'))
   assert(localizedRoutes.includes('/educate-ivf/what-ivf-really-is'))
   assert(localizedRoutes.includes('/hi/procedures/ivf'))
-  assert(localizedRoutes.includes('/mr/team/dr-sharma'))
+  assert(localizedRoutes.includes('/mr/team/gorakh-mandrupkar'))
 })
 
 test('builds route-specific canonical and social metadata', () => {
