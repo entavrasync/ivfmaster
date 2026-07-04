@@ -25,6 +25,17 @@ test('does not localize public files with extensions', () => {
   )
 })
 
+test('does not intercept Next.js internal routes', () => {
+  assert.equal(
+    unstable_doesMiddlewareMatch({
+      config,
+      nextConfig: {},
+      url: '/_next/webpack-hmr',
+    }),
+    false,
+  )
+})
+
 test('continues to localize application routes', () => {
   assert.equal(
     unstable_doesMiddlewareMatch({

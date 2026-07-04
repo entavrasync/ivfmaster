@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
 import { routing } from '../../i18n/routing.ts'
 import { siteConfig } from '../../config/site.ts'
 import { ARTICLES } from '../articles.ts'
-import { doctors } from '../content/team.ts'
+import { doctors } from '../team.ts'
 import { PROCEDURES } from '../procedures.ts'
 import {
   buildAbsoluteUrl,

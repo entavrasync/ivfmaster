@@ -32,7 +32,7 @@ test('enumerates all localized routes used by the sitemap', async () => {
   assert(localizedRoutes.includes('/mr/contact'))
   assert(localizedRoutes.includes('/educate-ivf/what-ivf-really-is'))
   assert(localizedRoutes.includes('/hi/procedures/ivf'))
-  assert(localizedRoutes.includes('/mr/team/dr-sharma'))
+  assert(localizedRoutes.includes('/mr/team/gorakh-mandrupkar'))
 })
 
 test('builds route-specific canonical and social metadata', () => {

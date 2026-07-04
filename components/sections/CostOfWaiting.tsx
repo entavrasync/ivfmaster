@@ -31,6 +31,10 @@ const DARK_INK = '#1C2A48'                // lines 6-7 + resolution on light bg
 const MUTED    = 'rgba(151,166,210,0.72)' // eyebrow on dark
 const FM_EASE  = [0.22, 1, 0.36, 1] as const
 
+/* Soft ivory halo — lifts the dark-ink resolution text off the busy, warm
+ * sunset artwork so its contrast stays consistent over the photo's mid-tones. */
+const INK_HALO = '0 1px 2px rgba(255,252,247,0.80), 0 1px 12px rgba(250,246,240,0.58)'
+
 /* ─── Pacing constants (Sub-prompt B tuned) ──────────────────────────────── *
  *  BEAT = IN + HOLD + OUT — one complete line cycle.
  *  25% in → 50% hold → 25% out matches the spec exactly.
@@ -74,6 +78,7 @@ function CtaBlock({ dark, closeBody, ctaButton, ctaSub }: {
         lineHeight: 1.65,
         color:      dark ? IVORY        : DARK_INK,
         opacity:    dark ? 0.78         : 1,
+        textShadow: dark ? 'none'       : INK_HALO,
         textAlign:  'center',
         maxWidth:   '42ch',
       }}>
@@ -113,7 +118,9 @@ function CtaBlock({ dark, closeBody, ctaButton, ctaSub }: {
         fontFamily: 'var(--font-body)',
         fontSize:   '0.875rem',
         lineHeight: 1.6,
-        color:      dark ? MUTED : '#334B70',
+        color:      dark ? MUTED : '#233A5D',
+        textShadow: dark ? 'none' : INK_HALO,
+        fontWeight: dark ? 400 : 500,
         textAlign:  'center',
       }}>
         {ctaSub}
@@ -546,7 +553,19 @@ export function CostOfWaiting() {
         style={{
           position:      'absolute',
           inset:         0,
-          background:    'rgba(248, 244, 238, 0.35)',
+          /*
+           * Warm ivory readability wash, shaped vertically: light at the sky
+           * (keeps the sunset vivid) → stronger through the centre and bottom
+           * where the dark-ink resolution lines and CTA sit, so navy text keeps
+           * consistent contrast over the busy photo.
+           */
+          background: [
+            'linear-gradient(180deg,',
+            'rgba(248,244,238,0.20) 0%,',
+            'rgba(248,244,238,0.42) 40%,',
+            'rgba(248,244,238,0.54) 70%,',
+            'rgba(248,244,238,0.66) 100%)',
+          ].join(' '),
           opacity:       0,
           pointerEvents: 'none',
           willChange:    'opacity',
@@ -623,6 +642,7 @@ export function CostOfWaiting() {
             lineHeight:            1.22,
             letterSpacing:         '-0.022em',
             color:                 DARK_INK,
+            textShadow:            INK_HALO,
             fontVariationSettings: '"opsz" 48',
             opacity:               0,
             pointerEvents:         'none',

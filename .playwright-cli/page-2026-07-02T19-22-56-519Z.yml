@@ -1,0 +1,234 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]:
+    - link "IVF Master — home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img [ref=e7]
+    - navigation "Main navigation" [ref=e8]:
+      - link "Home" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e10]: Home
+      - link "Educate IVF" [ref=e11] [cursor=pointer]:
+        - /url: /educate-ivf
+        - generic [ref=e12]: Educate IVF
+      - link "Procedures" [ref=e14] [cursor=pointer]:
+        - /url: /procedures
+        - generic [ref=e15]: Procedures
+        - img [ref=e17]
+      - link "About" [ref=e19] [cursor=pointer]:
+        - /url: /about
+        - generic [ref=e20]: About
+      - link "Team" [ref=e21] [cursor=pointer]:
+        - /url: /team
+        - generic [ref=e22]: Team
+      - link "Contact" [ref=e24] [cursor=pointer]:
+        - /url: /contact
+        - generic [ref=e25]: Contact
+    - generic [ref=e26]:
+      - button "Switch language" [ref=e29]:
+        - img [ref=e30]
+        - generic [ref=e33]: EN
+      - link "Talk to our experts" [ref=e35] [cursor=pointer]:
+        - /url: /contact
+  - main [ref=e36]:
+    - generic [ref=e41]:
+      - paragraph [ref=e43]: The people behind your care
+      - heading "You’ll know us by name — and we’ll know you." [level=1] [ref=e45]
+      - paragraph [ref=e47]: From the first hello at reception to the doctor who guides your treatment, the same people walk with you the whole way. Here they are.
+    - region "The doctors who will know your story." [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - paragraph [ref=e53]: Your doctors
+            - heading "The doctors who will know your story." [level=2] [ref=e54]
+          - paragraph [ref=e55]: Warmth comes first. Decades of experience, careful medicine, and honest explanations are the quiet proof behind it.
+        - generic [ref=e56]:
+          - article [ref=e58]:
+            - generic [ref=e59]:
+              - generic [ref=e60]:
+                - img "Reserved portrait space for Dr. Gorakh Mandrupkar" [ref=e61]
+                - paragraph [ref=e63]: Portrait photo to be provided by the clinic.
+              - generic [ref=e64]:
+                - paragraph [ref=e65]: “The doctor who explains until it finally makes sense.”
+                - heading "Dr. Gorakh Mandrupkar" [level=3] [ref=e66]
+                - paragraph [ref=e67]: Fertility specialist and obstetrician
+                - paragraph [ref=e68]: Dr. Gorakh believes that understanding your treatment is part of feeling safe in it. He takes time to explain the science plainly, answer every question, and build a plan around the couple in front of him.
+                - list [ref=e69]:
+                  - listitem [ref=e70]:
+                    - generic [ref=e72]: Gold Medallist, Pune University (2004)
+                  - listitem [ref=e73]:
+                    - generic [ref=e75]: 20+ years in reproductive medicine
+                  - listitem [ref=e76]:
+                    - generic [ref=e78]: 2,000+ couples cared for
+                  - listitem [ref=e79]:
+                    - generic [ref=e81]: Developed the HDP Gestosis Score, adopted by India’s National Health Mission
+                  - listitem [ref=e82]:
+                    - generic [ref=e84]: Former director of a FOGSI IVF training centre
+                - generic [ref=e85]:
+                  - link "Talk with Dr. Gorakh Mandrupkar" [ref=e87] [cursor=pointer]:
+                    - /url: /contact?doctor=gorakh-mandrupkar
+                    - text: Talk with Dr. Gorakh Mandrupkar
+                    - img [ref=e88]
+                  - link "Read Gorakh Mandrupkar’s full story" [ref=e91] [cursor=pointer]:
+                    - /url: /team/gorakh-mandrupkar
+                    - text: Read Gorakh Mandrupkar’s full story
+                    - img [ref=e92]
+          - article [ref=e95]:
+            - generic [ref=e96]:
+              - generic [ref=e97]:
+                - img "Reserved portrait space for Dr. Saie Mandrupkar" [ref=e98]
+                - paragraph [ref=e100]: Portrait photo to be provided by the clinic.
+              - generic [ref=e101]:
+                - paragraph [ref=e102]: “Gentle with people, fierce about their care.”
+                - heading "Dr. Saie Mandrupkar" [level=3] [ref=e103]
+                - paragraph [ref=e104]: High-risk obstetrician and reproductive medicine specialist
+                - paragraph [ref=e105]: Dr. Saie brings steadiness to the moments that feel most uncertain. Her work in high-risk obstetrics and reproductive medicine is grounded in careful attention, calm communication, and the conviction that every patient deserves to feel heard.
+                - list [ref=e106]:
+                  - listitem [ref=e107]:
+                    - generic [ref=e109]: Pune University
+                  - listitem [ref=e110]:
+                    - generic [ref=e112]: 20+ years in high-risk obstetrics and reproductive medicine
+                  - listitem [ref=e113]:
+                    - generic [ref=e115]: 2,000+ couples cared for
+                - generic [ref=e116]:
+                  - link "Talk with Dr. Saie Mandrupkar" [ref=e118] [cursor=pointer]:
+                    - /url: /contact?doctor=saie-mandrupkar
+                    - text: Talk with Dr. Saie Mandrupkar
+                    - img [ref=e119]
+                  - link "Read Saie Mandrupkar’s full story" [ref=e122] [cursor=pointer]:
+                    - /url: /team/saie-mandrupkar
+                    - text: Read Saie Mandrupkar’s full story
+                    - img [ref=e123]
+        - paragraph [ref=e128]: Married for over twenty years — and partners in every couple’s care.
+    - region "The people who’ll look after you." [ref=e130]:
+      - generic [ref=e131]:
+        - generic [ref=e133]:
+          - paragraph [ref=e134]: Around you at every step
+          - heading "The people who’ll look after you." [level=2] [ref=e135]
+          - paragraph [ref=e136]: These are the people who answer the phone, remember what you asked last time, and make the clinical parts of care feel human.
+        - generic [ref=e137]:
+          - article [ref=e139]:
+            - img "Reserved photo space for the patient coordinator" [ref=e141]
+            - generic [ref=e142]:
+              - paragraph [ref=e143]: Patient coordinator
+              - heading "Name to be confirmed" [level=3] [ref=e144]
+              - paragraph [ref=e145]: The familiar face who helps every visit feel less unfamiliar.
+          - article [ref=e147]:
+            - img "Reserved photo space for the fertility nurse" [ref=e149]
+            - generic [ref=e150]:
+              - paragraph [ref=e151]: Fertility nurse
+              - heading "Name to be confirmed" [level=3] [ref=e152]
+              - paragraph [ref=e153]: The steady hand beside you through medicines, questions, and next steps.
+          - article [ref=e155]:
+            - img "Reserved photo space for the embryologist" [ref=e157]
+            - generic [ref=e158]:
+              - paragraph [ref=e159]: Embryologist
+              - heading "Name to be confirmed" [level=3] [ref=e160]
+              - paragraph [ref=e161]: The careful specialist protecting the quiet work inside our laboratory.
+          - article [ref=e163]:
+            - img "Reserved photo space for the fertility counsellor" [ref=e165]
+            - generic [ref=e166]:
+              - paragraph [ref=e167]: Fertility counsellor
+              - heading "Name to be confirmed" [level=3] [ref=e168]
+              - paragraph [ref=e169]: The person who makes room for every feeling this journey can bring.
+    - region "Where you’ll be cared for." [ref=e170]:
+      - generic [ref=e171]:
+        - generic [ref=e173]:
+          - paragraph [ref=e174]: Inside IVF Master
+          - heading "Where you’ll be cared for." [level=2] [ref=e175]
+          - paragraph [ref=e176]: A calm, private, modern clinic designed to make difficult conversations and careful treatment feel a little easier.
+        - generic [ref=e177]:
+          - figure "Reception — a calm first hello." [ref=e179]:
+            - img "Reserved space for a real photograph of the clinic reception" [ref=e181]
+            - generic [ref=e182]: Reception — a calm first hello.
+          - figure "Consultation room — private space for unhurried conversations." [ref=e184]:
+            - img "Reserved space for a real photograph of a consultation room" [ref=e186]
+            - generic [ref=e187]: Consultation room — private space for unhurried conversations.
+          - figure "Embryology laboratory — precise, protected, and closely monitored." [ref=e189]:
+            - img "Reserved space for a real photograph of the embryology laboratory" [ref=e191]
+            - generic [ref=e192]: Embryology laboratory — precise, protected, and closely monitored.
+          - figure "Waiting area — designed for quiet and comfort." [ref=e194]:
+            - img "Reserved space for a real photograph of the waiting area" [ref=e196]
+            - generic [ref=e197]: Waiting area — designed for quiet and comfort.
+    - generic [ref=e201]:
+      - heading "Come meet us — the first visit is just a conversation." [level=2] [ref=e202]
+      - link "Book your consultation" [ref=e205] [cursor=pointer]:
+        - /url: /contact
+        - text: Book your consultation
+        - img [ref=e206]
+      - paragraph [ref=e209]: No pressure — just the start of knowing each other.
+  - contentinfo "Site footer" [ref=e210]:
+    - generic [ref=e212]:
+      - generic [ref=e213]:
+        - img [ref=e215]
+        - paragraph [ref=e217]: IVF Master
+        - paragraph [ref=e218]: by Mandrupkar Clinic
+        - paragraph [ref=e219]: Premium fertility care, with compassion — guiding couples toward parenthood.
+        - generic [ref=e220]:
+          - link "WhatsApp" [ref=e221] [cursor=pointer]:
+            - /url: https://wa.me/91XXXXXXXXXX
+            - img [ref=e222]
+          - link "Call" [ref=e224] [cursor=pointer]:
+            - /url: tel:+91XXXXXXXXXX
+            - img [ref=e225]
+          - link "Website" [ref=e227] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e228]
+          - link "Email" [ref=e231] [cursor=pointer]:
+            - /url: mailto:ivfmaster.in@gmail.com
+            - img [ref=e232]
+      - generic [ref=e235]:
+        - paragraph [ref=e236]: Explore
+        - list [ref=e237]:
+          - listitem [ref=e238]:
+            - link "Home" [ref=e239] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e240]:
+            - link "Learn about IVF" [ref=e241] [cursor=pointer]:
+              - /url: /educate-ivf
+          - listitem [ref=e242]:
+            - link "Our procedures" [ref=e243] [cursor=pointer]:
+              - /url: /procedures
+          - listitem [ref=e244]:
+            - link "Our team" [ref=e245] [cursor=pointer]:
+              - /url: /team
+      - generic [ref=e246]:
+        - paragraph [ref=e247]: Clinic
+        - list [ref=e248]:
+          - listitem [ref=e249]:
+            - link "About us" [ref=e250] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=e251]:
+            - link "Contact" [ref=e252] [cursor=pointer]:
+              - /url: /contact
+          - listitem [ref=e253]:
+            - link "FAQ" [ref=e254] [cursor=pointer]:
+              - /url: /#faq
+        - paragraph [ref=e255]: Language
+        - generic [ref=e256]:
+          - button "English" [ref=e257] [cursor=pointer]
+          - button "मराठी" [ref=e258] [cursor=pointer]
+          - button "हिंदी" [ref=e259] [cursor=pointer]
+      - generic [ref=e260]:
+        - paragraph [ref=e261]: Get in touch
+        - generic [ref=e262]:
+          - generic [ref=e263]:
+            - img [ref=e264]
+            - generic [ref=e267]: Ishwarpur, Sangli, Maharashtra
+          - generic [ref=e268]:
+            - img [ref=e269]
+            - generic [ref=e272]: Mon–Sat, 10 AM – 6 PM
+          - generic [ref=e273]:
+            - img [ref=e274]
+            - link "+91 95610 96416" [ref=e276] [cursor=pointer]:
+              - /url: tel:+91XXXXXXXXXX
+          - generic [ref=e277]:
+            - img [ref=e278]
+            - link "ivfmaster.in@gmail.com" [ref=e281] [cursor=pointer]:
+              - /url: mailto:ivfmaster.in@gmail.com
+    - generic [ref=e284]:
+      - paragraph [ref=e285]: © 2026 IVF Master · Mandrupkar Clinic. All rights reserved.
+      - generic [ref=e286]:
+        - link "Privacy policy" [ref=e287] [cursor=pointer]:
+          - /url: /privacy
+        - link "Terms of service" [ref=e288] [cursor=pointer]:
+          - /url: /terms

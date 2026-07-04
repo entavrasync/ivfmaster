@@ -123,12 +123,12 @@ function LogoLockup() {
       <Image
         src="/icon.jpg"
         alt=""
-        width={120}
-        height={120}
+        width={200}
+        height={100}
         className="object-cover rounded-lg lg:rounded-full"
         style={{
-          width: '144px',
-          height: '44px',
+          width: '204px',
+          height: '60px',
           flexShrink: 0,
           boxShadow: '0 4px 18px rgba(46,79,142,0.25)',
         }}

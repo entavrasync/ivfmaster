@@ -75,7 +75,7 @@ export function StaggerItem({ children, className }: StaggerItemProps) {
   }
 
   return (
-    <motion.div className={className} variants={variants}>
+    <motion.div data-motion-reveal className={className} variants={variants}>
       {children}
     </motion.div>
   )

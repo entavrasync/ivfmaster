@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1000" role="img" aria-labelledby="title description">
+  <title id="title">Care team photo placeholder</title>
+  <desc id="description">A warm ivory, blush, and periwinkle abstract background reserved for a care-team photo.</desc>
+  <defs>
+    <linearGradient id="base" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#f2e8df"/>
+      <stop offset=".55" stop-color="#fbf7f1"/>
+      <stop offset="1" stop-color="#e6eaf8"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="32"/></filter>
+  </defs>
+  <rect width="1200" height="1000" fill="url(#base)"/>
+  <circle cx="940" cy="180" r="280" fill="#e2849c" opacity=".14" filter="url(#blur)"/>
+  <circle cx="240" cy="790" r="330" fill="#97a6d2" opacity=".18" filter="url(#blur)"/>
+  <path d="M0 760c210-96 398-96 565 0s379 95 635-4v244H0Z" fill="#ffffff" opacity=".32"/>
+</svg>

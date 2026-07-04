@@ -24,6 +24,7 @@ export function Reveal({ children, className, delay = 0, y = 24 }: RevealProps) 
 
   return (
     <motion.div
+      data-motion-reveal
       className={className}
       initial={{ opacity: 0, y: reduced ? 0 : y }}
       whileInView={{ opacity: 1, y: 0 }}

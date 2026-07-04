@@ -4,7 +4,7 @@ import test from 'node:test'
 import { siteConfig } from '../config/site.ts'
 import { routing, type Locale } from '../i18n/routing.ts'
 import { ARTICLES } from '../lib/articles.ts'
-import { doctors } from '../lib/content/team.ts'
+import { doctors } from '../lib/team.ts'
 import { PROCEDURES } from '../lib/procedures.ts'
 import { getLocalizedSitemapEntries } from '../lib/seo/sitemap.ts'
 
@@ -111,7 +111,7 @@ test('sitemap uses stable meaningful lastModified dates instead of build time', 
     SITE_CONTENT_REVIEWED_AT
   )
   assert.equal(
-    isoDate(byUrl.get(absoluteUrl('/team/dr-sharma'))?.lastModified),
+    isoDate(byUrl.get(absoluteUrl('/team/gorakh-mandrupkar'))?.lastModified),
     SITE_CONTENT_REVIEWED_AT
   )
 
@@ -147,7 +147,7 @@ test('sitemap priorities and change frequencies follow the SEO taxonomy', async 
   assert.equal(byUrl.get(absoluteUrl('/team'))?.priority, 0.85)
 
   assert.equal(byUrl.get(absoluteUrl('/procedures/ivf'))?.priority, 0.88)
-  assert.equal(byUrl.get(absoluteUrl('/team/dr-sharma'))?.priority, 0.85)
+  assert.equal(byUrl.get(absoluteUrl('/team/gorakh-mandrupkar'))?.priority, 0.85)
 
   const article = ARTICLES[0]
   assert(article, 'Expected at least one article fixture')
