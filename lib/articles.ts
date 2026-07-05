@@ -87,54 +87,59 @@ export const ARTICLES: ReadonlyArray<Article> = [
     slug:     'understanding-pcos',
     title:    'Understanding PCOS',
     category: 'Conditions',
-    excerpt:  'PCOS is one of the most common hormonal conditions in women of reproductive age — and one of the most misunderstood.',
+    excerpt:  'PCOS is a common, treatable hormonal condition that can affect your periods and fertility. Here’s what it is, the signs to watch for, and how we treat it.',
     date:     '2025-11-20',
-    readTime: 8,
+    readTime: 5,
     intro:
-      'Polycystic ovary syndrome (PCOS) affects roughly one in ten women of reproductive age, making it one of the most common hormonal conditions we see. It is also one of the most misunderstood — not least because it looks different in different women, and because advice like "just lose a little weight and exercise more" often leaves women feeling blamed rather than helped. Here is what PCOS actually is, how it is diagnosed, and what treatment really looks like.',
+      'Polycystic ovary syndrome — PCOS, now also known as PMOS (polyendocrine metabolic ovarian syndrome) — is one of the most common hormonal conditions in women. It can make periods irregular and make conceiving harder, and it often comes alongside weight gain, acne, or extra hair growth. Here is the part worth holding on to from the start: PCOS is treatable, and most women who have it go on to live healthy, full lives.',
     sections: [
       {
-        heading: 'What PCOS actually is',
+        heading: 'What PCOS is',
         body:
-          'Despite the name, PCOS is not primarily a condition of cysts on the ovaries. It is a hormonal condition in which the ovaries produce slightly too much androgen (a group of hormones often called "male hormones," though all women have them). This hormonal imbalance disrupts ovulation — the monthly release of an egg — and it is this disruption that causes most of the symptoms and fertility challenges associated with PCOS.\n\nThe "polycystic" appearance on ultrasound — many small follicles clustered at the edge of the ovary — is a common finding, but it is not present in all women with PCOS, and it can be present in women who do not have the condition.',
+          'PCOS stands for polycystic ovary syndrome. You may also hear it called PMOS — polyendocrine metabolic ovarian syndrome — a newer name for the same condition. At its heart, PCOS is a hormonal imbalance, and it is those shifting hormones that ripple out into the signs many women notice.\n\nIt is common, and it is manageable. With the right care, most women with PCOS keep their symptoms in check and stay well.',
       },
       {
-        heading: 'Signs that might point to PCOS',
+        heading: 'Signs and symptoms',
         body:
-          'PCOS is a spectrum, and women experience it very differently. The most common signs include:\n\nIrregular or absent periods — if your cycle is consistently shorter than 21 days or longer than 35, or if periods are unpredictable or have stopped altogether, this is worth investigating.\n\nExcess hair growth (hirsutism) — on the face, chest, or abdomen, driven by elevated androgens.\n\nAcne or oily skin — particularly if it persists beyond the teenage years or is unresponsive to usual treatments.\n\nDifficulty losing weight, or unexplained weight gain, particularly around the abdomen.\n\nDifficulty getting pregnant — irregular ovulation means the timing for conception is harder to predict.\n\nNot all women with PCOS have all of these signs. Some have very subtle symptoms and only discover the diagnosis when they are investigated for fertility challenges.',
+          'PCOS looks different from one woman to the next, and not everyone has every sign. The ones we see most often include irregular or missed periods, difficulty getting pregnant, weight gain or trouble losing weight, acne, extra hair on the face, chest or tummy, thinning hair on the scalp, and darker patches of skin around the neck or underarms.\n\nSome women notice only one or two of these; others notice several. If any of them feel familiar, they are worth a conversation.',
       },
       {
         heading: 'Why PCOS happens',
         body:
-          'The exact cause of PCOS is not fully understood, but two factors are central to most cases: insulin resistance and excess androgen production.\n\nInsulin resistance means the body\'s cells do not respond normally to insulin. The body compensates by producing more insulin, and this excess insulin in turn stimulates the ovaries to produce more androgens. This creates a cycle that disrupts ovulation and contributes to many of the physical signs of PCOS.\n\nThere is also a genetic component — PCOS tends to run in families. If your mother, sister, or aunt has PCOS or type 2 diabetes (a condition closely linked to insulin resistance), your own risk is higher.',
+          'The honest answer is that we do not fully know what causes PCOS. It does seem to run in families, so genetics likely play a part.\n\nMany women with PCOS also have something called insulin resistance, where the body does not use insulin the way it should. That can lead to weight gain, and it can make the other symptoms more pronounced — which is one reason a healthy lifestyle makes such a difference.',
       },
       {
-        heading: 'How we diagnose it',
+        heading: 'How we diagnose PCOS',
         body:
-          'PCOS is diagnosed using what is called the Rotterdam criteria — a diagnosis requires at least two of the following three features:\n\n1. Irregular or absent ovulation (irregular or infrequent periods).\n2. Signs of elevated androgens — either on a blood test, or physically (excess hair, acne).\n3. Polycystic-appearing ovaries on ultrasound.\n\nWe also rule out other conditions that can look similar — thyroid problems, high prolactin levels, and other hormonal disorders. A straightforward blood panel and a pelvic ultrasound are usually enough to give us a clear picture.',
+          'There is no single test that diagnoses PCOS on its own. Instead, we build up a picture together. We will ask about your periods and any symptoms you have noticed, examine you, and usually arrange some blood tests. If it helps make things clearer, we may also do an ultrasound.\n\nTaken together, these give us enough to understand your particular version of PCOS and to plan care around it.',
       },
       {
-        heading: 'Treatment — lifestyle first, always',
+        heading: 'Treatment starts with a healthy lifestyle',
         body:
-          'For women with PCOS who are overweight, even a modest weight loss — around 5 to 10% of body weight — can restore regular ovulation and significantly improve fertility. This is genuinely the most powerful intervention available for many women, and it is important to say this clearly: not as a criticism, but because it is true and because understanding why it works can be motivating.\n\nThat said, "just eat less and walk more" is inadequate advice. PCOS makes weight management harder — insulin resistance increases hunger and promotes fat storage. Women with PCOS often need a genuinely different dietary approach (lower in refined carbohydrates, higher in protein and fibre) and a realistic, sustainable plan for exercise. We do not blame women for finding this difficult. We help them find what works.',
+          'For most women, the single most important treatment for PCOS is not a medicine — it is a healthy lifestyle. It genuinely works, and even a small amount of weight loss can make periods more regular and improve the chances of pregnancy.\n\nWith food, the aim is simple and home-grown: healthy home-cooked meals, with more vegetables, fruits, whole grains, pulses, and lean protein, and less in the way of sweets, sugary drinks, and junk food. With movement, aim for at least 30 minutes of activity a day, around five days a week.\n\nIt is the idea behind the mantra we come back to again and again: “Eat less, walk more.”',
       },
       {
-        heading: 'When lifestyle is not enough',
+        heading: 'Where medicines help',
         body:
-          'When lifestyle changes alone do not restore ovulation, the next step is usually medication. Letrozole (an aromatase inhibitor) is now the first-choice medication to induce ovulation in women with PCOS, and it is effective for many women. Metformin, originally developed for type 2 diabetes, helps with insulin resistance and can improve ovulation and hormone levels.\n\nIf medication does not establish regular ovulation, or if there are other fertility factors involved, IVF is an excellent option for women with PCOS. Because PCOS ovaries contain many follicles, stimulation often produces a good number of eggs — though we monitor carefully to prevent ovarian hyperstimulation syndrome (OHSS), a complication of stimulation that is more common in PCOS.',
+          'Alongside a healthy lifestyle, we sometimes prescribe medicines, and they do different jobs for different women. Depending on what you need, medicines can help regulate your periods, ease acne and unwanted hair, improve insulin resistance, and support your chances of pregnancy.\n\nThese are always tailored to you and taken as prescribed. Lifestyle and medicine work best hand in hand — not one instead of the other.',
+      },
+      {
+        heading: 'Why regular treatment matters',
+        body:
+          'PCOS is easy to put off, especially when symptoms come and go. But left unmanaged over the long term, it can raise the risk of other health problems — including diabetes, high blood pressure, and high cholesterol. It can make pregnancy more complicated. And if periods are absent for a long time, that in itself can increase the risk of uterine cancer.\n\nNone of this is meant to worry you. It is simply why we treat PCOS as an ongoing partnership, with regular follow-up, rather than a one-time fix.',
       },
       {
         heading: 'When to come and see us',
         body:
-          'If you have any of the signs above, or if you have been trying to conceive for more than six months with irregular periods, a conversation with a specialist is worthwhile. PCOS is extremely manageable — most women with PCOS who want to conceive go on to do so, with the right support. The earlier we understand what your particular version of PCOS looks like, the better we can tailor the approach.',
+          'It is worth booking a visit with our team at IVF Master in Sangli if you have not had a period for more than three months and you are not pregnant, if you have very heavy or prolonged bleeding, or if you have been trying to conceive without success. Rapid weight gain, severe acne, or a noticeable increase in facial hair are also good reasons to check in.\n\nThe earlier we understand your PCOS, the more we can do to keep you well — now and in the years ahead.',
       },
     ],
     keyTakeaways: [
-      'PCOS is a hormonal condition that disrupts ovulation — it is not primarily about cysts.',
-      'It looks different in different women; not everyone has all the classic signs.',
-      'Lifestyle changes are the most powerful first treatment for many women, especially those with insulin resistance.',
-      'Most women with PCOS who want to conceive go on to do so, with appropriate support.',
-      'IVF is highly effective in PCOS, and specialist monitoring reduces the risk of complications.',
+      'PCOS is a common hormonal condition — and it is treatable.',
+      'A healthy lifestyle is the most important treatment: good food, regular exercise, and even a little weight loss can improve periods and fertility.',
+      'The mantra to remember is “Eat less, walk more.” — with prescribed medicines added when they are needed.',
+      'Untreated PCOS can raise the long-term risk of diabetes, high blood pressure, high cholesterol, and pregnancy problems.',
+      'Regular follow-up matters, and most women with PCOS go on to live healthy, full lives.',
     ],
     relatedSlugs: ['male-fertility-explained', 'age-and-ivf-success', 'what-ivf-really-is'],
   },
@@ -144,48 +149,53 @@ export const ARTICLES: ReadonlyArray<Article> = [
     slug:     'male-fertility-explained',
     title:    'Male fertility, explained',
     category: 'Conditions',
-    excerpt:  'About half of all fertility challenges involve the man. Yet male fertility is still the less-talked-about half of the conversation.',
+    excerpt:  'Male-factor infertility is common and often very treatable. The causes, the simple checks, and what men can do to help — explained clearly and kindly.',
     date:     '2025-12-05',
-    readTime: 7,
+    readTime: 5,
     intro:
-      'When a couple comes to us having struggled to conceive, our first job is to understand both partners. Male factor infertility accounts for roughly half of all cases — sometimes as the primary cause, sometimes as one part of a combined picture. Yet in most couples, the investigation of the male side takes five minutes and a small plastic container. A semen analysis is quick and simple, and the information it gives us is invaluable. Here is what male fertility involves, what can go wrong, and what can be done.',
+      'When a couple is finding it hard to conceive, it is not only a question for the woman. Male-factor infertility — when a man has difficulty helping his partner conceive after about a year of trying, with regular unprotected sex — is common, and it deserves the same care and attention. The encouraging news is that it is often very treatable. Here is what can affect male fertility, how we check it, and what you can do to help.',
     sections: [
       {
-        heading: 'What a semen analysis tells us',
+        heading: 'What male-factor infertility means',
         body:
-          'A semen analysis measures several things at once. The most important are:\n\nSperm count — how many sperm are present per millilitre of semen. A count below 16 million per millilitre is considered low.\n\nMotility — the percentage of sperm that are swimming, and how well. Sperm need to be able to swim vigorously in the right direction to reach and fertilise an egg.\n\nMorphology — the shape of the sperm. Even in fertile men, many sperm have unusual shapes; what matters is the proportion that are normal.\n\nThe result is rarely black and white. A man with a low count may have excellent motility; a man with normal count may have poor morphology. We look at the whole picture, not any single number.',
+          'Doctors talk about male-factor infertility when a man has trouble helping his partner become pregnant after about a year of trying, with regular unprotected sex. It is one of the common reasons a couple does not conceive as quickly as they hoped — and, importantly, it is a shared part of the journey, not a fault for anyone to carry alone.',
       },
       {
-        heading: 'What can affect sperm quality',
+        heading: 'What can cause it',
         body:
-          'Sperm quality is sensitive to a wide range of factors, many of which are modifiable:\n\nHeat is one of the most significant — the testicles sit outside the body for a reason, and prolonged heat exposure (hot baths, saunas, heated car seats, laptops on the lap) can suppress sperm production for several months.\n\nLifestyle factors — smoking, heavy alcohol consumption, anabolic steroids, obesity, and chronic stress all have measurable negative effects on sperm parameters.\n\nVaricocele — enlarged veins in the scrotum — is one of the most common and treatable causes of male infertility. It raises testicular temperature and is present in about 40% of men investigated for infertility.\n\nHormonal imbalances, genetic conditions, previous infections (particularly mumps orchitis in adulthood), and prior surgery can all affect sperm production.',
+          'Male fertility can be affected by a number of things. Some of the more common are a low sperm count, or sperm that are weak or slow-moving. There can be a blockage in the tubes that carry sperm, an infection, or a problem with hormones.\n\nEveryday factors matter too. Smoking, alcohol, recreational drugs, and some medicines can all play a part, as can being overweight. Another common — and very treatable — cause is a varicocele, which is a group of swollen veins around the testicles.',
       },
       {
-        heading: 'When there is no sperm at all',
+        heading: 'Why it often goes unnoticed',
         body:
-          'Azoospermia — the complete absence of sperm in the ejaculate — sounds final but often is not. It can be "obstructive" (the sperm are being produced but cannot reach the ejaculate, due to a blockage) or "non-obstructive" (the testicles are producing very little or no sperm).\n\nIn obstructive azoospermia, surgical sperm retrieval — a minor procedure to collect sperm directly from the testicle or epididymis — is often successful, and the retrieved sperm can be used with ICSI to fertilise eggs. Even in non-obstructive azoospermia, sperm are sometimes found with more advanced retrieval techniques. These cases require careful discussion with a specialist, but they are not all hopeless.',
+          'One of the trickiest things about male-factor infertility is that most men have no symptoms at all. Everything can feel completely normal. Often the only sign is the very thing that brings a couple to us in the first place: difficulty having a baby.\n\nThat is exactly why a simple test matters so much — it can reveal something that nothing else would.',
       },
       {
-        heading: 'What men can do to improve sperm health',
+        heading: 'How we check male fertility',
         body:
-          'Because sperm take around 74 days to develop, changes made today will begin to show in the semen analysis about three months from now. The most evidence-based steps are:\n\nStopping smoking and limiting alcohol. Reaching and maintaining a healthy weight. Avoiding prolonged heat exposure. Managing stress where possible. Taking a good antioxidant supplement (look for one containing zinc, selenium, CoQ10, and vitamin C). Not using anabolic steroids or recreational drugs.\n\nThese changes will not fix everything, but for many men they make a meaningful difference — and they improve general health regardless.',
+          'Checking male fertility is straightforward and gentle. It usually begins with a physical examination and a semen test, which looks at the sperm. We may also do blood tests to check hormones and general health, and an ultrasound if it is needed.\n\nNone of this is complicated or uncomfortable, and together it gives us a clear picture of what, if anything, is getting in the way.',
       },
       {
-        heading: 'Treatment options',
+        heading: 'Can it be treated?',
         body:
-          'The treatment depends entirely on what the semen analysis shows and what is causing the problem.\n\nFor mild male factor — slightly reduced count or motility — IUI (intrauterine insemination) can improve the odds of natural fertilisation by concentrating the best-quality sperm and placing them close to the egg.\n\nFor moderate to severe male factor, ICSI (intracytoplasmic sperm injection) is the most powerful tool we have. A single healthy sperm is injected directly into each egg, bypassing the usual fertilisation barriers entirely. ICSI makes pregnancy possible even with very low sperm counts.\n\nFor azoospermia, surgical retrieval followed by ICSI is the pathway. Outcomes depend on sperm quality and egg quality, but many couples do go on to have children via this route.',
+          'Yes — and this is the part worth holding on to. Male-factor infertility can very often be treated, and what we suggest depends on the cause. Sometimes it is medicines. Sometimes it is a minor surgery, if that is what is needed. Often, healthy lifestyle changes make a real difference. And when it helps, fertility treatments can bridge the gap.\n\nMany men who come to us with a fertility concern go on to become fathers.',
       },
       {
-        heading: 'A note to the man reading this',
+        heading: 'What men can do to help',
         body:
-          'Fertility challenges can feel like they are primarily a women\'s issue. They are not. If your partner is navigating this, so are you — and the investigation and treatment is genuinely a team process, not something one partner does while the other waits. A semen analysis is one of the simplest, least invasive tests in medicine, and it gives us half the picture. We encourage men to be part of the conversation from the very first appointment.',
+          'Alongside any treatment, there is a lot within your own control that supports healthier sperm. Stopping smoking and tobacco is one of the most valuable steps. Limiting or avoiding alcohol helps, as does eating well, exercising regularly, and keeping to a healthy weight. Getting enough sleep matters more than most people expect. And it is worth avoiding too much heat around the testicles.\n\nNone of these are dramatic changes, but together they can genuinely tip things in your favour — and they are good for you in every other way too.',
+      },
+      {
+        heading: 'When to see a doctor',
+        body:
+          'It is a good idea to speak with a doctor if you have been trying for a baby for a year without success, if you have any problems with erection or ejaculation, or if you notice pain or swelling in the testicles.\n\nAsking early does not commit you to anything. It simply means you understand what is going on, and what your options are.',
       },
     ],
     keyTakeaways: [
-      'Male factor accounts for roughly half of all fertility challenges — it deserves the same attention as female factor.',
-      'A semen analysis is quick, simple, and gives us essential information. It is the right first step for any man whose partner is being investigated.',
-      'Many factors affecting sperm quality are modifiable, though changes take around three months to show.',
-      'Even with very low or zero sperm count, ICSI and surgical retrieval give many couples a genuine pathway to parenthood.',
+      'Male-factor infertility is common — it is part of the picture for many couples who struggle to conceive.',
+      'Most men have no symptoms; often the only sign is difficulty having a baby.',
+      'A simple physical check and semen test usually reveal the cause.',
+      'It is very often treatable, and many men go on to become fathers.',
     ],
     relatedSlugs: ['understanding-pcos', 'what-ivf-really-is', 'ivf-myths-vs-facts'],
   },
@@ -195,43 +205,48 @@ export const ARTICLES: ReadonlyArray<Article> = [
     slug:     'recurrent-pregnancy-loss',
     title:    'Recurrent pregnancy loss',
     category: 'Conditions',
-    excerpt:  'Losing a pregnancy is one of the most painful things a couple can experience. Losing more than one deserves a careful, compassionate investigation.',
+    excerpt:  'Recurrent miscarriage — two or more losses — is more common than many realise, and a healthy pregnancy is often still possible. The causes, tests, and treatment.',
     date:     '2026-01-18',
-    readTime: 8,
+    readTime: 5,
     intro:
-      'Recurrent pregnancy loss is defined as two or more pregnancy losses — though many specialists begin a full investigation after two losses, rather than waiting for a third. It affects about one to two in every hundred couples who are trying to conceive, and it is a cause of profound grief. Most importantly, it is not inevitable. Most couples who experience recurrent loss go on to have a healthy baby. Understanding why it is happening is the most important first step.',
+      'Losing a pregnancy is painful in a way that is hard to put into words, and losing more than one can feel frightening and lonely. Recurrent pregnancy loss — having two or more miscarriages — is more common than many people realise. If it is happening to you, please hold on to this first: in many cases, a healthy pregnancy is still very possible. Understanding why it is happening is the most helpful place to begin.',
     sections: [
       {
-        heading: 'Why pregnancy loss happens',
+        heading: 'What recurrent pregnancy loss means',
         body:
-          'The most common cause of any individual pregnancy loss — and of recurrent loss — is a chromosomal abnormality in the embryo. When a sperm and egg come together, the resulting embryo should contain 46 chromosomes in the correct configuration. Sometimes an error occurs, producing an embryo that cannot develop to a healthy birth. This is not caused by anything either parent did or did not do; it is a biological error that becomes more common as women age, but can happen at any age.\n\nBeyond chromosomal factors, other causes include: anatomical issues with the uterus (such as a septum, fibroids, or polyps that affect implantation); problems with blood clotting that impair the development of the placenta; immune system factors; and hormonal imbalances. In a significant number of couples — perhaps 40 to 50% — investigations do not find a clear cause.',
+          'Recurrent pregnancy loss simply means having two or more miscarriages. It is more common than most people expect — many couples who go through it have never heard anyone else speak about it, which can make it feel lonelier than it should.\n\nIt is also not the end of the road. For many couples, a healthy pregnancy is still very much within reach, especially with the right care and follow-up.',
       },
       {
-        heading: 'The investigation',
+        heading: 'Why it can happen',
         body:
-          'A thorough investigation for recurrent pregnancy loss typically includes:\n\nA blood test to assess clotting function — looking particularly for antiphospholipid syndrome, a treatable immune condition associated with pregnancy loss.\n\nA blood test for both partners to check chromosome structure (a karyotype test).\n\nAn ultrasound and possibly a hysteroscopy to look at the inside of the uterus.\n\nHormone tests — thyroid function, prolactin, and others.\n\nThis investigation is not about finding fault or blame. It is about finding information that helps us give the next pregnancy the best possible chance.',
+          'There is rarely a single reason, and often it is a mix of things. The most common cause is a problem with the baby’s chromosomes — something that happens by chance as an embryo forms, and not because of anything either partner did.\n\nOther causes include the shape of the uterus, hormone problems such as thyroid disease or diabetes, and certain blood-clotting or immune conditions. And sometimes, even after careful testing, no clear cause is found — which can be frustrating, but does not mean nothing can be done.',
       },
       {
-        heading: 'Treatment',
+        heading: 'The tests we may suggest',
         body:
-          'Treatment depends entirely on what the investigation finds.\n\nIf antiphospholipid syndrome is identified, low-dose aspirin and low molecular weight heparin (a blood-thinning injection) during pregnancy significantly reduces the risk of further loss.\n\nIf a uterine abnormality is found — a septum, polyp, or fibroid inside the cavity — surgical treatment can improve outcomes substantially.\n\nIf chromosomal abnormalities in the embryo are suspected, preimplantation genetic testing (PGT) during an IVF cycle allows us to test embryos before transfer and select those with the correct number of chromosomes. This is one of the most powerful tools available for couples with recurrent chromosomal losses.\n\nWhen investigations do not find a specific cause, a supervised pregnancy with close monitoring and sometimes aspirin or progesterone support can still improve outcomes.',
+          'To understand what is going on, we usually start with blood tests that look for conditions linked to pregnancy loss, and an ultrasound to check the uterus. Depending on your history, we may test for particular medical conditions and arrange specialised blood tests — including checks for APLAS, ANA, ENA, or thrombophilia markers, which relate to clotting and immune causes.\n\nIn some situations, genetic tests are helpful, either for both partners or on the pregnancy tissue itself. The aim of all of it is simple: to find anything treatable, so that the next pregnancy has the best possible support.',
       },
       {
-        heading: 'The emotional side',
+        heading: 'How it is treated',
         body:
-          'Loss is loss, and multiple losses carry a compounding weight that is hard to describe. The grief of each individual loss, the anxiety of each new pregnancy, the exhaustion of hoping and being disappointed — these are not small things. We do not expect couples to approach investigation and treatment clinically and without emotion.\n\nWhat we do expect is to be alongside you through this — to answer your questions honestly, to explain what we know and acknowledge what we do not, and to make sure you never feel like just a case number.',
+          'The reassuring news is that recurrent pregnancy loss can often be treated, and the approach depends on what we find.\n\nIf a hormone problem such as thyroid disease or diabetes is involved, or a blood-clotting disorder, medicines can help manage it. If there is a problem with the shape of the uterus, surgery can sometimes correct it. And in every case, close monitoring through the next pregnancy — staying near you and watching carefully — is part of giving it the best chance.',
       },
       {
-        heading: 'Reason for hope',
+        heading: 'The chances of a healthy pregnancy',
         body:
-          'The most important thing we want couples going through recurrent loss to know is this: most of them go on to have a healthy baby. Even without a clear cause being found, the majority of couples who experience recurrent loss have a successful pregnancy — often with careful monitoring and support during the next attempt.\n\nThe investigation and treatment journey is hard. But for most couples who walk through it with us, the destination is the one they hoped for.',
+          'This is the part we most want couples to hear. Most women who experience recurrent pregnancy loss go on to have a healthy baby — especially with proper medical care and regular follow-up.\n\nA run of losses does not mean you cannot have a successful pregnancy. For many couples, it is the beginning of finding the right support, not the end of the hope of a family.',
+      },
+      {
+        heading: 'When to see a doctor',
+        body:
+          'If you have had two or more miscarriages, it is worth seeing an obstetrician or fertility specialist. You do not need to keep wondering on your own.\n\nEarly care and steady support genuinely improve the chances of a healthy pregnancy — and just as importantly, they mean you do not have to carry this alone.',
       },
     ],
     keyTakeaways: [
-      'Most individual pregnancy losses — and many recurrent losses — are caused by chromosomal errors in the embryo. This is not caused by anything either partner did.',
-      'A thorough investigation can identify treatable causes in many couples — antiphospholipid syndrome, uterine abnormalities, and chromosome issues are all findable.',
-      'Preimplantation genetic testing (PGT) during IVF is one of the most powerful options for couples whose losses are due to chromosomal abnormalities.',
-      'Most couples who experience recurrent pregnancy loss go on to have a healthy baby.',
+      'Recurrent pregnancy loss means two or more miscarriages — and it is more common than many realise.',
+      'Causes range from the baby’s chromosomes to the shape of the uterus, hormone problems, and clotting or immune conditions; sometimes no cause is found.',
+      'Many of the causes are treatable, and close monitoring supports the next pregnancy.',
+      'Most women with recurrent pregnancy loss go on to have a healthy baby with the right care.',
     ],
     relatedSlugs: ['unexplained-infertility', 'age-and-ivf-success', 'what-ivf-really-is'],
   },
