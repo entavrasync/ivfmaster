@@ -161,19 +161,19 @@
     "facilityPhotos": {
       "reception": {
         "caption": "Reception — a calm first hello.",
-        "imageAlt": "Reserved space for a real photograph of the clinic reception"
+        "imageAlt": "The reception and welcome area at IVF Master."
       },
       "consultation": {
         "caption": "Consultation room — private space for unhurried conversations.",
-        "imageAlt": "Reserved space for a real photograph of a consultation room"
+        "imageAlt": "A private consultation room at IVF Master."
       },
       "laboratory": {
         "caption": "Embryology laboratory — precise, protected, and closely monitored.",
-        "imageAlt": "Reserved space for a real photograph of the embryology laboratory"
+        "imageAlt": "Inside the embryology laboratory at IVF Master."
       },
       "waiting": {
         "caption": "Waiting area — designed for quiet and comfort.",
-        "imageAlt": "Reserved space for a real photograph of the waiting area"
+        "imageAlt": "The waiting area at IVF Master."
       }
     }
   },
