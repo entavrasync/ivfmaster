@@ -22,10 +22,23 @@ test('team data defines the two real doctors and editable supporting-team slots'
   assert.equal(careTeam.length, 4)
   assert.equal(facilityPhotos.length, 4)
 
-  for (const item of [...doctors, ...careTeam, ...facilityPhotos]) {
+  for (const item of [...doctors, ...careTeam]) {
     assert(item.image.src.startsWith('/'), 'Team image slots must use public absolute paths')
     assert(item.image.altKey.length > 0, 'Every team image slot needs a translated alt key')
   }
+
+  // Facility areas hold one or more real clinic photos. A single image renders a
+  // plain tile; two or more turn that tile into the in-place carousel.
+  for (const facility of facilityPhotos) {
+    assert(facility.images.length >= 1, `Facility area ${facility.id} needs at least one photo`)
+    for (const image of facility.images) {
+      assert(image.src.startsWith('/'), 'Facility photos must resolve to a served asset path')
+    }
+  }
+
+  const lab = facilityPhotos.find((photo) => photo.messageKey === 'laboratory')
+  assert(lab !== undefined, 'Expected a laboratory facility area')
+  assert(lab.images.length >= 2, 'The laboratory tile drives the carousel and needs multiple photos')
 })
 
 test('all locales expose the same complete team-page message contract', () => {

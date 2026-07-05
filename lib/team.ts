@@ -1,5 +1,12 @@
+import type { StaticImageData } from 'next/image'
 import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
 import saiePhoto from '@/assets/doctor/saie.jpeg'
+import receptionPhoto from '@/assets/Clinic-photos/recetion.jpg'
+import consultingRoomPhoto from '@/assets/Clinic-photos/consulting-room.jpg'
+import laboratory1 from '@/assets/Clinic-photos/laboratory-1.jpg'
+import laboratory2 from '@/assets/Clinic-photos/laboratory-2.jpg'
+import laboratory3 from '@/assets/Clinic-photos/laboratory-3.jpg'
+import waitingAreaPhoto from '@/assets/Clinic-photos/waiting-area.jpg'
 
 export interface TeamImageSlot {
   readonly src: string
@@ -31,7 +38,12 @@ export interface FacilityPhoto {
   readonly id: string
   readonly messageKey: 'reception' | 'consultation' | 'laboratory' | 'waiting'
   readonly caption: string
-  readonly image: TeamImageSlot
+  /**
+   * One image renders as a normal image tile; two or more turn that same tile
+   * into an in-place carousel (auto-play + arrows + dots). To add more photos
+   * to an area later, just import the file and append it to this array.
+   */
+  readonly images: readonly StaticImageData[]
 }
 
 export const doctors: readonly Doctor[] = [
@@ -113,31 +125,33 @@ export const careTeam: readonly CareTeamMember[] = [
   },
 ] as const
 
-// Real clinic-interior photos to be provided — warm environment shots, NOT clinical procedure imagery.
+// Real clinic-interior photos — warm environment shots, NOT clinical procedure imagery.
 export const facilityPhotos: readonly FacilityPhoto[] = [
   {
     id: 'reception',
     messageKey: 'reception',
     caption: 'Reception — a calm first hello.',
-    image: { src: '/team/facility-placeholder.svg', altKey: 'facilityPhotos.reception.imageAlt' },
+    images: [receptionPhoto],
   },
   {
     id: 'consultation-room',
     messageKey: 'consultation',
     caption: 'Consultation room — private space for unhurried conversations.',
-    image: { src: '/team/facility-placeholder.svg', altKey: 'facilityPhotos.consultation.imageAlt' },
+    images: [consultingRoomPhoto],
   },
   {
     id: 'embryology-lab',
     messageKey: 'laboratory',
     caption: 'Embryology laboratory — precise, protected, and closely monitored.',
-    image: { src: '/team/facility-placeholder.svg', altKey: 'facilityPhotos.laboratory.imageAlt' },
+    // Multiple images → this tile becomes the in-place lab carousel.
+    // Append more '@/assets/Clinic-photos/laboratory-*.jpg' imports here to grow it.
+    images: [laboratory1, laboratory2, laboratory3],
   },
   {
     id: 'waiting-area',
     messageKey: 'waiting',
     caption: 'Waiting area — designed for quiet and comfort.',
-    image: { src: '/team/facility-placeholder.svg', altKey: 'facilityPhotos.waiting.imageAlt' },
+    images: [waitingAreaPhoto],
   },
 ] as const
 

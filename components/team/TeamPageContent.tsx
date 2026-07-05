@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 
 import { Container } from '@/components/layout/Container'
+import { FacilityCarousel } from '@/components/team/FacilityCarousel'
 import { Pressable } from '@/components/motion/Pressable'
 import { Reveal } from '@/components/motion/Reveal'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
@@ -257,13 +258,27 @@ export async function TeamPageContent() {
                       index % 3 === 0 ? 'aspect-[5/4] md:aspect-[16/10]' : 'aspect-[4/5] md:aspect-[6/5]'
                     )}
                   >
-                    <Image
-                      src={photo.image.src}
-                      alt={photo.imageAlt}
-                      fill
-                      sizes="(max-width: 767px) 84vw, 58vw"
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025] motion-reduce:transition-none"
-                    />
+                    {photo.images.length > 1 ? (
+                      <FacilityCarousel
+                        images={photo.images}
+                        alt={photo.imageAlt}
+                        sizes="(max-width: 767px) 84vw, 58vw"
+                        labels={{
+                          prev: t('facilityPrev'),
+                          next: t('facilityNext'),
+                          goTo: t('facilityGoTo'),
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src={photo.images[0]}
+                        alt={photo.imageAlt}
+                        fill
+                        sizes="(max-width: 767px) 84vw, 58vw"
+                        placeholder="blur"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
+                      />
+                    )}
                   </div>
                   <figcaption className="border-t border-white/70 bg-ivory px-5 py-5 text-base leading-7 text-ink/80 sm:px-7">
                     {photo.caption}
