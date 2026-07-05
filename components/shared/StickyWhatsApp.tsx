@@ -3,7 +3,7 @@
 import { MessageCircle } from 'lucide-react';
 
 export function StickyWhatsApp() {
-  const whatsappNumber = '919876543210';
+  const whatsappNumber = '919561096416';
   const message = encodeURIComponent(
     "Hi IVF Master! I'd like to know more about fertility treatment options."
   );

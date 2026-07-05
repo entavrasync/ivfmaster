@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -38,9 +39,12 @@ function CoverPlaceholder({
   featured?: boolean
 }) {
   const cs = CATEGORY_STYLES[article.category]
+  /* When the article carries a procedure photo, it fills the whole cover; the
+   * gradient stays behind it as a loading backdrop. Otherwise we fall back to
+   * the lettered placeholder. Same rule the article page uses. */
   return (
     <div
-      aria-hidden="true"
+      aria-hidden={article.coverImage ? undefined : 'true'}
       style={{
         width:          '100%',
         height:         '100%',
@@ -54,47 +58,61 @@ function CoverPlaceholder({
         justifyContent: 'center',
       }}
     >
-      <div
-        style={{
-          position:     'absolute',
-          top:          '-40px',
-          right:        '-40px',
-          width:        '180px',
-          height:       '180px',
-          borderRadius: '50%',
-          background:   cs.accentBg,
-          opacity:      1.4,
-        }}
-      />
-      <div
-        style={{
-          position:     'absolute',
-          bottom:       '-30px',
-          left:         '-30px',
-          width:        '140px',
-          height:       '140px',
-          borderRadius: '50%',
-          background:   cs.accentBg,
-          opacity:      0.9,
-        }}
-      />
-      <span
-        style={{
-          fontFamily:            'var(--font-display)',
-          fontSize:              featured ? '5rem' : '3.5rem',
-          fontWeight:            500,
-          fontVariationSettings: '"opsz" 72',
-          lineHeight:            1,
-          color:                 cs.accentEdge,
-          opacity:               0.18,
-          userSelect:            'none',
-          pointerEvents:         'none',
-          position:              'relative',
-          zIndex:                1,
-        }}
-      >
-        {article.title.charAt(0).toUpperCase()}
-      </span>
+      {article.coverImage ? (
+        <Image
+          src={article.coverImage}
+          alt={article.title}
+          fill
+          sizes={featured
+            ? '(max-width: 1024px) 100vw, 480px'
+            : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px'}
+          style={{ objectFit: 'cover' }}
+        />
+      ) : (
+        <>
+          <div
+            style={{
+              position:     'absolute',
+              top:          '-40px',
+              right:        '-40px',
+              width:        '180px',
+              height:       '180px',
+              borderRadius: '50%',
+              background:   cs.accentBg,
+              opacity:      1.4,
+            }}
+          />
+          <div
+            style={{
+              position:     'absolute',
+              bottom:       '-30px',
+              left:         '-30px',
+              width:        '140px',
+              height:       '140px',
+              borderRadius: '50%',
+              background:   cs.accentBg,
+              opacity:      0.9,
+            }}
+          />
+          <span
+            style={{
+              fontFamily:            'var(--font-display)',
+              fontSize:              featured ? '5rem' : '3.5rem',
+              fontWeight:            500,
+              fontVariationSettings: '"opsz" 72',
+              lineHeight:            1,
+              color:                 cs.accentEdge,
+              opacity:               0.18,
+              userSelect:            'none',
+              pointerEvents:         'none',
+              position:              'relative',
+              zIndex:                1,
+            }}
+          >
+            {article.title.charAt(0).toUpperCase()}
+          </span>
+        </>
+      )}
     </div>
   )
 }

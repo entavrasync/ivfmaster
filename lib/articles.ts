@@ -1,3 +1,13 @@
+import type { StaticImageData } from 'next/image'
+
+/* Procedure photos live under assets/procedure/<procedure>/. Statically imported
+ * so next/image gets intrinsic dimensions; an article with no photo yet simply
+ * omits coverImage and falls back to the lettered placeholder. */
+import ivfCover from '@/assets/procedure/IVF/IVF-main.jpeg'
+import maleFertilityCover from '@/assets/procedure/male-fertility/male-fertility.webp'
+import pcosCover from '@/assets/procedure/pcos/PCOS.webp'
+import recurrentPregnancyLossCover from '@/assets/pregnancy/recurrent-preganancy-loss.jpg'
+
 export type ArticleCategory = 'Conditions' | 'Understanding IVF' | 'Myths'
 
 export type ArticleSection = {
@@ -12,7 +22,7 @@ export type Article = {
   readonly excerpt:       string
   readonly date:          string     // ISO "YYYY-MM-DD"
   readonly readTime:      number     // minutes
-  readonly coverImage?:   string
+  readonly coverImage?:   StaticImageData
   readonly intro:         string
   readonly sections:      readonly ArticleSection[]
   readonly keyTakeaways?: readonly string[]
@@ -29,6 +39,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'Most people have heard of IVF. Far fewer know what it actually involves — and how much gentler it is than its reputation suggests.',
     date:     '2025-10-15',
     readTime: 9,
+    coverImage: ivfCover,
     intro:
       'IVF has a way of sounding more complicated — and more frightening — than it really is. The acronym alone can feel clinical and cold. But when you understand what is actually happening at each stage, it becomes something quite different: a careful, step-by-step process, with a real human team alongside you at every point. Here is what IVF really involves.',
     sections: [
@@ -90,6 +101,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'PCOS is a common, treatable hormonal condition that can affect your periods and fertility. Here’s what it is, the signs to watch for, and how we treat it.',
     date:     '2025-11-20',
     readTime: 5,
+    coverImage: pcosCover,
     intro:
       'Polycystic ovary syndrome — PCOS, now also known as PMOS (polyendocrine metabolic ovarian syndrome) — is one of the most common hormonal conditions in women. It can make periods irregular and make conceiving harder, and it often comes alongside weight gain, acne, or extra hair growth. Here is the part worth holding on to from the start: PCOS is treatable, and most women who have it go on to live healthy, full lives.',
     sections: [
@@ -152,6 +164,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'Male-factor infertility is common and often very treatable. The causes, the simple checks, and what men can do to help — explained clearly and kindly.',
     date:     '2025-12-05',
     readTime: 5,
+    coverImage: maleFertilityCover,
     intro:
       'When a couple is finding it hard to conceive, it is not only a question for the woman. Male-factor infertility — when a man has difficulty helping his partner conceive after about a year of trying, with regular unprotected sex — is common, and it deserves the same care and attention. The encouraging news is that it is often very treatable. Here is what can affect male fertility, how we check it, and what you can do to help.',
     sections: [
@@ -208,6 +221,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'Recurrent miscarriage — two or more losses — is more common than many realise, and a healthy pregnancy is often still possible. The causes, tests, and treatment.',
     date:     '2026-01-18',
     readTime: 5,
+    coverImage: recurrentPregnancyLossCover,
     intro:
       'Losing a pregnancy is painful in a way that is hard to put into words, and losing more than one can feel frightening and lonely. Recurrent pregnancy loss — having two or more miscarriages — is more common than many people realise. If it is happening to you, please hold on to this first: in many cases, a healthy pregnancy is still very possible. Understanding why it is happening is the most helpful place to begin.',
     sections: [

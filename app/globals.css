@@ -11,8 +11,9 @@
    ───────────────────────────────────────────────────────────────────────── */
 @theme inline {
   /* Fonts */
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-body:    var(--font-figtree), system-ui, sans-serif;
+  --font-display:   var(--font-fraunces), Georgia, serif;
+  --font-body:      var(--font-figtree), system-ui, sans-serif;
+  --font-signature: var(--font-sacramento), cursive;
 
   /* Brand palette — 7 semantic colors */
   --color-ivory:      #FBF7F1;
@@ -78,8 +79,9 @@
   color-scheme: light;
 
   /* Font stacks — needed for var(--font-display) in @utility output */
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-body:    var(--font-figtree), system-ui, sans-serif;
+  --font-display:   var(--font-fraunces), Georgia, serif;
+  --font-body:      var(--font-figtree), system-ui, sans-serif;
+  --font-signature: var(--font-sacramento), cursive;
 
   /* Brand palette */
   --color-ivory:      #FBF7F1;
@@ -238,4 +240,20 @@
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* ─── Discreet footer build signature — faint by default, reveals on hover ── */
+.dev-credit .dev-credit-label {
+  color: rgba(251, 247, 241, 0.11);
+  transition: color 0.45s ease;
+}
+.dev-credit .dev-credit-name {
+  color: rgba(251, 247, 241, 0.22);
+  transition: color 0.45s ease;
+}
+.dev-credit:hover .dev-credit-label {
+  color: rgba(251, 247, 241, 0.34);
+}
+.dev-credit:hover .dev-credit-name {
+  color: rgba(251, 247, 241, 0.62);
 }

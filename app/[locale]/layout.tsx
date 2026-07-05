@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree, Fraunces } from 'next/font/google'
+import { Figtree, Fraunces, Sacramento } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
@@ -24,6 +24,14 @@ const fraunces = Fraunces({
   variable: '--font-fraunces',
   display: 'swap',
   axes: ['opsz'],
+})
+
+// Handwriting script — used only for the discreet build signature in the footer
+const sacramento = Sacramento({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-sacramento',
+  display: 'swap',
 })
 
 // Generates locale-specific <title> and <meta description> from messages/[locale].json
@@ -111,7 +119,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${figtree.variable} ${fraunces.variable}`}
+      className={`${figtree.variable} ${fraunces.variable} ${sacramento.variable}`}
     >
       <GoogleTagManager />
       <body suppressHydrationWarning className={figtree.className}>
