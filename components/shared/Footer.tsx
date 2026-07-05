@@ -11,9 +11,9 @@ import { useLocale, useTranslations } from 'next-intl'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-/* TODO: replace with real WhatsApp number before launch */
-const WA_URL     = 'https://wa.me/91XXXXXXXXXX'
-const PHONE_HREF = 'tel:+91XXXXXXXXXX'
+const WA_URL     = 'https://wa.me/919561096416'
+const PHONE_HREF = 'tel:+919561096416'
+const MAPS_URL   = 'https://maps.app.goo.gl/Y3DsxDj24qMeM35bA'
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
 
@@ -111,6 +111,48 @@ function FooterLanguageSwitcher() {
   )
 }
 
+/* ─── Discreet build credit — faint by default, brightens on hover ───────── */
+
+function DevCredit() {
+  return (
+    <Link
+      className="dev-credit"
+      href="https://www.linkedin.com/in/karan-dabre-897827167/"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Designed & developed by Karan Dabare — LinkedIn profile"
+      style={{
+        display:        'inline-flex',
+        alignItems:     'baseline',
+        gap:            '0.4rem',
+        whiteSpace:     'nowrap',
+        textDecoration: 'none',
+      }}
+    >
+      <span
+        className="dev-credit-label"
+        style={{
+          fontFamily:    'var(--font-body)',
+          fontSize:      '0.625rem',
+          letterSpacing: '0.06em',
+        }}
+      >
+        Designed &amp; developed by
+      </span>
+      <span
+        className="dev-credit-name"
+        style={{
+          fontFamily: 'var(--font-signature)',
+          fontSize:   '1.25rem',
+          lineHeight: 1,
+        }}
+      >
+        Karan Dabare
+      </span>
+    </Link>
+  )
+}
+
 /* ─── Footer ─────────────────────────────────────────────────────────────── */
 
 export function Footer() {
@@ -122,9 +164,9 @@ export function Footer() {
     text:  string
     href?: string
   }> = [
-    { Icon: MapPin, text: t('address')                                              },
+    { Icon: MapPin, text: t('address'), href: MAPS_URL                              },
     { Icon: Clock,  text: t('hours')                                                },
-    { Icon: Phone,  text: t('phone'), /* TODO: real number */ href: PHONE_HREF      },
+    { Icon: Phone,  text: t('phone'), href: PHONE_HREF                              },
     { Icon: Mail,   text: t('email'), href: 'mailto:ivfmaster.in@gmail.com'              },
   ]
 
@@ -318,6 +360,8 @@ export function Footer() {
                   {href ? (
                     <a
                       href={href}
+                      target={href.startsWith('http') ? '_blank' : undefined}
+                      rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       style={{
                         ...LINK_STYLE,
                         fontSize: '0.875rem',
@@ -356,7 +400,7 @@ export function Footer() {
               alignItems:     'center',
               gap:            '0.75rem',
               paddingTop:     '1.25rem',
-              paddingBottom:  '1.5rem',
+              paddingBottom:  '1rem',
             }}
           >
             <p
@@ -389,6 +433,11 @@ export function Footer() {
                 </Link>
               ))}
             </div>
+          </div>
+
+          {/* Discreet build credit, tucked into the corner */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: '1.25rem' }}>
+            <DevCredit />
           </div>
         </Container>
       </div>

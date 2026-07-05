@@ -38,7 +38,7 @@ export const siteConfig = {
   contact: {
     email: 'ivfmaster.in@gmail.com',
     telephone: '+91 95610 96416',
-    whatsappNumber: '91XXXXXXXXXX',
+    whatsappNumber: '919561096416',
   },
   social: {
     instagram:

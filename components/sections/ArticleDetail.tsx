@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { motion } from 'motion/react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -54,9 +55,13 @@ function CategoryBadge({ category }: { category: ArticleCategory }) {
 
 function HeroCover({ article }: { article: Article }) {
   const cs = CATEGORY_STYLES[article.category]
+  /* A real procedure photo takes over the whole frame when the article has one;
+   * otherwise we keep the lettered gradient placeholder. The gradient stays as a
+   * warm backdrop while the photo loads. */
+  const hasImage = Boolean(article.coverImage)
   return (
     <div
-      aria-hidden="true"
+      aria-hidden={hasImage ? undefined : 'true'}
       style={{
         width:        '100%',
         aspectRatio:  '21 / 9',
@@ -70,25 +75,38 @@ function HeroCover({ article }: { article: Article }) {
         boxShadow:    '0 24px 52px -16px rgba(46,79,142,0.14)',
       }}
     >
-      <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '300px', height: '300px', borderRadius: '50%', background: cs.accentBg, opacity: 1.2 }} />
-      <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '240px', height: '240px', borderRadius: '50%', background: cs.accentBg, opacity: 0.9 }} />
-      <span
-        style={{
-          fontFamily:            'var(--font-display)',
-          fontSize:              '8rem',
-          fontWeight:            500,
-          fontVariationSettings: '"opsz" 96',
-          lineHeight:            1,
-          color:                 cs.accentEdge,
-          opacity:               0.14,
-          userSelect:            'none',
-          pointerEvents:         'none',
-          position:              'relative',
-          zIndex:                1,
-        }}
-      >
-        {article.title.charAt(0).toUpperCase()}
-      </span>
+      {article.coverImage ? (
+        <Image
+          src={article.coverImage}
+          alt={article.title}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 1120px"
+          style={{ objectFit: 'cover' }}
+        />
+      ) : (
+        <>
+          <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '300px', height: '300px', borderRadius: '50%', background: cs.accentBg, opacity: 1.2 }} />
+          <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '240px', height: '240px', borderRadius: '50%', background: cs.accentBg, opacity: 0.9 }} />
+          <span
+            style={{
+              fontFamily:            'var(--font-display)',
+              fontSize:              '8rem',
+              fontWeight:            500,
+              fontVariationSettings: '"opsz" 96',
+              lineHeight:            1,
+              color:                 cs.accentEdge,
+              opacity:               0.14,
+              userSelect:            'none',
+              pointerEvents:         'none',
+              position:              'relative',
+              zIndex:                1,
+            }}
+          >
+            {article.title.charAt(0).toUpperCase()}
+          </span>
+        </>
+      )}
     </div>
   )
 }
@@ -135,12 +153,24 @@ function RelatedCard({ article, reduced }: { article: Article; reduced: boolean 
             position:    'relative',
             overflow:    'hidden',
           }}
-          aria-hidden="true"
+          aria-hidden={article.coverImage ? undefined : 'true'}
         >
-          <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100px', height: '100px', borderRadius: '50%', background: cs.accentBg }} />
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 500, fontVariationSettings: '"opsz" 40', color: cs.accentEdge, opacity: 0.20, userSelect: 'none', position: 'relative', zIndex: 1 }}>
-            {article.title.charAt(0)}
-          </span>
+          {article.coverImage ? (
+            <Image
+              src={article.coverImage}
+              alt={article.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+              style={{ objectFit: 'cover' }}
+            />
+          ) : (
+            <>
+              <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100px', height: '100px', borderRadius: '50%', background: cs.accentBg }} />
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 500, fontVariationSettings: '"opsz" 40', color: cs.accentEdge, opacity: 0.20, userSelect: 'none', position: 'relative', zIndex: 1 }}>
+                {article.title.charAt(0)}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Body */}

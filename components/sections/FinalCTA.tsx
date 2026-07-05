@@ -13,10 +13,11 @@ import clinicFrontDoor from "@/assets/Clinic-photos/clinic-front-door.jpg"
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-/* TODO: replace with real clinic WhatsApp number before launch */
-const WA_URL = `https://wa.me/91XXXXXXXXXX?text=${encodeURIComponent(
+const WA_URL = `https://wa.me/919561096416?text=${encodeURIComponent(
   "Hello, I'd like to know more about fertility treatment at IVF Master."
 )}`
+
+const MAPS_URL = 'https://maps.app.goo.gl/Y3DsxDj24qMeM35bA'
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
@@ -30,9 +31,9 @@ export function FinalCTA() {
     detail: string
     href?:  string
   }> = [
-    { Icon: MapPin, label: t('clinicLabel'), detail: t('clinicAddress')                          },
+    { Icon: MapPin, label: t('clinicLabel'), detail: t('clinicAddress'), href: MAPS_URL           },
     { Icon: Clock,  label: t('hoursLabel'),  detail: t('hoursDetail')                           },
-    { Icon: Phone,  label: t('reachLabel'),  detail: t('reachPhone'), href: 'tel:+91XXXXXXXXXX' },
+    { Icon: Phone,  label: t('reachLabel'),  detail: t('reachPhone'), href: 'tel:+919561096416' },
   ]
 
   const containerV = {
@@ -196,6 +197,8 @@ export function FinalCTA() {
                     {href ? (
                       <a
                         href={href}
+                        target={href.startsWith('http') ? '_blank' : undefined}
+                        rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                         style={{
                           fontFamily:     'var(--font-body)',
                           fontSize:       '0.9375rem',
@@ -293,7 +296,6 @@ export function FinalCTA() {
            * and remove the placeholder markup below.
            */}
           <motion.figure
-            aria-hidden="true"
             initial={{ opacity: reduced ? 1 : 0, scale: reduced ? 1 : 0.97, y: reduced ? 0 : 16 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
@@ -314,6 +316,14 @@ export function FinalCTA() {
           >
             <Image src={clinicFrontDoor.src} alt="Mandrupkar Clinic" fill style={{ objectFit: 'cover', objectPosition: 'center top' }}  />
 
+            {/* Whole photo opens the clinic on Google Maps */}
+            <a
+              href={MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Mandrupkar Clinic location on Google Maps"
+              style={{ position: 'absolute', inset: 0, zIndex: 1, cursor: 'pointer' }}
+            />
           </motion.figure>
         </div>
       </Container>
