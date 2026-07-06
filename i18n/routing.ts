@@ -4,16 +4,20 @@ import { defineRouting } from 'next-intl/routing';
 // Import this in: middleware, i18n/request.ts, i18n/navigation.ts,
 // and any generateStaticParams that needs to enumerate all locales.
 export const routing = defineRouting({
-  locales: ['en', 'hi', 'mr'] as const,
-  defaultLocale: 'en',
+  locales: ['mr', 'hi', 'en'] as const,
+  defaultLocale: 'mr',
 
-  // 'as-needed': default locale (en) has no URL prefix.
-  // /about         → English
+  // 'as-needed': the default locale (mr) has no URL prefix.
+  // /about         → Marathi (primary)
   // /hi/about      → Hindi
-  // /mr/about      → Marathi
-  // This gives clean URLs for the majority (English) while still
-  // giving Hindi/Marathi their own SEO-indexable URL.
+  // /en/about      → English
+  // Marathi is the primary experience, so it owns the clean root URLs while
+  // Hindi and English keep their own SEO-indexable prefixes.
   localePrefix: 'as-needed',
+
+  // Always land visitors on Marathi (the default) rather than auto-switching by
+  // the browser's Accept-Language. Visitors can still pick Hindi/English via the switcher.
+  localeDetection: false,
 });
 
-export type Locale = (typeof routing.locales)[number]; // 'en' | 'hi' | 'mr'
+export type Locale = (typeof routing.locales)[number]; // 'mr' | 'hi' | 'en'
