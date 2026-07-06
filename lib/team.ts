@@ -1,6 +1,7 @@
 import type { StaticImageData } from 'next/image'
 import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
 import saiePhoto from '@/assets/doctor/saie.jpeg'
+import pankajPhoto from '@/assets/doctor/Embryologist-doc-pankaj.png'
 import receptionPhoto from '@/assets/Clinic-photos/recetion.jpg'
 import consultingRoomPhoto from '@/assets/Clinic-photos/consulting-room.jpg'
 import laboratory1 from '@/assets/Clinic-photos/laboratory-1.jpg'
@@ -27,10 +28,12 @@ export interface Doctor {
 
 export interface CareTeamMember {
   readonly id: string
-  readonly messageKey: 'coordinator' | 'nurse' | 'embryologist' | 'counsellor'
+  readonly messageKey: 'nurse' | 'embryologist'
   readonly name: string
   readonly role: string
   readonly blurb: string
+  /** Optional credential bullets — present for confirmed team members like the embryologist. */
+  readonly credentials?: readonly string[]
   readonly image: TeamImageSlot
 }
 
@@ -51,16 +54,16 @@ export const doctors: readonly Doctor[] = [
     slug: 'gorakh-mandrupkar',
     messageKey: 'gorakh',
     name: 'Dr. Gorakh Mandrupkar',
-    title: 'Fertility specialist and obstetrician',
+    title: 'Reproductive medicine and infertility specialist',
     essence: 'The doctor who explains until it finally makes sense.',
     intro:
       'Dr. Gorakh believes that understanding your treatment is part of feeling safe in it. He takes time to explain the science plainly, answer every question, and build a plan around the couple in front of him.',
     credentials: [
-      'Gold Medallist, Pune University (2004)',
-      '20+ years in reproductive medicine',
+      'Gold Medallist in Gynecology, Pune University (2004)',
+      'Consultant in reproductive medicine since March 2006 — 20+ years',
       '2,000+ couples cared for',
       "Developed the HDP Gestosis Score, adopted by India's National Health Mission",
-      'Former director of a FOGSI IVF training centre',
+      'Director of a FOGSI-recognized IVF training centre (10+ years)',
     ],
     image: {
       src: gorakhPhoto.src,
@@ -72,12 +75,12 @@ export const doctors: readonly Doctor[] = [
     slug: 'saie-mandrupkar',
     messageKey: 'saie',
     name: 'Dr. Saie Mandrupkar',
-    title: 'High-risk obstetrician and reproductive medicine specialist',
+    title: 'High-risk obstetrics, gynecology and reproductive medicine',
     essence: 'Gentle with people, fierce about their care.',
     intro:
       'Dr. Saie brings steadiness to the moments that feel most uncertain. Her work in high-risk obstetrics and reproductive medicine is grounded in careful attention, calm communication, and the conviction that every patient deserves to feel heard.',
     credentials: [
-      'Pune University',
+      'Postgraduate in Obstetrics & Gynecology, Pune University (2005)',
       '20+ years in high-risk obstetrics and reproductive medicine',
       '2,000+ couples cared for',
     ],
@@ -89,15 +92,23 @@ export const doctors: readonly Doctor[] = [
   },
 ] as const
 
-// Care-team names, roles, and photos to be provided by the clinic.
+// Care-team roster. The embryologist is confirmed; the fertility-nurse slot is a
+// placeholder until the clinic provides a name and photo.
 export const careTeam: readonly CareTeamMember[] = [
   {
-    id: 'patient-coordinator',
-    messageKey: 'coordinator',
-    name: 'Name to be confirmed',
-    role: 'Patient coordinator',
-    blurb: 'The familiar face who helps every visit feel less unfamiliar.',
-    image: { src: '/team/care-placeholder.svg', altKey: 'careTeam.coordinator.imageAlt' },
+    id: 'embryologist',
+    messageKey: 'embryologist',
+    name: 'Dr. Pankaj Kaingade',
+    role: 'Embryologist & reproductive biologist',
+    blurb:
+      'The careful hands behind our laboratory — pairing scientific precision with genuine care for what each embryo represents.',
+    credentials: [
+      'PhD, Charotar University of Science and Technology (CHARUSAT), Gujarat',
+      '1000+ IVF-ICSI cycles handled',
+      'Invited across centres for his ICSI expertise',
+      'Published peer-reviewed research in reproductive biology & stem cells',
+    ],
+    image: { src: pankajPhoto.src, altKey: 'careTeam.embryologist.imageAlt', position: 'center 20%' },
   },
   {
     id: 'fertility-nurse',
@@ -106,22 +117,6 @@ export const careTeam: readonly CareTeamMember[] = [
     role: 'Fertility nurse',
     blurb: 'The steady hand beside you through medicines, questions, and next steps.',
     image: { src: '/team/care-placeholder.svg', altKey: 'careTeam.nurse.imageAlt' },
-  },
-  {
-    id: 'embryologist',
-    messageKey: 'embryologist',
-    name: 'Name to be confirmed',
-    role: 'Embryologist',
-    blurb: 'The careful specialist protecting the quiet work inside our laboratory.',
-    image: { src: '/team/care-placeholder.svg', altKey: 'careTeam.embryologist.imageAlt' },
-  },
-  {
-    id: 'counsellor',
-    messageKey: 'counsellor',
-    name: 'Name to be confirmed',
-    role: 'Fertility counsellor',
-    blurb: 'The person who makes room for every feeling this journey can bring.',
-    image: { src: '/team/care-placeholder.svg', altKey: 'careTeam.counsellor.imageAlt' },
   },
 ] as const
 

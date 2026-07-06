@@ -30,9 +30,10 @@ export const siteConfig = {
   locale: routing.defaultLocale,
   locales: routing.locales,
   address: {
-    streetAddress: 'Mandrupkar Clinic, Ishwarpur',
-    addressLocality: 'Sangli',
+    streetAddress: '1st Floor, Dr. Gosavi Hospital, Ganesh Bhaji Mandai, Mantri Colony',
+    addressLocality: 'Urun-Ishwarpur',
     addressRegion: 'Maharashtra',
+    postalCode: '415409',
     addressCountry: 'IN',
   },
   contact: {

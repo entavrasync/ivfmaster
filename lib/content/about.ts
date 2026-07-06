@@ -96,8 +96,8 @@ export const aboutContent = {
       pullQuote: 'Experience matters most when it helps someone feel less lost.',
       paragraphs: [
         'For Dr. Gorakh Mandrupkar, reproductive medicine has always involved two responsibilities: practising it carefully and making it understandable. He has worked as a consultant in reproductive medicine since March 2006, building more than two decades of experience around the questions couples bring into the consultation room.',
-        'His academic path includes a Pune University Gold Medal in Gynecology in 2004. Over time, that foundation expanded into clinical care for more than 2,000 couples, research in women\'s health, and ten years directing a FOGSI-recognized IVF training centre where gynecologists received training in IUI and IVF techniques.',
-        'The same practical curiosity led him to develop the HDP Gestosis Score, a screening tool for women at risk of preeclampsia that was adopted for clinical use by India\'s National Health Mission. At the clinic, research and teaching are not separate from patient care; they shape how evidence is questioned, explained, and applied to each couple.',
+        'His academic path includes a Pune University Gold Medal in Gynecology in 2004. Over time, that foundation expanded into clinical care for more than 2,000 couples, research in women\'s health, and more than ten years directing a FOGSI-recognized IVF training centre, where gynecologists train in IUI and IVF techniques.',
+        'The same practical curiosity led him to develop the HDP Gestosis Score, a screening tool for women at risk of preeclampsia that was adopted for clinical use by India\'s National Health Mission. He also serves as an honorary member on national committees of the Government of India and leading national associations of gynecologists. At the clinic, research and teaching are not separate from patient care; they shape how evidence is questioned, explained, and applied to each couple.',
       ],
       evidence: 'Clinical practice, research, and teaching are treated as one responsibility: improving the quality of the next decision.',
       image: {

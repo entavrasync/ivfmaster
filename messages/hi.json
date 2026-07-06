@@ -67,7 +67,7 @@
     "panelInstagram":          "Instagram",
     "panelInstagramSub":       "लाइव केस स्टडीज़ और अपडेट",
     "panelAddressLabel":       "हमारा क्लिनिक",
-    "panelAddress":            "मंद्रुपकर क्लिनिक, ईश्वरपुर, सांगली, महाराष्ट्र",
+    "panelAddress":            "डॉ. गोसावी हॉस्पिटल की पहली मंज़िल, गणेश भाजी मंडई, मंत्री कॉलोनी, उरुण-ईश्वरपुर, महाराष्ट्र 415409",
     "panelHoursLabel":         "समय",
     "panelHours":              "सोम–शनि, सुबह 10 – रात 8 बजे",
     "panelMapCta":             "Google Maps पर देखें",
@@ -78,102 +78,96 @@
   },
 
   "Team": {
-    "metaTitle": "Meet the people behind your care - IVF Master",
-    "metaDescription": "Meet Dr. Gorakh Mandrupkar, Dr. Saie Mandrupkar, and the people who make fertility care at IVF Master feel personal, clear, and safe.",
-    "eyebrow": "The people behind your care",
-    "headline": "You’ll know us by name — and we’ll know you.",
-    "lead": "From the first hello at reception to the doctor who guides your treatment, the same people walk with you the whole way. Here they are.",
-    "doctorsEyebrow": "Your doctors",
-    "doctorsHeading": "The doctors who will know your story.",
-    "doctorsLead": "Warmth comes first. Decades of experience, careful medicine, and honest explanations are the quiet proof behind it.",
-    "coupleNote": "Married for over twenty years — and partners in every couple’s care.",
-    "portraitPlaceholder": "Portrait photo to be provided by the clinic.",
-    "doctorTalkCta": "Talk with Dr. {name}",
-    "doctorStoryCta": "Read {name}’s full story",
-    "careTeamEyebrow": "Around you at every step",
-    "careTeamHeading": "The people who’ll look after you.",
-    "careTeamLead": "These are the people who answer the phone, remember what you asked last time, and make the clinical parts of care feel human.",
-    "facilityEyebrow": "Inside IVF Master",
-    "facilityHeading": "Where you’ll be cared for.",
-    "facilityLead": "A calm, private, modern clinic designed to make difficult conversations and careful treatment feel a little easier.",
-    "facilitySwipeHint": "Swipe to see more of the clinic.",
-    "closingHeadline": "Come meet us — the first visit is just a conversation.",
-    "closingCta": "Book your consultation",
-    "closingNote": "No pressure — just the start of knowing each other.",
-    "detailBack": "Back to the team",
-    "detailCredentialsHeading": "Experience and quiet proof",
+    "metaTitle": "आपकी देखभाल करने वाले लोगों से मिलें - IVF Master",
+    "metaDescription": "Dr. Gorakh Mandrupkar, Dr. Saie Mandrupkar और उन लोगों से मिलें जो IVF Master में फर्टिलिटी देखभाल को व्यक्तिगत, स्पष्ट और सुरक्षित बनाते हैं।",
+    "eyebrow": "आपकी देखभाल के पीछे के लोग",
+    "headline": "आप हमें नाम से जानेंगे — और हम आपको।",
+    "lead": "रिसेप्शन पर पहली मुलाकात से लेकर आपके उपचार का मार्गदर्शन करने वाले डॉक्टर तक, वही लोग पूरे सफर में आपके साथ चलते हैं। ये रहे वे।",
+    "doctorsEyebrow": "आपके डॉक्टर",
+    "doctorsHeading": "वे डॉक्टर जो आपकी कहानी जानेंगे।",
+    "doctorsLead": "पहले आती है आत्मीयता। दशकों का अनुभव, सावधान चिकित्सा और ईमानदार व्याख्याएं उसके पीछे का शांत प्रमाण हैं।",
+    "coupleNote": "बीस वर्षों से अधिक का विवाहित जीवन — और हर दंपत्ति की देखभाल में साझेदार।",
+    "portraitPlaceholder": "क्लिनिक द्वारा उपलब्ध कराई जाने वाली पोर्ट्रेट तस्वीर।",
+    "doctorTalkCta": "Dr. {name} से बात करें",
+    "doctorStoryCta": "{name} की पूरी कहानी पढ़ें",
+    "careTeamEyebrow": "हर कदम पर आपके साथ",
+    "careTeamHeading": "वे लोग जो आपकी देखभाल करेंगे।",
+    "careTeamLead": "ये वही लोग हैं जो फोन उठाते हैं, याद रखते हैं कि पिछली बार आपने क्या पूछा था, और देखभाल के क्लिनिकल हिस्सों को इंसानी बनाते हैं।",
+    "facilityEyebrow": "IVF Master के भीतर",
+    "facilityHeading": "जहाँ आपकी देखभाल होगी।",
+    "facilityLead": "एक शांत, निजी, आधुनिक क्लिनिक — जो कठिन बातचीत और सावधान उपचार को थोड़ा आसान बनाने के लिए बनाया गया है।",
+    "facilitySwipeHint": "क्लिनिक को और देखने के लिए स्वाइप करें।",
+    "closingHeadline": "आइए हमसे मिलें — पहली मुलाकात बस एक बातचीत है।",
+    "closingCta": "अपना परामर्श बुक करें",
+    "closingNote": "कोई दबाव नहीं — बस एक-दूसरे को जानने की शुरुआत।",
+    "detailBack": "टीम पर वापस जाएं",
+    "detailCredentialsHeading": "अनुभव और शांत प्रमाण",
     "doctors": {
       "gorakh": {
         "name": "Dr. Gorakh Mandrupkar",
-        "title": "Fertility specialist and obstetrician",
-        "essence": "The doctor who explains until it finally makes sense.",
-        "intro": "Dr. Gorakh believes that understanding your treatment is part of feeling safe in it. He takes time to explain the science plainly, answer every question, and build a plan around the couple in front of him.",
+        "title": "प्रजनन चिकित्सा एवं निःसंतानता विशेषज्ञ",
+        "essence": "वह डॉक्टर जो तब तक समझाते हैं जब तक बात पूरी तरह समझ न आ जाए।",
+        "intro": "Dr. Gorakh मानते हैं कि अपने उपचार को समझना ही उसमें सुरक्षित महसूस करने का हिस्सा है। वे विज्ञान को सरल भाषा में समझाने, हर सवाल का जवाब देने और सामने बैठे दंपत्ति के अनुसार योजना बनाने में समय लगाते हैं।",
         "credentials": [
-          "Gold Medallist, Pune University (2004)",
-          "20+ years in reproductive medicine",
-          "2,000+ couples cared for",
-          "Developed the HDP Gestosis Score, adopted by India’s National Health Mission",
-          "Former director of a FOGSI IVF training centre"
+          "स्त्री रोग में स्वर्ण पदक, पुणे विश्वविद्यालय (2004)",
+          "मार्च 2006 से प्रजनन चिकित्सा में परामर्शदाता — 20+ वर्ष",
+          "2,000+ दंपत्तियों की देखभाल",
+          "HDP Gestosis Score विकसित किया, जिसे भारत के राष्ट्रीय स्वास्थ्य मिशन ने अपनाया",
+          "FOGSI-मान्यता प्राप्त IVF प्रशिक्षण केंद्र के निदेशक (10+ वर्ष)"
         ],
-        "imageAlt": "Reserved portrait space for Dr. Gorakh Mandrupkar",
-        "metaDescription": "Meet Dr. Gorakh Mandrupkar, fertility specialist, Gold Medallist, and co-founder of IVF Master."
+        "imageAlt": "Dr. Gorakh Mandrupkar के लिए आरक्षित पोर्ट्रेट स्थान",
+        "metaDescription": "Dr. Gorakh Mandrupkar से मिलें — प्रजनन चिकित्सा एवं निःसंतानता विशेषज्ञ, पुणे विश्वविद्यालय स्वर्ण पदक विजेता (2004), और HDP Gestosis Score के विकासकर्ता।"
       },
       "saie": {
         "name": "Dr. Saie Mandrupkar",
-        "title": "High-risk obstetrician and reproductive medicine specialist",
-        "essence": "Gentle with people, fierce about their care.",
-        "intro": "Dr. Saie brings steadiness to the moments that feel most uncertain. Her work in high-risk obstetrics and reproductive medicine is grounded in careful attention, calm communication, and the conviction that every patient deserves to feel heard.",
+        "title": "उच्च-जोखिम प्रसूति, स्त्री रोग एवं प्रजनन चिकित्सा",
+        "essence": "लोगों के प्रति कोमल, उनकी देखभाल के प्रति दृढ़।",
+        "intro": "Dr. Saie उन क्षणों में स्थिरता लाती हैं जो सबसे अनिश्चित लगते हैं। उच्च-जोखिम प्रसूति और प्रजनन चिकित्सा में उनका काम सावधान ध्यान, शांत संवाद और इस विश्वास पर टिका है कि हर मरीज़ को सुना जाना चाहिए।",
         "credentials": [
-          "Pune University",
-          "20+ years in high-risk obstetrics and reproductive medicine",
-          "2,000+ couples cared for"
+          "प्रसूति एवं स्त्री रोग में स्नातकोत्तर, पुणे विश्वविद्यालय (2005)",
+          "उच्च-जोखिम प्रसूति और प्रजनन चिकित्सा में 20+ वर्ष",
+          "2,000+ दंपत्तियों की देखभाल"
         ],
-        "imageAlt": "Reserved portrait space for Dr. Saie Mandrupkar",
-        "metaDescription": "Meet Dr. Saie Mandrupkar, high-risk obstetrician and reproductive medicine specialist at IVF Master."
+        "imageAlt": "Dr. Saie Mandrupkar के लिए आरक्षित पोर्ट्रेट स्थान",
+        "metaDescription": "Dr. Saie Mandrupkar से मिलें — IVF Master में उच्च-जोखिम प्रसूति, स्त्री रोग एवं प्रजनन चिकित्सा विशेषज्ञ।"
       }
     },
     "careTeam": {
-      "coordinator": {
-        "name": "Name to be confirmed",
-        "role": "Patient coordinator",
-        "blurb": "The familiar face who helps every visit feel less unfamiliar.",
-        "imageAlt": "Reserved photo space for the patient coordinator"
-      },
       "nurse": {
-        "name": "Name to be confirmed",
-        "role": "Fertility nurse",
-        "blurb": "The steady hand beside you through medicines, questions, and next steps.",
-        "imageAlt": "Reserved photo space for the fertility nurse"
+        "name": "नाम की पुष्टि बाद में होगी",
+        "role": "फर्टिलिटी नर्स",
+        "blurb": "दवाओं, सवालों और अगले कदमों में आपके साथ खड़ा स्थिर सहारा।",
+        "imageAlt": "फर्टिलिटी नर्स के लिए आरक्षित फोटो स्थान"
       },
       "embryologist": {
-        "name": "Name to be confirmed",
-        "role": "Embryologist",
-        "blurb": "The careful specialist protecting the quiet work inside our laboratory.",
-        "imageAlt": "Reserved photo space for the embryologist"
-      },
-      "counsellor": {
-        "name": "Name to be confirmed",
-        "role": "Fertility counsellor",
-        "blurb": "The person who makes room for every feeling this journey can bring.",
-        "imageAlt": "Reserved photo space for the fertility counsellor"
+        "name": "Dr. Pankaj Kaingade",
+        "role": "भ्रूणविज्ञानी एवं प्रजनन जीवविज्ञानी",
+        "blurb": "हमारी प्रयोगशाला के काम के पीछे के सावधान हाथ — वैज्ञानिक सटीकता के साथ इस भाव की देखभाल कि हर भ्रूण किसी के लिए क्या मायने रखता है।",
+        "credentials": [
+          "PhD, Charotar University of Science and Technology (CHARUSAT), गुजरात",
+          "1000+ IVF-ICSI चक्र संभाले",
+          "ICSI विशेषज्ञता के लिए विभिन्न केंद्रों पर आमंत्रित",
+          "प्रजनन जीवविज्ञान और स्टेम सेल पर सहकर्मी-समीक्षित शोध प्रकाशित"
+        ],
+        "imageAlt": "Dr. Pankaj Kaingade, IVF Master में भ्रूणविज्ञानी"
       }
     },
     "facilityPhotos": {
       "reception": {
-        "caption": "Reception — a calm first hello.",
-        "imageAlt": "The reception and welcome area at IVF Master."
+        "caption": "रिसेप्शन — एक शांत पहली मुलाकात।",
+        "imageAlt": "IVF Master का रिसेप्शन और स्वागत क्षेत्र।"
       },
       "consultation": {
-        "caption": "Consultation room — private space for unhurried conversations.",
-        "imageAlt": "A private consultation room at IVF Master."
+        "caption": "परामर्श कक्ष — इत्मीनान से बातचीत के लिए निजी स्थान।",
+        "imageAlt": "IVF Master का एक निजी परामर्श कक्ष।"
       },
       "laboratory": {
-        "caption": "Embryology laboratory — precise, protected, and closely monitored.",
-        "imageAlt": "Inside the embryology laboratory at IVF Master."
+        "caption": "भ्रूणविज्ञान प्रयोगशाला — सटीक, सुरक्षित और निकटता से निगरानी की गई।",
+        "imageAlt": "IVF Master की भ्रूणविज्ञान प्रयोगशाला के भीतर।"
       },
       "waiting": {
-        "caption": "Waiting area — designed for quiet and comfort.",
-        "imageAlt": "The waiting area at IVF Master."
+        "caption": "प्रतीक्षा क्षेत्र — शांति और आराम के लिए बनाया गया।",
+        "imageAlt": "IVF Master का प्रतीक्षा क्षेत्र।"
       }
     }
   },

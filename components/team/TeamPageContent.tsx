@@ -34,6 +34,7 @@ export async function TeamPageContent() {
       name: t(`${prefix}.name`),
       role: t(`${prefix}.role`),
       blurb: t(`${prefix}.blurb`),
+      credentials: member.credentials ? (t.raw(`${prefix}.credentials`) as string[]) : undefined,
       imageAlt: t(`${prefix}.imageAlt`),
     }
   })
@@ -195,11 +196,8 @@ export async function TeamPageContent() {
               <StaggerItem
                 key={member.id}
                 className={cn(
-                  'group md:col-span-6',
-                  index === 0 && 'md:col-span-7',
-                  index === 1 && 'md:col-span-5',
-                  index === 2 && 'md:col-span-5',
-                  index === 3 && 'md:col-span-7'
+                  'group',
+                  index === 0 ? 'md:col-span-7' : 'md:col-span-5'
                 )}
               >
                 <article className="grid h-full grid-cols-[7.5rem_1fr] overflow-hidden rounded-[1.5rem] border border-white/75 bg-ivory/90 shadow-[0_18px_48px_-28px_rgba(28,42,72,0.28)] transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_24px_56px_-26px_rgba(28,42,72,0.34)] motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[10rem_1fr]">
@@ -210,6 +208,7 @@ export async function TeamPageContent() {
                       fill
                       sizes="(max-width: 639px) 120px, 160px"
                       className="object-cover"
+                      style={{ objectPosition: member.image.position }}
                     />
                   </div>
                   <div className="flex flex-col justify-center p-5 sm:p-7">
@@ -218,6 +217,16 @@ export async function TeamPageContent() {
                       {member.name}
                     </h3>
                     <p className="mt-3 text-base leading-7 text-slate">{member.blurb}</p>
+                    {member.credentials && member.credentials.length > 0 && (
+                      <ul className="mt-4 space-y-1.5 border-t border-taupe/50 pt-4">
+                        {member.credentials.map((credential) => (
+                          <li key={credential} className="flex gap-2 text-sm leading-6 text-ink/75">
+                            <span aria-hidden="true" className="mt-[0.55rem] size-1 shrink-0 rounded-full bg-periwinkle" />
+                            <span>{credential}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </article>
               </StaggerItem>
