@@ -16,6 +16,7 @@ interface FormState {
   duration:         string
   reason:           string
   preferredContact: string
+  preferredDay:     string
   bestTime:         string
   openMessage:      string
 }
@@ -178,7 +179,7 @@ export function ContactPage() {
 
   const [form, setForm] = useState<FormState>({
     name: '', reachingAs: '', duration: '', reason: '',
-    preferredContact: '', bestTime: '', openMessage: '',
+    preferredContact: '', preferredDay: '', bestTime: '', openMessage: '',
   })
   const [nameError, setNameError] = useState(false)
   const [status, setStatus] = useState<ClinicStatus | null>(null)
@@ -211,6 +212,7 @@ export function ContactPage() {
       duration:         form.duration,
       reason:           form.reason,
       preferredContact: form.preferredContact,
+      preferredDay:     form.preferredDay,
       bestTime:         form.bestTime,
       openMessage:      form.openMessage.trim(),
     })
@@ -225,7 +227,8 @@ export function ContactPage() {
   const durationOptions   = [t('formDuration6m'), t('formDuration6to12m'), t('formDuration1to2y'), t('formDuration2yPlus')]
   const reasonOptions     = [t('formReasonIVF'), t('formReasonSecondOpinion'), t('formReasonTests'), t('formReasonOther')]
   const contactOptions    = [t('formContactWhatsApp'), t('formContactCall')]
-  const timeOptions       = [t('formTimeMorning'), t('formTimeAfternoon'), t('formTimeEvening')]
+  const dayOptions        = [t('formDayMon'), t('formDayTue'), t('formDayWed'), t('formDayThu'), t('formDayFri'), t('formDaySat')]
+  const timeOptions       = [t('formTimeMorning'), t('formTimeAfternoon')]
 
   return (
     <main>
@@ -315,6 +318,11 @@ export function ContactPage() {
                   {/* Preferred contact */}
                   <FieldGroup label={t('formContactLabel')}>
                     <PillToggle options={contactOptions} value={form.preferredContact} onChange={(v) => setField('preferredContact', v)} />
+                  </FieldGroup>
+
+                  {/* Preferred day */}
+                  <FieldGroup label={t('formDayLabel')}>
+                    <PillToggle options={dayOptions} value={form.preferredDay} onChange={(v) => setField('preferredDay', v)} />
                   </FieldGroup>
 
                   {/* Best time */}

@@ -14,10 +14,10 @@ gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Stats config ───────────────────────────────────────────────────────── */
 const STATS_CONFIG = [
-  { value: 3000, suffix: '+', labelKey: 'couplesGuided'   as const },
+  { value: 2000, suffix: '+', labelKey: 'couplesGuided'   as const },
   { value: 67,   suffix: '%', labelKey: 'successRate'     as const },
   { value: 20,   suffix: '+', labelKey: 'yearsExpertise'  as const },
-  { value: 4800, suffix: '+', labelKey: 'cyclesCompleted' as const },
+  { value: 3000, suffix: '+', labelKey: 'cyclesCompleted' as const },
 ]
 
 /* ─── Count-up hook (GSAP-triggered) ─────────────────────────────────────── */
@@ -109,9 +109,6 @@ export function Hero() {
   const subRef      = useRef<HTMLParagraphElement>(null)
   const bodyRef     = useRef<HTMLParagraphElement>(null)
   const ctaRef      = useRef<HTMLDivElement>(null)
-  const trustRef    = useRef<HTMLDivElement>(null)
-
-  const trustItems = [t('trustCouples'), t('trustYears')]
 
   /* ── GSAP animations ── */
   useEffect(() => {
@@ -151,7 +148,6 @@ export function Hero() {
         .from(subRef.current,      { y: 30, opacity: 0, duration: 0.8 }, 0.5)
         .from(bodyRef.current,     { y: 24, opacity: 0, duration: 0.7 }, 0.65)
         .from(ctaRef.current,      { y: 20, opacity: 0, duration: 0.7 }, 0.78)
-        .from(trustRef.current,    { y: 16, opacity: 0, duration: 0.6 }, 0.9)
 
     }, sectionRef)
 
@@ -256,16 +252,6 @@ export function Hero() {
                   {t('ctaMicroTrust')}
                 </p>
               </div>
-
-              {/* Trust indicators */}
-              <div ref={trustRef} className="flex flex-wrap items-center gap-x-4 gap-y-1.5" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: '#6B7280' }}>
-                {trustItems.map((item, i) => (
-                  <span key={item} className="flex items-center gap-4">
-                    {item}
-                    {i < trustItems.length - 1 && <span style={{ color: '#C8BEB4', fontSize: '0.75rem' }} aria-hidden="true">●</span>}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -314,16 +300,6 @@ export function Hero() {
               <p className="text-center" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: '#7B8494', lineHeight: 1.6, letterSpacing: '0.005em' }}>
                 {t('ctaMicroTrust')}
               </p>
-            </div>
-
-            {/* Trust indicators */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: '#6B7280', paddingTop: '0.375rem' }}>
-              {trustItems.map((item, i) => (
-                <span key={item} className="flex items-center gap-4">
-                  {item}
-                  {i < trustItems.length - 1 && <span style={{ color: '#C8BEB4', fontSize: '0.75rem' }} aria-hidden="true">●</span>}
-                </span>
-              ))}
             </div>
           </div>
 
