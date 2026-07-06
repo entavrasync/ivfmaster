@@ -4,6 +4,7 @@ export interface ContactFormData {
   duration:         string
   reason:           string
   preferredContact: string
+  preferredDay:     string
   bestTime:         string
   openMessage:      string
 }
@@ -29,7 +30,7 @@ export function buildWhatsappMessage(data: ContactFormData): string {
   if (data.reason)
     lines.push(`*What brings them here:* ${data.reason}`)
 
-  const contactParts = [data.preferredContact, data.bestTime].filter(Boolean)
+  const contactParts = [data.preferredContact, data.preferredDay, data.bestTime].filter(Boolean)
   if (contactParts.length)
     lines.push(`*Preferred contact:* ${contactParts.join(' · ')}`)
 
