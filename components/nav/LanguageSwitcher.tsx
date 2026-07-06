@@ -12,9 +12,9 @@ import { cn } from '@/lib/utils'
 const EASE = [0.22, 1, 0.36, 1] as const
 
 const LOCALES: { code: Locale; nativeLabel: string }[] = [
-  { code: 'en', nativeLabel: 'English' },
   { code: 'mr', nativeLabel: 'मराठी'  },
   { code: 'hi', nativeLabel: 'हिंदी'  },
+  { code: 'en', nativeLabel: 'English' },
 ]
 
 const DISPLAY_CODE: Record<Locale, string> = { en: 'EN', mr: 'मर', hi: 'हि' }
