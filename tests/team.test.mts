@@ -19,7 +19,8 @@ test('team data defines the two real doctors and editable supporting-team slots'
   assert(doctors[0]?.credentials.some((credential) => credential.includes('FOGSI')))
   assert(doctors[1]?.credentials.some((credential) => credential.includes('2,000+ couples')))
 
-  assert.equal(careTeam.length, 4)
+  assert.equal(careTeam.length, 2)
+  assert(careTeam.some((member) => member.credentials?.some((c) => c.includes('CHARUSAT'))))
   assert.equal(facilityPhotos.length, 4)
 
   for (const item of [...doctors, ...careTeam]) {
@@ -66,7 +67,7 @@ test('all locales expose the same complete team-page message contract', () => {
       assert.equal(typeof teamMessages[key], 'string', `Missing Team.${key}`)
     }
     assert.equal(Object.keys(teamMessages.doctors).length, 2)
-    assert.equal(Object.keys(teamMessages.careTeam).length, 4)
+    assert.equal(Object.keys(teamMessages.careTeam).length, 2)
     assert.equal(Object.keys(teamMessages.facilityPhotos).length, 4)
   }
 })

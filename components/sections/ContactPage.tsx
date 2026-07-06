@@ -456,7 +456,7 @@ export function ContactPage() {
 
               {/* Map placeholder */}
               <a
-                href="https://maps.google.com/?q=Mandrupkar+Clinic+Ishwarpur+Sangli+Maharashtra"
+                href="https://maps.google.com/?q=Dr.+Gosavi+Hospital,+Mantri+Colony,+Urun-Ishwarpur,+Maharashtra+415409"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}
