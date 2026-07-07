@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -17,6 +18,7 @@ const EASE = [0.22, 1, 0.36, 1] as const
  */
 export function PainRecognitionCTA() {
   const reduced = useReducedMotion()
+  const t = useTranslations('PainRecognitionCTA')
 
   const containerV = {
     hidden: {},
@@ -68,7 +70,7 @@ export function PainRecognitionCTA() {
               marginBottom:  '1.25rem',
             }}
           >
-            You don&apos;t have to carry this alone
+            {t('eyebrow')}
           </motion.p>
 
           {/* ── Heading ── */}
@@ -86,7 +88,7 @@ export function PainRecognitionCTA() {
               marginBottom:          '1.75rem',
             }}
           >
-            If this is you, you&apos;re in the right place.
+            {t('heading')}
           </motion.h2>
 
           {/* ── Body ── */}
@@ -103,9 +105,7 @@ export function PainRecognitionCTA() {
               marginRight:  'auto',
             }}
           >
-            The first step isn&apos;t a decision. It&apos;s understanding. We start by
-            listening — to your story, your history, your worries — so that whatever
-            comes next is clear, and yours.
+            {t.rich('body', { br: () => <br /> })}
           </motion.p>
 
           {/* ── CTA block ── */}
@@ -133,7 +133,7 @@ export function PainRecognitionCTA() {
                   padding:     '0.9375rem 2.125rem',
                 }}
               >
-                Let&apos;s understand your story together
+                {t('button')}
                 <span
                   aria-hidden="true"
                   className="inline-block transition-transform duration-300 group-hover:translate-x-0.5"
@@ -154,7 +154,7 @@ export function PainRecognitionCTA() {
                 letterSpacing: '0.01em',
               }}
             >
-              An unhurried first conversation — whenever you&apos;re ready.
+              {t.rich('helperText', { br: () => <br /> })}
             </p>
           </motion.div>
 

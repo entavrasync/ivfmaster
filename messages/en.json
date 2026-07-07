@@ -198,6 +198,32 @@
     "headline": "You've been carrying this quietly for a long time.",
     "body": "The waiting, the questions, the hope that keeps starting over. We understand — and you don't have to carry it alone anymore."
   },
+  "PainRecognitionStory": {
+    "chapters": [
+      {
+        "eyebrow": "The silence",
+        "headline": "It's the part no one talks about.",
+        "body": "The questions at every gathering. The announcements that quietly sting. Carrying it month after month, mostly alone."
+      },
+      {
+        "eyebrow": "What we see",
+        "headline": "It's rarely one simple reason.",
+        "body": "Fertility is a story with many chapters — hormones, timing, age, sometimes nothing obvious at all. Confusion isn't your fault. It just means no one has explained it yet."
+      },
+      {
+        "eyebrow": "Where it leads",
+        "headline": "Understanding is where hope begins.",
+        "body": "When you finally see the full picture clearly, the fear quietens. That clarity is the first real step toward parenthood — and it's the one we take with you."
+      }
+    ]
+  },
+  "PainRecognitionCTA": {
+    "eyebrow": "You don't have to carry this alone",
+    "heading": "If this is you, you're in the right place.",
+    "body": "The first step isn't a decision. It's understanding. We start by listening — to your story, your history, your worries — so that whatever comes next is clear, and yours.",
+    "button": "Let's understand your story together",
+    "helperText": "An unhurried first conversation — whenever you're ready."
+  },
   "WhyTrust": {
     "eyebrow": "Why couples choose us",
     "heading": "Trust isn't claimed. It's earned, quietly, over time.",
