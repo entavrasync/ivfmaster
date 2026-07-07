@@ -142,30 +142,6 @@ function CategoryBadge({ category }: { category: ArticleCategory }) {
   )
 }
 
-/* ─── Date + read-time meta ──────────────────────────────────────────────── */
-
-function MetaRow({ article }: { article: Article }) {
-  const t         = useTranslations('EducateIVF')
-  const d         = new Date(article.date)
-  const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-  return (
-    <p
-      style={{
-        fontFamily: 'var(--font-body)',
-        fontSize:   '0.8125rem',
-        color:      'rgba(28,42,72,0.46)',
-        margin:     0,
-        display:    'flex',
-        gap:        '0.5rem',
-        flexWrap:   'wrap',
-      }}
-    >
-      {formatted}
-      <span aria-hidden="true" style={{ color: 'rgba(28,42,72,0.25)' }}>·</span>
-      {t('minRead', { minutes: article.readTime })}
-    </p>
-  )
-}
 
 /* ─── Featured card ──────────────────────────────────────────────────────── */
 
@@ -225,9 +201,8 @@ function FeaturedCard({
             gap:            '1rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <CategoryBadge category={article.category} />
-            <MetaRow article={article} />
           </div>
 
           <h2
@@ -346,7 +321,6 @@ function ArticleCard({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap' }}>
             <CategoryBadge category={article.category} />
-            <MetaRow article={article} />
           </div>
 
           <h3

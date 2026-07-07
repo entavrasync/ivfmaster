@@ -468,6 +468,378 @@
     "noArticles":      "No articles in this category yet."
   },
 
+  "ArticlePcos": {
+    "metaTitle": "PCOS — signs, causes, and treatment",
+    "metaDescription": "PCOS is a common, treatable hormonal condition. Learn the signs, why it happens, how we diagnose and treat it, and when to see a doctor at IVF Master.",
+    "category": "Conditions",
+    "intro": "PCOS (Polycystic Ovary Syndrome) — now also called PMOS (Polyendocrine Metabolic Ovarian Syndrome). PCOS is a common condition that affects a woman's hormones. It can make periods irregular and may make it harder to become pregnant. It can also cause weight gain, acne, and extra hair growth on the face or body. PCOS can be treated, and most women with PCOS can live a healthy life.",
+    "signsHeading": "Common signs and symptoms",
+    "signs": [
+      "Irregular or missed periods",
+      "Difficulty getting pregnant",
+      "Weight gain or difficulty losing weight",
+      "Pimples (acne)",
+      "Extra hair on the face, chest, or tummy",
+      "Hair thinning on the scalp",
+      "Dark skin around the neck or underarms"
+    ],
+    "signsNote": "Not every woman with PCOS has all these symptoms.",
+    "whyHeading": "Why does PCOS happen?",
+    "whyBody": "The exact cause is not known. It may run in families. Many women with PCOS have a problem called insulin resistance, where the body does not use insulin properly. This can lead to weight gain and make PCOS symptoms worse.",
+    "diagnosisHeading": "How is PCOS diagnosed?",
+    "diagnosisIntro": "We will:",
+    "diagnosisList": [
+      "Ask about your periods and symptoms",
+      "Examine you",
+      "Recommend blood tests",
+      "Suggest an ultrasound scan if needed"
+    ],
+    "treatmentHeading": "How is PCOS treated?",
+    "lifestyleSubheading": "Healthy lifestyle",
+    "lifestyleIntro": "A healthy lifestyle is the most important treatment.",
+    "lifestyleList": [
+      "Eat healthy home-cooked meals",
+      "Eat more vegetables, fruits, whole grains, pulses, and lean protein",
+      "Reduce sweets, sugary drinks, and junk food",
+      "Exercise for at least 30 minutes a day, 5 days a week",
+      "Losing even a small amount of weight can improve periods and increase the chance of pregnancy"
+    ],
+    "mantra": "My mantra: Eat less, walk more!",
+    "medicinesSubheading": "Medicines",
+    "medicinesIntro": "We may prescribe medicines to:",
+    "medicinesList": [
+      "Make your periods regular",
+      "Help with acne or unwanted hair growth",
+      "Improve insulin resistance",
+      "Help you become pregnant if you are planning a baby"
+    ],
+    "medicinesNote": "Always take medicines only as advised by us or the concerned doctor.",
+    "regularHeading": "Why is regular treatment important?",
+    "regularIntro": "If PCOS is not treated, it may increase the risk of:",
+    "regularList": [
+      "Diabetes (high blood sugar)",
+      "High blood pressure",
+      "High cholesterol",
+      "Problems with pregnancy",
+      "Cancer of the uterus (womb) if periods are absent for a long time"
+    ],
+    "regularClosing": "Regular check-ups help prevent these problems.",
+    "visitHeading": "When should you visit us?",
+    "visitIntro": "See your doctor if you:",
+    "visitList": [
+      "Do not get your period for more than 3 months (and are not pregnant)",
+      "Have very heavy or prolonged bleeding",
+      "Are trying to become pregnant without success",
+      "Notice rapid weight gain, severe acne, or increased facial hair"
+    ],
+    "rememberHeading": "Remember",
+    "rememberList": [
+      "PCOS is common and treatable",
+      "Healthy eating, regular exercise, and taking medicines as prescribed can control PCOS",
+      "Regular follow-up with your doctor is important to keep you healthy",
+      "It will reduce future health problems like diabetes, high blood pressure, and some gynecological cancers"
+    ]
+  },
+
+  "ArticleWhatIvf": {
+    "metaTitle": "What IVF really is — a step-by-step guide",
+    "metaDescription": "A plain-language guide to IVF at IVF Master — the six phases from preparing your body to the pregnancy test, and the support around you at every step.",
+    "category": "Understanding IVF",
+    "title": "What IVF really is",
+    "intro1": "Hello. If you are reading this, you are likely considering In Vitro Fertilisation (IVF) to help grow your family. It is completely normal to feel a mix of hope, excitement, and anxiety right now. This guide is written to explain the IVF process in plain, everyday language so you know exactly what to expect.",
+    "intro2": "Think of IVF as a way to help nature along. “In vitro” simply means “outside body” or in a laboratory. In short, we take eggs from the ovaries and mix them with sperm or inject the sperm in eggs (ICSI) in our lab to create embryos. We then place the healthiest embryo back into your uterus when it is ready for its acceptance.",
+    "phases": [
+      {
+        "heading": "Phase 1 — Preparing your body",
+        "intro": "Before we begin the actual IVF cycle, we need to understand your unique reproductive health. This preparation stage ensures we customise the treatment plan specifically for you.",
+        "intro2": "Like plants, always good preparation of land before sowing the seeds gives the best yield, this phase is also very crucial.",
+        "items": [
+          { "label": "Ovarian reserve testing", "body": "It is done by simple blood tests and pelvic ultrasound on day 2 or 3 of menses." },
+          { "label": "Semen analysis", "body": "We test a semen sample to check the count, shape, and movement of the sperm. You can see the them on screen." },
+          { "label": "Uterine exam", "body": "We examine the inside of your uterus using an ultrasound or a small 4 mm hysteroscope to ensure, the inner lining is safe to welcome an embryo." },
+          { "label": "Lifestyle modifications", "body": "We will ask you to start taking prenatal vitamins, maintain a balanced diet, avoid alcohol, and stop smoking." }
+        ]
+      },
+      {
+        "heading": "Phase 2 — Ovarian stimulation (growing the eggs)",
+        "intro": "In a natural monthly cycle, your body usually matures just one or two eggs. For IVF, we want to grow multiple eggs at once to increase your chances of success.",
+        "items": [
+          { "label": "Hormone injections", "body": "You can take these yourself, under the skin of your belly or thigh to encourage your ovaries to grow multiple egg follicles." },
+          { "label": "Regular monitoring", "body": "You will visit our clinic 2/3 times to monitor the progress. Along with blood tests and ultrasounds we will be able to watch the follicles grow and adjust your medication doses safely." },
+          { "label": "The trigger shot", "body": "Once the follicles reach the ideal size, you will take one final, precisely timed injection referred as “trigger shot” which will bring the eggs to full maturity, ready for collection." }
+        ],
+        "note": "No need of daily visits to clinic."
+      },
+      {
+        "heading": "Phase 3 — Egg retrieval (the collection)",
+        "intro": "The egg retrieval is a minor surgical procedure performed at our clinic. It takes about 20 minutes, and you will not feel any pain during the process as it is done under a light anaesthetic or sedative so that you are completely asleep and comfortable.",
+        "items": [
+          { "label": "Ultrasound guidance", "body": "I will insert a thin ultrasound probe into the vagina to clearly see your ovaries and the mature follicles." },
+          { "label": "Gentle suction", "body": "Using a very fine, specialized needle attached to the ultrasound probe, I gently draw the fluid—and the egg inside it—out of each follicle." },
+          { "label": "Recovery", "body": "You will rest for an hour or two and will be discharged same day." }
+        ]
+      },
+      {
+        "heading": "Phase 4 — Fertilisation and embryo development",
+        "intro": "While you are resting from your retrieval, our embryologist takes over the next steps. This is where the magic happens behind the scenes over the next 3 to 6 days.",
+        "items": [
+          { "label": "IVF with conventional insemination", "body": "We place thousands of healthy sperm in a dish alongside the retrieved eggs and let them fertilise naturally." },
+          { "label": "ICSI (intracytoplasmic sperm injection)", "body": "If the sperm count is low or weak, our embryologist will use a tiny needle to inject a single, healthy sperm directly into each mature egg to help it fertilise." },
+          { "label": "The incubation phase", "body": "The fertilised eggs become embryos. We place them in advanced incubators that mimic the warmth and environment of a human body, monitoring their growth as they divide into multiple cells." }
+        ]
+      },
+      {
+        "heading": "Phase 5 — The embryo transfer",
+        "intro": "The embryo transfer is the simplest and most exciting part of the medical process.",
+        "items": [
+          { "label": "Selecting the best embryo", "body": "Together, we will choose 1 or 2 healthiest embryos to transfer. Remaining high-quality embryos can be frozen for your future use." },
+          { "label": "The procedure", "body": "Under abdominal ultrasound guidance, embryo/s will be transferred using a very soft, smallest catheter. You can witness this live on screen." },
+          { "label": "Immediate return to routine", "body": "The transfer takes less than 10 minutes. You can get up right away, walk around, and go home to rest. You do not need strict bed rest, but we recommend avoiding heavy lifting or intense workouts and lumpy bumpy journey." }
+        ]
+      },
+      {
+        "heading": "Phase 6 — The 15 days wait",
+        "intro": "The final phase requires the most patience. Correct and timely usage of progesterone medications along with other supportive medicines help embryo implant into the uterine lining naturally.",
+        "items": [
+          { "label": "Managing anxiety", "body": "This waiting period can feel emotionally difficult. We encourage you to focus on light activities, stay connected with loved ones. Surrender to Supreme Nature and pamper yourself; this will help you to fulfil your dream of parenthood." },
+          { "label": "The official pregnancy test", "body": "In case of day 3 embryo transfer, the hormone HCG is measured in blood to confirm the pregnancy 15 days after the transfer. While, 13 days after in case of day 5 transfer." }
+        ]
+      }
+    ],
+    "closingHeading": "Emotional support and next steps",
+    "closingPara1": "IVF is a physical journey, but it is also an emotional rollercoaster. Our entire clinical team, including our dedicated nursing staff and counsellors, are here to support you through every single step, question, and milestone.",
+    "closingPara2": "If you are ready to begin, our next step is to schedule your initial consultation and baseline blood tests. Let's take this journey together, one step at a time."
+  },
+
+  "ArticleMyths": {
+    "metaTitle": "IVF myths vs facts — ten common myths, honestly answered",
+    "metaDescription": "Ten of the most common IVF myths, and what is actually true — clear, honest answers from the team at IVF Master.",
+    "category": "Myths",
+    "title": "IVF myths vs facts",
+    "intro": "Myths about IVF travel fast — and they often cause more worry than they need to. Here are ten of the most common ones, and what is actually true.",
+    "mythLabel": "Myth",
+    "factLabel": "Fact",
+    "items": [
+      { "myth": "IVF always works.", "fact": "IVF gives hope, but it does not guarantee pregnancy. Success depends on factors like age, egg quality, sperm quality, and overall health." },
+      { "myth": "IVF is only for women.", "fact": "Fertility problems can happen in both men and women. IVF can help when the problem is with the woman, the man, or both." },
+      { "myth": "IVF always results in twins.", "fact": "Not anymore. Today, doctors often transfer just one healthy embryo, so most IVF pregnancies result in a single baby." },
+      { "myth": "IVF babies are not healthy.", "fact": "IVF babies are just as healthy and loved as naturally conceived babies. Millions of healthy IVF babies have been born worldwide." },
+      { "myth": "IVF is very painful.", "fact": "Most women feel only mild discomfort. The egg collection procedure is done under anesthesia, so you won't feel pain during it." },
+      { "myth": "Stress causes IVF to fail.", "fact": "Feeling worried or emotional is normal. Stress alone does not cause IVF to fail, but taking care of your mental health is important." },
+      { "myth": "You need complete bed rest after embryo transfer.", "fact": "No. Normal daily activities are safe. Your doctor may only ask you to avoid heavy exercise or lifting." },
+      { "myth": "Age doesn't matter with IVF.", "fact": "Age is one of the most important factors. Younger eggs usually have a better chance of leading to a healthy pregnancy." },
+      { "myth": "IVF causes cancer.", "fact": "Current research shows no strong evidence that IVF treatment causes cancer." },
+      { "myth": "A healthy lifestyle doesn't matter during IVF.", "fact": "Eating healthy, getting enough sleep, avoiding smoking/ alcohol will improve results." }
+    ],
+    "closing": "Talk to us and the supporting team to understand the treatment plan that is best for you."
+  },
+
+  "ArticleMaleFertility": {
+    "metaTitle": "Male fertility, explained",
+    "metaDescription": "Male-factor infertility is common and often very treatable. The causes, the simple checks, and what men can do to help.",
+    "category": "Conditions",
+    "title": "Male fertility, explained",
+    "intro": "When a couple is finding it hard to conceive, it is not only a question for the woman. Male-factor infertility — when a man has difficulty helping his partner conceive after about a year of trying, with regular unprotected sex — is common, and it deserves the same care and attention. The encouraging news is that it is often very treatable. Here is what can affect male fertility, how we check it, and what you can do to help.",
+    "sections": [
+      {
+        "heading": "What is male factor Infertility?",
+        "body": "Male infertility means a man has trouble helping his partner become pregnant, even after trying for 1 year with regular unprotected sex."
+      },
+      {
+        "heading": "What causes it?",
+        "items": [
+          "Low sperm count",
+          "Weak or slow-moving sperm",
+          "Blockage in the sperm tubes",
+          "Infection",
+          "Hormone problems",
+          "Smoking, alcohol, drugs, or some medicines",
+          "Being overweight",
+          "Swollen veins around the testicles (Varicocele)"
+        ]
+      },
+      {
+        "heading": "What are the signs?",
+        "body": "Most men do not have any symptoms. The only sign may be difficulty having a baby."
+      },
+      {
+        "heading": "How is it checked?",
+        "intro": "We may do:",
+        "items": [
+          "A physical examination",
+          "A semen test (to check sperm)",
+          "Blood tests for hormones and general health",
+          "An ultrasound if needed"
+        ]
+      },
+      {
+        "heading": "Can it be treated?",
+        "intro": "Yes. Treatment depends on the cause and may include:",
+        "items": [
+          "Medicines",
+          "Surgery (if needed)",
+          "Healthy lifestyle changes",
+          "Fertility treatments if required"
+        ]
+      },
+      {
+        "heading": "What can you do?",
+        "items": [
+          "Stop smoking and avoid tobacco",
+          "Limit or avoid alcohol.",
+          "Eat healthy food",
+          "Exercise regularly.",
+          "Maintain a healthy weight",
+          "Get enough sleep.",
+          "Avoid too much heat around the testicles."
+        ]
+      },
+      {
+        "heading": "When should you see a doctor?",
+        "intro": "If,",
+        "items": [
+          "You have problems with erection or ejaculation",
+          "You have been trying for 1 year and no pregnancy",
+          "You have pain or swelling in the testicles."
+        ]
+      }
+    ],
+    "closing": "Remember: Male infertility is common, and many men can be treated successfully."
+  },
+
+  "ArticleRecurrentLoss": {
+    "metaTitle": "Recurrent pregnancy loss — causes, tests, and treatment",
+    "metaDescription": "Recurrent miscarriage is more common than many realise. The causes, the tests, and what can be done — explained with care.",
+    "category": "Conditions",
+    "title": "Recurrent pregnancy loss",
+    "intro": "Recurrent pregnancy loss means having two or more miscarriages. It is more common than many people realize, and in many cases, a healthy pregnancy is still possible.",
+    "sections": [
+      {
+        "heading": "Why does it happen?",
+        "intro": "Common reasons include:",
+        "items": [
+          "Problems with the baby's chromosomes (most common)",
+          "Problems with the shape of the uterus",
+          "Hormone problems (such as thyroid disease or diabetes)",
+          "Certain blood-clotting or immune conditions",
+          "Sometimes, no cause is found"
+        ]
+      },
+      {
+        "heading": "What tests may be needed?",
+        "intro": "Your doctor may recommend:",
+        "items": [
+          "Blood tests for associated medical conditions",
+          "An ultrasound scan of the uterus",
+          "Tests for certain medical conditions",
+          "Special tests for APLAS, ANA, ENA or thrombophilia markers.",
+          "Sometimes, genetic tests for the couple or the pregnancy tissue"
+        ]
+      },
+      {
+        "heading": "Can it be treated?",
+        "intro": "Yes. Treatment depends on the cause and may include:",
+        "items": [
+          "Medicines for thyroid disease, diabetes, or blood-clotting disorders",
+          "Surgery to correct some uterine problems",
+          "Close monitoring during the next pregnancy"
+        ]
+      },
+      {
+        "heading": "What are the chances of a healthy baby?",
+        "body": "The good news is that most women with recurrent pregnancy loss go on to have a healthy baby, especially with proper medical care and follow-up."
+      },
+      {
+        "heading": "When should you see a doctor?",
+        "body": "If you have had two or more miscarriages, consult an obstetrician or fertility specialist for evaluation and advice."
+      }
+    ],
+    "closing": "Remember: Having recurrent miscarriages does not mean you cannot have a successful pregnancy. Early medical care and support can improve your chances."
+  },
+
+  "ArticleUnexplained": {
+    "metaTitle": "Unexplained Infertility — Causes, Tests, and Options",
+    "metaDescription": "Unexplained infertility is frustrating, but it does not mean pregnancy is impossible. Learn about why it happens and what treatments are available.",
+    "category": "Conditions",
+    "title": "Unexplained infertility",
+    "intro": "Unexplained infertility means that a couple is having difficulty getting pregnant, even though all the routine fertility tests are normal.",
+    "sections": [
+      {
+        "heading": "This means:",
+        "items": [
+          "The woman's eggs are being released regularly (ovulation is normal).",
+          "The fallopian tubes are open.",
+          "The uterus looks healthy.",
+          "The man's sperm test is normal."
+        ]
+      },
+      {
+        "body": "Even though everything appears normal, pregnancy is still not happening. This does not mean that pregnancy is impossible. It simply means that the exact reason cannot be found with the tests we have today."
+      },
+      {
+        "heading": "Can pregnancy still happen?",
+        "body": "Yes. Many couples with unexplained infertility become pregnant naturally or with fertility treatment."
+      },
+      {
+        "heading": "What are the treatment options?",
+        "intro": "Depending on your age and how long you have been trying, your doctor may suggest:",
+        "items": [
+          "Trying naturally for a little longer.",
+          "Medicines to help improve the chances of pregnancy.",
+          "IUI (Intrauterine Insemination), where specially prepared sperm is placed inside the uterus.",
+          "IVF (Test Tube Baby) if other treatments are not successful."
+        ]
+      }
+    ],
+    "closing": "Important message: Having unexplained infertility does not mean you can never have a baby. It only means that the cause has not been identified with current tests. Your fertility specialist will guide you on the best treatment based on your age, medical history, and how long you have been trying to conceive."
+  },
+
+  "ArticleAge": {
+    "metaTitle": "Age and IVF Success Rates — The Facts Explained",
+    "metaDescription": "As women get older, IVF success rates decline. Learn how age impacts egg quality, challenges to expect, and what can improve your chances.",
+    "category": "Understanding IVF",
+    "title": "Age and IVF success",
+    "intro": "As women get older, it becomes harder to become pregnant naturally or through IVF. This is because both the number and quality of eggs decrease with age.",
+    "sections": [
+      {
+        "heading": "Common Challenges in IVF with Increasing Age",
+        "items": [
+          "Fewer eggs are available during treatment.",
+          "Eggs may not fertilize as well.",
+          "Fewer healthy embryos are formed.",
+          "Lower chance of embryo implantation.",
+          "Higher chance of miscarriage.",
+          "More than one IVF cycle may be needed.",
+          "Pregnancy complications, such as high blood pressure and diabetes, are more common in older mothers."
+        ]
+      },
+      {
+        "heading": "What Can Help?",
+        "items": [
+          "Do not delay fertility treatment if you are planning a pregnancy.",
+          "Maintain a healthy weight, eat a balanced diet, exercise regularly, and avoid smoking and alcohol.",
+          "Follow your doctor's advice regarding medications and treatment.",
+          "In some cases, genetic testing of embryos or using donor eggs may improve the chance of a healthy pregnancy."
+        ]
+      },
+      {
+        "heading": "Typical IVF success trends by maternal age (using own eggs)",
+        "table": {
+          "headers": ["Age", "General live birth chance per IVF cycle*"],
+          "rows": [
+            ["Under 35", "~40–50%"],
+            ["35–37", "~30–40%"],
+            ["38–40", "~20–30%"],
+            ["41–42", "~10–20%"],
+            ["Over 42", "Usually less than 5–10%"]
+          ]
+        },
+        "body": "These are approximate ranges and vary by clinic, diagnosis, embryo quality, and individual health."
+      }
+    ],
+    "closing": "Key Message: Age is one of the most important factors affecting IVF success. Starting treatment earlier generally gives a better chance of pregnancy. However, every woman is different, and many women still achieve successful pregnancies with the right treatment and care."
+  },
+
   "FloatingCTA": {
     "contact":           "Get in touch",
     "instagramTooltip":  "Live case studies",
