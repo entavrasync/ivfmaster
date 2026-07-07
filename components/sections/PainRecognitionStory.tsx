@@ -5,6 +5,7 @@ import Image from 'next/image'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { Container } from '@/components/layout/Container'
+import { useTranslations } from 'next-intl'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Stagger, StaggerItem } from '@/components/motion'
 import silenceImg from '@/assets/pain/silence.png'
@@ -41,13 +42,11 @@ const CHAPTERS = [
   },
 ] as const
 
-type Chapter = typeof CHAPTERS[number]
-
 const SCROLL_MULTIPLIER = 2.5 // total virtual scroll height = section × this
 
 /* ─── Sub-components ────────────────────────────────────────────────────── */
 
-function ProgressTrack({ active }: { active: number }) {
+function ProgressTrack({ active, chapters }: { active: number; chapters: ReadonlyArray<any> }) {
   return (
     <div
       aria-hidden="true"
@@ -59,7 +58,7 @@ function ProgressTrack({ active }: { active: number }) {
       }}
     >
       <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.28)' }} />
-      {CHAPTERS.map((_, i) => (
+      {chapters.map((_, i) => (
         <div key={i} style={{
           width: i === active ? '8px' : '5px',
           height: i === active ? '8px' : '5px',
@@ -75,7 +74,7 @@ function ProgressTrack({ active }: { active: number }) {
 }
 
 interface ChapterTextProps {
-  chapter: Chapter
+  chapter: any
   active:  boolean
   mobile?: boolean
 }
@@ -135,7 +134,7 @@ function ChapterText({ chapter, active, mobile }: ChapterTextProps) {
 }
 
 /* ─── Reduced-motion stacked fallback ───────────────────────────────────── */
-function ReducedMotionLayout() {
+function ReducedMotionLayout({ chapters }: { chapters: ReadonlyArray<any> }) {
   return (
     <section
       aria-label="Our story in chapters"
@@ -143,7 +142,7 @@ function ReducedMotionLayout() {
     >
       <Container>
         <Stagger stagger={0.18} delay={0.1}>
-          {CHAPTERS.map((ch) => (
+          {chapters.map((ch) => (
             <StaggerItem key={ch.eyebrow}>
               <div style={{
                 display: 'grid',
@@ -176,6 +175,14 @@ function ReducedMotionLayout() {
 /* ─── Main component ─────────────────────────────────────────────────────── */
 export function PainRecognitionStory() {
   const reduced = useReducedMotion()
+  const t = useTranslations('PainRecognitionStory')
+
+  const chapters = CHAPTERS.map((ch, i) => ({
+    ...ch,
+    eyebrow: t(`chapters.${i}.eyebrow`),
+    headline: t(`chapters.${i}.headline`),
+    body: t(`chapters.${i}.body`),
+  }))
 
   const desktopRef = useRef<HTMLElement>(null)
   const mobileRef  = useRef<HTMLElement>(null)
@@ -276,7 +283,7 @@ export function PainRecognitionStory() {
     return () => ctx.revert()
   }, [reduced, setActive])
 
-  if (reduced) return <ReducedMotionLayout />
+  if (reduced) return <ReducedMotionLayout chapters={chapters} />
 
   return (
     <>
@@ -334,7 +341,7 @@ export function PainRecognitionStory() {
                 overflow:   'hidden',
                 boxShadow:  '0 40px 80px -20px rgba(46,79,142,0.30), 0 8px 24px -8px rgba(28,42,72,0.16)',
               }}>
-                {CHAPTERS.map((ch, i) => (
+                {chapters.map((ch, i) => (
                   <div
                     key={ch.eyebrow}
                     ref={el => { dtImg.current[i] = el }}
@@ -359,7 +366,7 @@ export function PainRecognitionStory() {
                     />
                   </div>
                 ))}
-                <ProgressTrack active={active} />
+                <ProgressTrack active={active} chapters={chapters} />
               </div>
             </div>
 
@@ -390,11 +397,11 @@ export function PainRecognitionStory() {
                   transition:   'opacity 0.4s ease',
                 }}
               >
-                {CHAPTERS[active].num}
+                {chapters[active].num}
               </div>
 
               {/* Three text panels — all at same position, GSAP crossfades */}
-              {CHAPTERS.map((ch, i) => (
+              {chapters.map((ch, i) => (
                 <div
                   key={ch.eyebrow}
                   ref={el => { dtTxt.current[i] = el }}
@@ -428,7 +435,7 @@ export function PainRecognitionStory() {
         style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}
       >
         {/* Full-bleed gradient images */}
-        {CHAPTERS.map((ch, i) => (
+        {chapters.map((ch, i) => (
           <div
             key={ch.eyebrow}
             ref={el => { mbImg.current[i] = el }}
@@ -473,7 +480,7 @@ export function PainRecognitionStory() {
             zIndex: 3,
           }}
         >
-          {CHAPTERS.map((_, i) => (
+          {chapters.map((_, i) => (
             <div key={i} style={{
               width: i === active ? '6px' : '4px',
               height: i === active ? '6px' : '4px',
@@ -485,7 +492,7 @@ export function PainRecognitionStory() {
         </div>
 
         {/* Text layers: stacked at bottom, GSAP crossfades */}
-        {CHAPTERS.map((ch, i) => (
+        {chapters.map((ch, i) => (
           <div
             key={ch.eyebrow}
             ref={el => { mbTxt.current[i] = el }}
