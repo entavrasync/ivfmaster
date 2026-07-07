@@ -179,7 +179,10 @@ function FeaturedCard({
   readArticle: string
 }) {
   const [hovered, setIsHovered] = useState(false)
+  const t = useTranslations('EducateIVF')
   const h = !reduced && hovered
+  const title   = article.i18nKey ? t(`articles.${article.i18nKey}.title`)   : article.title
+  const excerpt = article.i18nKey ? t(`articles.${article.i18nKey}.excerpt`) : article.excerpt
 
   return (
     <Link
@@ -242,7 +245,7 @@ function FeaturedCard({
               margin:                0,
             }}
           >
-            {article.title}
+            {title}
           </h2>
 
           <p
@@ -255,7 +258,7 @@ function FeaturedCard({
               maxWidth:   '52ch',
             }}
           >
-            {article.excerpt}
+            {excerpt}
           </p>
 
           <span
@@ -297,7 +300,10 @@ function ArticleCard({
   readMore: string
 }) {
   const [hovered, setIsHovered] = useState(false)
+  const t = useTranslations('EducateIVF')
   const h = !reduced && hovered
+  const title   = article.i18nKey ? t(`articles.${article.i18nKey}.title`)   : article.title
+  const excerpt = article.i18nKey ? t(`articles.${article.i18nKey}.excerpt`) : article.excerpt
 
   return (
     <Link
@@ -361,7 +367,7 @@ function ArticleCard({
               margin:                0,
             }}
           >
-            {article.title}
+            {title}
           </h3>
 
           <p
@@ -374,7 +380,7 @@ function ArticleCard({
               flex:       1,
             }}
           >
-            {article.excerpt}
+            {excerpt}
           </p>
 
           <span
