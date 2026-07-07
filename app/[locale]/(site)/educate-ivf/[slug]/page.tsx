@@ -114,11 +114,19 @@ export async function generateMetadata({
     })
   }
 
+  let title = article.title
+  let description = article.excerpt
+  if (article.i18nKey) {
+    const t = await getTranslations({ locale, namespace: 'EducateIVF' })
+    title = t(`articles.${article.i18nKey}.metaTitle`)
+    description = t(`articles.${article.i18nKey}.metaDescription`)
+  }
+
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/educate-ivf/' + slug,
-    title: article.title,
-    description: article.excerpt,
+    title,
+    description,
     type: 'article',
     publishedTime: article.date,
   })
@@ -132,26 +140,21 @@ export default async function ArticleDetailPage({
   const { slug } = await params
   const article = ARTICLES.find((a) => a.slug === slug)
   if (!article) notFound()
+  const components: Record<string, any> = {
+    'pcos': PcosArticle,
+    'what-ivf-really-is': WhatIvfArticle,
+    'ivf-myths-vs-facts': MythsArticle,
+    'male-fertility-explained': MaleFertilityArticle,
+    'recurrent-pregnancy-loss': RecurrentLossArticle,
+    'unexplained-infertility': UnexplainedArticle,
+    'age-and-ivf-success': AgeArticle,
+  }
+
+  const Selected = components[slug] ?? ArticleDetail
 
   return (
     <>
-      {slug === 'pcos' ? (
-        <PcosArticle article={article} allArticles={ARTICLES} />
-      ) : slug === 'what-ivf-really-is' ? (
-        <WhatIvfArticle article={article} allArticles={ARTICLES} />
-      ) : slug === 'ivf-myths-vs-facts' ? (
-        <MythsArticle article={article} allArticles={ARTICLES} />
-      ) : slug === 'male-fertility-explained' ? (
-        <MaleFertilityArticle article={article} allArticles={ARTICLES} />
-      ) : slug === 'recurrent-pregnancy-loss' ? (
-        <RecurrentLossArticle article={article} allArticles={ARTICLES} />
-      ) : slug === 'unexplained-infertility' ? (
-        <UnexplainedArticle article={article} allArticles={ARTICLES} />
-      ) : slug === 'age-and-ivf-success' ? (
-        <AgeArticle article={article} allArticles={ARTICLES} />
-      ) : (
-        <ArticleDetail article={article} allArticles={ARTICLES} />
-      )}
+      <Selected article={article} allArticles={ARTICLES} />
       <Footer />
     </>
   )

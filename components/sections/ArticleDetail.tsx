@@ -15,6 +15,7 @@ import {
   type Article,
   type ArticleCategory,
 } from '@/lib/articles'
+import { RICH_ARTICLES, type RichBlock } from '@/lib/richArticles'
 
 const EASE        = [0.22, 1, 0.36, 1] as const
 const SHADOW_REST = '0 20px 44px -24px rgba(46,79,142,0.14), 0 4px 10px -4px rgba(46,79,142,0.05)'
@@ -115,8 +116,10 @@ export function HeroCover({ article }: { article: Article }) {
 
 export function RelatedCard({ article, reduced }: { article: Article; reduced: boolean }) {
   const [hovered, setIsHovered] = useState(false)
-  const h = !reduced && hovered
+  const t  = useTranslations('EducateIVF')
+  const h  = !reduced && hovered
   const cs = CATEGORY_STYLES[article.category]
+  const title = article.i18nKey ? t(`articles.${article.i18nKey}.title`) : article.title
 
   return (
     <Link
@@ -158,7 +161,7 @@ export function RelatedCard({ article, reduced }: { article: Article; reduced: b
           {article.coverImage ? (
             <Image
               src={article.coverImage}
-              alt={article.title}
+              alt={title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
               style={{ objectFit: 'cover' }}
@@ -167,7 +170,7 @@ export function RelatedCard({ article, reduced }: { article: Article; reduced: b
             <>
               <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100px', height: '100px', borderRadius: '50%', background: cs.accentBg }} />
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 500, fontVariationSettings: '"opsz" 40', color: cs.accentEdge, opacity: 0.20, userSelect: 'none', position: 'relative', zIndex: 1 }}>
-                {article.title.charAt(0)}
+                {title.charAt(0)}
               </span>
             </>
           )}
@@ -189,7 +192,7 @@ export function RelatedCard({ article, reduced }: { article: Article; reduced: b
               flex:                  1,
             }}
           >
-            {article.title}
+            {title}
           </h4>
           <span
             style={{
@@ -210,6 +213,450 @@ export function RelatedCard({ article, reduced }: { article: Article; reduced: b
         </div>
       </motion.div>
     </Link>
+  )
+}
+
+/* ─── PCOS rich body ─────────────────────────────────────────────────────────
+ * A bespoke, best-in-class reading layout for the fully-translated PCOS
+ * article. All copy is pulled from next-intl (EducateIVF.articles.pcos) so the
+ * same layout renders correctly in English and Marathi. Sections carry lists
+ * with soft dot markers, sub-headings, and the mantra as a premium pull-quote. */
+
+const INK        = '#1C2A48'
+const INK_BODY   = 'rgba(28,42,72,0.74)'
+const INK_MUTED  = 'rgba(28,42,72,0.56)'
+const LAVENDER   = 'rgba(148,100,200,'  // + alpha)
+
+function RichHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h2
+      style={{
+        fontFamily:            'var(--font-display)',
+        fontSize:              'clamp(1.375rem, 1.5vw + 0.5rem, 1.875rem)',
+        fontWeight:            500,
+        lineHeight:            1.2,
+        letterSpacing:         '-0.02em',
+        color:                 INK,
+        fontVariationSettings: '"opsz" 32',
+        margin:                '0 0 1.125rem',
+      }}
+    >
+      {children}
+    </h2>
+  )
+}
+
+function RichSubheading({ children }: { children: React.ReactNode }) {
+  return (
+    <h3
+      style={{
+        fontFamily:            'var(--font-display)',
+        fontSize:              'clamp(1.125rem, 1vw + 0.5rem, 1.375rem)',
+        fontWeight:            500,
+        lineHeight:            1.24,
+        letterSpacing:         '-0.014em',
+        color:                 INK,
+        fontVariationSettings: '"opsz" 24',
+        margin:                '0 0 0.75rem',
+      }}
+    >
+      {children}
+    </h3>
+  )
+}
+
+function RichPara({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
+  return (
+    <p
+      style={{
+        fontFamily: 'var(--font-body)',
+        fontSize:   'clamp(1.0625rem, 0.25vw + 0.9375rem, 1.1875rem)',
+        lineHeight: 1.8,
+        color:      muted ? INK_MUTED : INK_BODY,
+        margin:     '0 0 0.75rem',
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
+function RichList({ items, accent }: { items: readonly string[]; accent: string }) {
+  return (
+    <ul
+      style={{
+        listStyle:     'none',
+        margin:        '0.25rem 0 0',
+        padding:       0,
+        display:       'flex',
+        flexDirection: 'column',
+        gap:           '0.6875rem',
+      }}
+    >
+      {items.map((item, i) => (
+        <li
+          key={i}
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize:   'clamp(1.0625rem, 0.25vw + 0.9375rem, 1.1875rem)',
+            lineHeight: 1.7,
+            color:      INK_BODY,
+            display:    'flex',
+            gap:        '0.75rem',
+            alignItems: 'flex-start',
+          }}
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              flexShrink:   0,
+              width:        '7px',
+              height:       '7px',
+              borderRadius: '50%',
+              background:   accent,
+              marginTop:    '0.62em',
+            }}
+          />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function RichNote({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      style={{
+        fontFamily: 'var(--font-body)',
+        fontSize:   '0.9375rem',
+        fontStyle:  'italic',
+        lineHeight: 1.64,
+        color:      INK_MUTED,
+        margin:     '1rem 0 0',
+      }}
+    >
+      {children}
+    </p>
+  )
+}
+
+/* Definition-style list: each item is "Term: description"; the term before the
+ * first colon is emphasised. Used for the IVF phase sub-points. */
+function RichDefList({ items, accent }: { items: readonly string[]; accent: string }) {
+  return (
+    <ul
+      style={{
+        listStyle:     'none',
+        margin:        '0.5rem 0 0',
+        padding:       0,
+        display:       'flex',
+        flexDirection: 'column',
+        gap:           '0.9375rem',
+      }}
+    >
+      {items.map((item, i) => {
+        const idx  = item.indexOf(': ')
+        const term = idx > 0 ? item.slice(0, idx) : null
+        const rest = idx > 0 ? item.slice(idx + 2) : item
+        return (
+          <li
+            key={i}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize:   'clamp(1.0625rem, 0.25vw + 0.9375rem, 1.1875rem)',
+              lineHeight: 1.72,
+              color:      INK_BODY,
+              display:    'flex',
+              gap:        '0.75rem',
+              alignItems: 'flex-start',
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{ flexShrink: 0, width: '7px', height: '7px', borderRadius: '50%', background: accent, marginTop: '0.6em' }}
+            />
+            <span>
+              {term && (
+                <strong style={{ fontWeight: 600, color: INK }}>{term}: </strong>
+              )}
+              {rest}
+            </span>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
+/* Soft, warm highlighted paragraph — used for a hopeful or reassuring beat. */
+function RichHighlight({ text, reduced }: { text: string; reduced: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.66, ease: EASE }}
+      style={{
+        margin:       '0.25rem 0 0',
+        padding:      'clamp(1.375rem, 3vw, 1.875rem) clamp(1.5rem, 3vw, 2rem)',
+        borderRadius: '18px',
+        background:   'linear-gradient(135deg, rgba(148,100,200,0.09) 0%, rgba(226,132,156,0.11) 100%)',
+        border:       '1px solid rgba(148,100,200,0.14)',
+      }}
+    >
+      <p
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize:   'clamp(1.0625rem, 0.4vw + 0.95rem, 1.25rem)',
+          fontWeight: 500,
+          lineHeight: 1.66,
+          color:      INK,
+          margin:     0,
+        }}
+      >
+        {text}
+      </p>
+    </motion.div>
+  )
+}
+
+function SignatureQuote({ text, reduced }: { text: string; reduced: boolean }) {
+  return (
+    <motion.figure
+      initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.7, ease: EASE }}
+      style={{
+        margin:       'clamp(2rem, 4vw, 2.75rem) 0',
+        padding:      'clamp(1.75rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem)',
+        borderRadius: '22px',
+        background:   'linear-gradient(135deg, rgba(148,100,200,0.11) 0%, rgba(226,132,156,0.13) 100%)',
+        border:       '1px solid rgba(148,100,200,0.16)',
+        boxShadow:    '0 24px 52px -28px rgba(120,72,168,0.34)',
+        position:     'relative',
+        overflow:     'hidden',
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          position:              'absolute',
+          top:                   'clamp(-0.5rem, -1vw, -0.25rem)',
+          left:                  'clamp(1rem, 3vw, 1.75rem)',
+          fontFamily:            'var(--font-display)',
+          fontSize:              '6rem',
+          lineHeight:            1,
+          color:                 'rgba(148,100,200,0.18)',
+          fontVariationSettings: '"opsz" 96',
+          pointerEvents:         'none',
+          userSelect:            'none',
+        }}
+      >
+        &ldquo;
+      </span>
+      <blockquote
+        style={{
+          margin:                0,
+          position:              'relative',
+          zIndex:                1,
+          fontFamily:            'var(--font-display)',
+          fontSize:              'clamp(1.5rem, 2.5vw + 0.5rem, 2.25rem)',
+          fontWeight:            500,
+          lineHeight:            1.28,
+          letterSpacing:         '-0.02em',
+          color:                 INK,
+          fontVariationSettings: '"opsz" 40',
+          textAlign:             'center',
+        }}
+      >
+        {text}
+      </blockquote>
+    </motion.figure>
+  )
+}
+
+function RichSectionWrap({
+  children,
+  reduced,
+  index,
+}: {
+  children: React.ReactNode
+  reduced:  boolean
+  index:    number
+}) {
+  return (
+    <motion.section
+      initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.68, ease: EASE, delay: reduced ? 0 : Math.min(index, 3) * 0.04 }}
+      style={{ marginBottom: 'clamp(2.5rem, 4vw, 3.5rem)' }}
+    >
+      {children}
+    </motion.section>
+  )
+}
+
+/* Renders a single content block by resolving its field against the article's
+ * message namespace. `s` returns a string, `a` returns a string[]. */
+function RichBlockView({
+  block,
+  s,
+  a,
+  accent,
+  reduced,
+}: {
+  block:   RichBlock
+  s:       (f: string) => string
+  a:       (f: string) => string[]
+  accent:  string
+  reduced: boolean
+}) {
+  switch (block.kind) {
+    case 'para':
+    case 'intro':
+      return (
+        <>
+          {s(block.field).split('\n\n').map((para, i) => (
+            <RichPara key={i}>{para}</RichPara>
+          ))}
+        </>
+      )
+    case 'paraMuted':
+      return <RichPara muted>{s(block.field)}</RichPara>
+    case 'list':
+      return <RichList items={a(block.field)} accent={accent} />
+    case 'defList':
+      return <RichDefList items={a(block.field)} accent={accent} />
+    case 'note':
+      return <RichNote>{s(block.field)}</RichNote>
+    case 'sub':
+      return <RichSubheading>{s(block.field)}</RichSubheading>
+    case 'quote':
+      return <SignatureQuote text={s(block.field)} reduced={reduced} />
+    case 'highlight':
+      return <RichHighlight text={s(block.field)} reduced={reduced} />
+    default:
+      return null
+  }
+}
+
+/* Data-driven body for any fully-translated article. Structure comes from
+ * RICH_ARTICLES[i18nKey]; all copy is resolved from next-intl so EN and MR
+ * render from the same layout. */
+function RichBody({
+  i18nKey,
+  cs,
+  reduced,
+}: {
+  i18nKey: string
+  cs:      (typeof CATEGORY_STYLES)[ArticleCategory]
+  reduced: boolean
+}) {
+  const t   = useTranslations('EducateIVF')
+  const cfg = RICH_ARTICLES[i18nKey]
+  const base = `articles.${i18nKey}`
+  const s   = (f: string) => t(`${base}.${f}`)
+  const a   = (f: string) => t.raw(`${base}.${f}`) as string[]
+  const dot = cs.color
+
+  if (!cfg) return null
+
+  return (
+    <div>
+      {cfg.sections.map((section, i) => (
+        <RichSectionWrap key={i} reduced={reduced} index={i}>
+          {section.headingField && <RichHeading>{s(section.headingField)}</RichHeading>}
+          {section.blocks.map((block, j) => (
+            <RichBlockView key={j} block={block} s={s} a={a} accent={dot} reduced={reduced} />
+          ))}
+        </RichSectionWrap>
+      ))}
+
+      {/* Remember — soft lavender takeaways panel */}
+      {cfg.remember && (
+        <motion.div
+          initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-30px' }}
+          transition={{ duration: 0.68, ease: EASE }}
+          style={{
+            background:   `${LAVENDER}0.07)`,
+            borderLeft:   `3px solid ${LAVENDER}0.42)`,
+            borderRadius: '0 18px 18px 0',
+            padding:      'clamp(1.5rem, 3vw, 2.25rem)',
+            marginTop:    'clamp(1rem, 2vw, 2rem)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily:            'var(--font-display)',
+              fontSize:              '1.25rem',
+              fontWeight:            500,
+              lineHeight:            1.2,
+              letterSpacing:         '-0.016em',
+              color:                 INK,
+              fontVariationSettings: '"opsz" 24',
+              margin:                '0 0 1.125rem',
+            }}
+          >
+            {s(cfg.remember.headingField)}
+          </p>
+
+          {cfg.remember.itemsField && (
+            <ul
+              style={{
+                listStyle:     'none',
+                margin:        0,
+                padding:       0,
+                display:       'flex',
+                flexDirection: 'column',
+                gap:           '0.75rem',
+              }}
+            >
+              {a(cfg.remember.itemsField).map((item, i) => (
+                <li
+                  key={i}
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize:   '1rem',
+                    lineHeight: 1.7,
+                    color:      'rgba(28,42,72,0.78)',
+                    display:    'flex',
+                    gap:        '0.625rem',
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{ color: `${LAVENDER}0.85)`, fontWeight: 600, flexShrink: 0, marginTop: '0.05em' }}
+                  >
+                    &mdash;
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {cfg.remember.lineField && (
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize:   'clamp(1rem, 0.25vw + 0.9375rem, 1.0625rem)',
+                lineHeight: 1.74,
+                color:      'rgba(28,42,72,0.80)',
+                margin:     0,
+              }}
+            >
+              {s(cfg.remember.lineField)}
+            </p>
+          )}
+        </motion.div>
+      )}
+    </div>
   )
 }
 
@@ -234,6 +681,18 @@ export function ArticleDetail({
 
   const d         = new Date(article.date)
   const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  /* Translated articles read their title/intro from messages; others keep the
+   * literal English strings on the article object. */
+  const richCfg       = article.i18nKey ? RICH_ARTICLES[article.i18nKey] : undefined
+  const title         = article.i18nKey ? t(`articles.${article.i18nKey}.title`) : article.title
+  const intro         = article.i18nKey ? t(`articles.${article.i18nKey}.intro`) : article.intro
+  /* Some articles open with a titled definitional section rather than a hero
+   * lead paragraph — in that case the hero shows no intro. */
+  const showHeroIntro = richCfg ? richCfg.heroIntro : true
+  const ctaButton     = richCfg?.ctaButtonField
+    ? t(`articles.${article.i18nKey}.${richCfg.ctaButtonField}`)
+    : t('endCtaButton')
 
   const relatedArticles = article.relatedSlugs
     ? article.relatedSlugs
@@ -306,25 +765,28 @@ export function ArticleDetail({
               maxWidth:              '22ch',
             }}
           >
-            {article.title}
+            {title}
           </h1>
 
           {/* Intro */}
-          <p
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize:   'clamp(1.125rem, 1vw + 0.75rem, 1.375rem)',
-              lineHeight: 1.78,
-              color:      'rgba(28,42,72,0.70)',
-              maxWidth:   '62ch',
-              margin:     '0 0 3rem',
-            }}
-          >
-            {article.intro}
-          </p>
+          {showHeroIntro && intro.split('\n\n').map((para, i) => (
+            <p
+              key={i}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize:   'clamp(1.125rem, 1vw + 0.75rem, 1.375rem)',
+                lineHeight: 1.78,
+                color:      'rgba(28,42,72,0.70)',
+                maxWidth:   '62ch',
+                margin:     i === 0 ? '0 0 1.25rem' : '0 0 1.25rem',
+              }}
+            >
+              {para}
+            </p>
+          ))}
 
           {/* Cover image */}
-          <div style={{ marginBottom: 'clamp(3.5rem, 6vw, 5rem)' }}>
+          <div style={{ marginTop: showHeroIntro ? 'clamp(1.75rem, 3vw, 2.5rem)' : '0.5rem', marginBottom: 'clamp(3.5rem, 6vw, 5rem)' }}>
             <HeroCover article={article} />
           </div>
         </motion.div>
@@ -340,6 +802,10 @@ export function ArticleDetail({
             paddingBottom: 'clamp(3.5rem, 6vw, 5rem)',
           }}
         >
+          {richCfg && article.i18nKey ? (
+            <RichBody i18nKey={article.i18nKey} cs={cs} reduced={reduced} />
+          ) : (
+          <>
           {article.sections.map((section, i) => (
             <motion.div
               key={i}
@@ -451,6 +917,8 @@ export function ArticleDetail({
               </ul>
             </motion.div>
           )}
+          </>
+          )}
         </div>
       </Container>
 
@@ -514,7 +982,7 @@ export function ArticleDetail({
                   whiteSpace:     'nowrap',
                 }}
               >
-                {t('endCtaButton')}
+                {ctaButton}
                 <ArrowRight size={15} strokeWidth={2} />
               </Link>
             </Pressable>

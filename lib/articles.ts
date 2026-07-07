@@ -27,6 +27,11 @@ export type Article = {
   readonly sections:      readonly ArticleSection[]
   readonly keyTakeaways?: readonly string[]
   readonly relatedSlugs?: readonly string[]
+  /* When set, the article's text (title, excerpt, intro, headings, lists,
+   * takeaways, meta) is read from next-intl under EducateIVF.articles.<i18nKey>
+   * rather than the literal English strings above. This is how a fully
+   * translated article (EN + MR) is wired without duplicating copy in code. */
+  readonly i18nKey?:      string
 }
 
 export const ARTICLES: ReadonlyArray<Article> = [
@@ -34,12 +39,13 @@ export const ARTICLES: ReadonlyArray<Article> = [
   /* ─── 1. What IVF really is ───────────────────────────────────────────── */
   {
     slug:     'what-ivf-really-is',
-    title:    'What IVF really is',
+    title:    'Understanding IVF: a guide for your journey',
     category: 'Understanding IVF',
     excerpt:  'Most people have heard of IVF. Far fewer know what it actually involves — and how much gentler it is than its reputation suggests.',
     date:     '2025-10-15',
     readTime: 9,
     coverImage: ivfCover,
+    i18nKey:  'what-ivf-really-is',
     intro:
       'IVF has a way of sounding more complicated — and more frightening — than it really is. The acronym alone can feel clinical and cold. But when you understand what is actually happening at each stage, it becomes something quite different: a careful, step-by-step process, with a real human team alongside you at every point. Here is what IVF really involves.',
     sections: [
@@ -93,7 +99,10 @@ export const ARTICLES: ReadonlyArray<Article> = [
     relatedSlugs: ['ivf-myths-vs-facts', 'age-and-ivf-success', 'pcos'],
   },
 
-  /* ─── 2. Understanding PCOS ───────────────────────────────────────────── */
+  /* ─── 2. PCOS ──────────────────────────────────────────────────────────
+   * Fully translated (EN + MR): all copy lives in messages under
+   * EducateIVF.articles.pcos and is rendered by the bespoke 'pcos' body
+   * variant. The strings below are English fallbacks only. */
   {
     slug:     'pcos',
     title:    'PCOS',
@@ -102,69 +111,23 @@ export const ARTICLES: ReadonlyArray<Article> = [
     date:     '2025-11-20',
     readTime: 5,
     coverImage: pcosCover,
+    i18nKey:    'pcos',
     intro:
-      'Polycystic ovary syndrome — PCOS, now also known as PMOS (polyendocrine metabolic ovarian syndrome) — is one of the most common hormonal conditions in women. It can make periods irregular and make conceiving harder, and it often comes alongside weight gain, acne, or extra hair growth. Here is the part worth holding on to from the start: PCOS is treatable, and most women who have it go on to live healthy, full lives.',
-    sections: [
-      {
-        heading: 'What PCOS is',
-        body:
-          'PCOS stands for polycystic ovary syndrome. You may also hear it called PMOS — polyendocrine metabolic ovarian syndrome — a newer name for the same condition. At its heart, PCOS is a hormonal imbalance, and it is those shifting hormones that ripple out into the signs many women notice.\n\nIt is common, and it is manageable. With the right care, most women with PCOS keep their symptoms in check and stay well.',
-      },
-      {
-        heading: 'Signs and symptoms',
-        body:
-          'PCOS looks different from one woman to the next, and not everyone has every sign. The ones we see most often include irregular or missed periods, difficulty getting pregnant, weight gain or trouble losing weight, acne, extra hair on the face, chest or tummy, thinning hair on the scalp, and darker patches of skin around the neck or underarms.\n\nSome women notice only one or two of these; others notice several. If any of them feel familiar, they are worth a conversation.',
-      },
-      {
-        heading: 'Why PCOS happens',
-        body:
-          'The honest answer is that we do not fully know what causes PCOS. It does seem to run in families, so genetics likely play a part.\n\nMany women with PCOS also have something called insulin resistance, where the body does not use insulin the way it should. That can lead to weight gain, and it can make the other symptoms more pronounced — which is one reason a healthy lifestyle makes such a difference.',
-      },
-      {
-        heading: 'How we diagnose PCOS',
-        body:
-          'There is no single test that diagnoses PCOS on its own. Instead, we build up a picture together. We will ask about your periods and any symptoms you have noticed, examine you, and usually arrange some blood tests. If it helps make things clearer, we may also do an ultrasound.\n\nTaken together, these give us enough to understand your particular version of PCOS and to plan care around it.',
-      },
-      {
-        heading: 'Treatment starts with a healthy lifestyle',
-        body:
-          'For most women, the single most important treatment for PCOS is not a medicine — it is a healthy lifestyle. It genuinely works, and even a small amount of weight loss can make periods more regular and improve the chances of pregnancy.\n\nWith food, the aim is simple and home-grown: healthy home-cooked meals, with more vegetables, fruits, whole grains, pulses, and lean protein, and less in the way of sweets, sugary drinks, and junk food. With movement, aim for at least 30 minutes of activity a day, around five days a week.\n\nIt is the idea behind the mantra we come back to again and again: “Eat less, walk more.”',
-      },
-      {
-        heading: 'Where medicines help',
-        body:
-          'Alongside a healthy lifestyle, we sometimes prescribe medicines, and they do different jobs for different women. Depending on what you need, medicines can help regulate your periods, ease acne and unwanted hair, improve insulin resistance, and support your chances of pregnancy.\n\nThese are always tailored to you and taken as prescribed. Lifestyle and medicine work best hand in hand — not one instead of the other.',
-      },
-      {
-        heading: 'Why regular treatment matters',
-        body:
-          'PCOS is easy to put off, especially when symptoms come and go. But left unmanaged over the long term, it can raise the risk of other health problems — including diabetes, high blood pressure, and high cholesterol. It can make pregnancy more complicated. And if periods are absent for a long time, that in itself can increase the risk of uterine cancer.\n\nNone of this is meant to worry you. It is simply why we treat PCOS as an ongoing partnership, with regular follow-up, rather than a one-time fix.',
-      },
-      {
-        heading: 'When to come and see us',
-        body:
-          'It is worth booking a visit with our team at IVF Master in Sangli if you have not had a period for more than three months and you are not pregnant, if you have very heavy or prolonged bleeding, or if you have been trying to conceive without success. Rapid weight gain, severe acne, or a noticeable increase in facial hair are also good reasons to check in.\n\nThe earlier we understand your PCOS, the more we can do to keep you well — now and in the years ahead.',
-      },
-    ],
-    keyTakeaways: [
-      'PCOS is a common hormonal condition — and it is treatable.',
-      'A healthy lifestyle is the most important treatment: good food, regular exercise, and even a little weight loss can improve periods and fertility.',
-      'The mantra to remember is “Eat less, walk more.” — with prescribed medicines added when they are needed.',
-      'Untreated PCOS can raise the long-term risk of diabetes, high blood pressure, high cholesterol, and pregnancy problems.',
-      'Regular follow-up matters, and most women with PCOS go on to live healthy, full lives.',
-    ],
-    relatedSlugs: ['male-fertility-explained', 'age-and-ivf-success', 'what-ivf-really-is'],
+      'PCOS (Polycystic Ovary Syndrome) — now also called PMOS (Polyendocrine Metabolic Ovarian Syndrome). PCOS is a common condition that affects a woman\'s hormones. It can make periods irregular and may make it harder to become pregnant. It can also cause weight gain, acne, and extra hair growth on the face or body. PCOS can be treated, and most women with PCOS can live a healthy life.',
+    sections: [],
+    relatedSlugs: ['male-fertility', 'age-and-ivf-success', 'what-ivf-really-is'],
   },
 
   /* ─── 3. Male fertility, explained ───────────────────────────────────────*/
   {
-    slug:     'male-fertility-explained',
-    title:    'Male fertility, explained',
+    slug:     'male-fertility',
+    title:    'Male infertility',
     category: 'Conditions',
     excerpt:  'Male-factor infertility is common and often very treatable. The causes, the simple checks, and what men can do to help — explained clearly and kindly.',
     date:     '2025-12-05',
-    readTime: 5,
+    readTime: 4,
     coverImage: maleFertilityCover,
+    i18nKey:  'male-fertility',
     intro:
       'When a couple is finding it hard to conceive, it is not only a question for the woman. Male-factor infertility — when a man has difficulty helping his partner conceive after about a year of trying, with regular unprotected sex — is common, and it deserves the same care and attention. The encouraging news is that it is often very treatable. Here is what can affect male fertility, how we check it, and what you can do to help.',
     sections: [],
@@ -179,8 +142,9 @@ export const ARTICLES: ReadonlyArray<Article> = [
     category: 'Conditions',
     excerpt:  'Recurrent miscarriage — two or more losses — is more common than many realise, and a healthy pregnancy is often still possible. The causes, tests, and treatment.',
     date:     '2026-01-18',
-    readTime: 5,
+    readTime: 3,
     coverImage: recurrentPregnancyLossCover,
+    i18nKey:  'recurrent-pregnancy-loss',
     intro:
       'Losing a pregnancy is painful in a way that is hard to put into words, and losing more than one can feel frightening and lonely. Recurrent pregnancy loss — having two or more miscarriages — is more common than many people realise. If it is happening to you, please hold on to this first: in many cases, a healthy pregnancy is still very possible. Understanding why it is happening is the most helpful place to begin.',
     sections: [],

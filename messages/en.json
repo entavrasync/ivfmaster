@@ -1,88 +1,84 @@
 {
   "Nav": {
-    "home":           "Home",
-    "educateIVF":     "Educate IVF",
-    "procedures":     "Procedures",
-    "about":          "About",
-    "team":           "Team",
-    "contact":        "Contact",
-    "talkToExperts":     "Talk to our experts",
-    "switchLanguage":    "Switch language",
-    "language":          "Language",
-    "closeMenu":         "Close menu",
-    "openMenu":          "Open menu",
+    "home": "Home",
+    "educateIVF": "Educate IVF",
+    "procedures": "Procedures",
+    "about": "About",
+    "team": "Team",
+    "contact": "Contact",
+    "talkToExperts": "Talk to our experts",
+    "switchLanguage": "Switch language",
+    "language": "Language",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
     "patientHelpCentre": "Patient help centre"
   },
-
   "Meta": {
-    "siteTitle":       "IVF Master - Premium Fertility Care in Sangli",
+    "siteTitle": "IVF Master - Premium Fertility Care in Sangli",
     "siteDescription": "Personalized IVF and fertility treatment at IVF Master. Experience compassionate care from expert doctors in Sangli, Maharashtra."
   },
-
   "About": {
-    "metaTitle":       "About IVF Master - Care, Clarity & Reproductive Medicine",
+    "metaTitle": "About IVF Master - Care, Clarity & Reproductive Medicine",
     "metaDescription": "Meet the doctors and care team behind IVF Master and learn how listening, education and evidence shape each fertility journey."
   },
-
   "Contact": {
-    "metaTitle":       "Contact IVF Master",
+    "metaTitle": "Contact IVF Master",
     "metaDescription": "Get in touch with IVF Master fertility clinic in Sangli, Maharashtra.",
-    "eyebrow":                 "We're here when you're ready",
-    "headline":                "Let's start with a conversation.",
-    "lead":                    "You don't need to have all the answers. Just share a little about where you are — and we'll take it from there, gently.",
-    "formNameLabel":           "Your name",
-    "formNamePlaceholder":     "How would you like to be addressed?",
-    "formNameRequired":        "Please tell us your name.",
-    "formReachingAsLabel":     "Who's getting in touch?",
-    "formReachingAsCouple":    "The two of us",
-    "formReachingAsIndividual":"Just me",
-    "formDurationLabel":       "How long has the journey been so far?",
-    "formDuration6m":          "Under 6 months",
-    "formDuration6to12m":      "6 months to a year",
-    "formDuration1to2y":       "1 to 2 years",
-    "formDuration2yPlus":      "Over 2 years",
-    "formReasonLabel":         "What would you like to talk through?",
-    "formReasonIVF":           "Learning about IVF",
+    "eyebrow": "We're here when you're ready",
+    "headline": "Let's start with a conversation.",
+    "lead": "You don't need to have all the answers. Just share a little about where you are — and we'll take it from there, gently.",
+    "formNameLabel": "Your name",
+    "formNamePlaceholder": "How would you like to be addressed?",
+    "formNameRequired": "Please tell us your name.",
+    "formReachingAsLabel": "Who's getting in touch?",
+    "formReachingAsCouple": "The two of us",
+    "formReachingAsIndividual": "Just me",
+    "formDurationLabel": "How long has the journey been so far?",
+    "formDuration6m": "Under 6 months",
+    "formDuration6to12m": "6 months to a year",
+    "formDuration1to2y": "1 to 2 years",
+    "formDuration2yPlus": "Over 2 years",
+    "formReasonLabel": "What would you like to talk through?",
+    "formReasonIVF": "Learning about IVF",
     "formReasonSecondOpinion": "A second opinion",
-    "formReasonTests":         "Tests and evaluation",
-    "formReasonOther":         "Something else",
-    "formContactLabel":        "How should we get back to you?",
-    "formContactWhatsApp":     "WhatsApp",
-    "formContactCall":         "A phone call",
-    "formDayLabel":            "Which day works best?",
-    "formDayMon":              "Monday",
-    "formDayTue":              "Tuesday",
-    "formDayWed":              "Wednesday",
-    "formDayThu":              "Thursday",
-    "formDayFri":              "Friday",
-    "formDaySat":              "Saturday",
-    "formTimeLabel":           "When suits you best?",
-    "formTimeMorning":         "Mornings (10 AM – 1 PM)",
-    "formTimeAfternoon":       "Afternoons (1 – 5 PM)",
-    "formMessageLabel":        "Anything you'd like to share with us?",
-    "formMessagePlaceholder":  "Write whatever feels relevant — or leave it blank if you're still finding the words.",
-    "formSubmit":              "Send on WhatsApp",
-    "formSubmitSecondary":     "Call the clinic instead",
-    "panelTitle":              "Other ways to reach us",
-    "panelWhatsapp":           "Message on WhatsApp",
-    "panelWhatsappSub":        "We'll reply as soon as we can",
-    "panelCall":               "Call the clinic",
-    "panelCallSub":            "Mon–Sat, 10 AM – 6 PM",
-    "panelEmail":              "Email us",
-    "panelEmailSub":           "ivfmaster.in@gmail.com",
-    "panelInstagram":          "Instagram",
-    "panelInstagramSub":       "Live case studies & updates",
-    "panelAddressLabel":       "Our clinic",
-    "panelAddress":            "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Mantri Colony, Urun-Ishwarpur, Maharashtra 415409",
-    "panelHoursLabel":         "Hours",
-    "panelHours":              "Mon–Sat, 10 AM – 6 PM",
-    "panelMapCta":             "View on Google Maps",
-    "statusOpen":              "Open now · until {time}",
-    "statusClosedToday":       "Closed now · opens {when}",
-    "statusHoliday":           "Closed today · {name}",
-    "statusWeeklyOff":         "Closed today · opens {when}"
+    "formReasonTests": "Tests and evaluation",
+    "formReasonOther": "Something else",
+    "formContactLabel": "How should we get back to you?",
+    "formContactWhatsApp": "WhatsApp",
+    "formContactCall": "A phone call",
+    "formDayLabel": "Which day works best?",
+    "formDayMon": "Monday",
+    "formDayTue": "Tuesday",
+    "formDayWed": "Wednesday",
+    "formDayThu": "Thursday",
+    "formDayFri": "Friday",
+    "formDaySat": "Saturday",
+    "formTimeLabel": "When suits you best?",
+    "formTimeMorning": "Mornings (10 AM – 1 PM)",
+    "formTimeAfternoon": "Afternoons (1 – 5 PM)",
+    "formMessageLabel": "Anything you'd like to share with us?",
+    "formMessagePlaceholder": "Write whatever feels relevant — or leave it blank if you're still finding the words.",
+    "formSubmit": "Send on WhatsApp",
+    "formSubmitSecondary": "Call the clinic instead",
+    "panelTitle": "Other ways to reach us",
+    "panelWhatsapp": "Message on WhatsApp",
+    "panelWhatsappSub": "We'll reply as soon as we can",
+    "panelCall": "Call the clinic",
+    "panelCallSub": "Mon–Sat, 10 AM – 6 PM",
+    "panelEmail": "Email us",
+    "panelEmailSub": "ivfmaster.in@gmail.com",
+    "panelInstagram": "Instagram",
+    "panelInstagramSub": "Live case studies & updates",
+    "panelAddressLabel": "Our clinic",
+    "panelAddress": "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Mantri Colony, Urun-Ishwarpur, Maharashtra 415409",
+    "panelHoursLabel": "Hours",
+    "panelHours": "Mon–Sat, 10 AM – 6 PM",
+    "panelMapCta": "View on Google Maps",
+    "statusOpen": "Open now · until {time}",
+    "statusClosedToday": "Closed now · opens {when}",
+    "statusHoliday": "Closed today · {name}",
+    "statusWeeklyOff": "Closed today · opens {when}"
   },
-
   "Team": {
     "metaTitle": "Meet the people behind your care - IVF Master",
     "metaDescription": "Meet Dr. Gorakh Mandrupkar, Dr. Saie Mandrupkar, and the people who make fertility care at IVF Master feel personal, clear, and safe.",
@@ -180,114 +176,107 @@
       }
     }
   },
-
   "Hero": {
-    "eyebrow":        "Your fertility journey",
-    "headline":       "Trying to conceive is rarely simple.",
-    "subheadline":    "Understanding why doesn't have to be.",
-    "body":           "At IVF Master, we guide every couple with honest answers, unhurried consultations, and a care plan built around your specific situation — not a protocol.",
-    "ctaPrimary":     "Start your fertility journey",
-    "ctaSecondary":   "Understand your options first",
-    "ctaMicroTrust":  "A calm, unhurried conversation about your situation — no pressure to proceed.",
-    "trustCouples":   "2,000+ couples",
-    "trustYears":     "20+ years"
+    "eyebrow": "Your fertility journey",
+    "headline": "Trying to conceive is rarely simple.",
+    "subheadline": "Understanding why doesn't have to be.",
+    "body": "At IVF Master, we guide every couple with honest answers, unhurried consultations, and a care plan built around your specific situation — not a protocol.",
+    "ctaPrimary": "Start your fertility journey",
+    "ctaSecondary": "Understand your options first",
+    "ctaMicroTrust": "A calm, unhurried conversation about your situation — no pressure to proceed.",
+    "trustCouples": "2,000+ couples",
+    "trustYears": "20+ years"
   },
-
   "Stats": {
-    "couplesGuided":    "Couples guided",
-    "successRate":      "Clinical success rate",
-    "yearsExpertise":   "Years of expertise",
-    "cyclesCompleted":  "ART cycles completed"
+    "couplesGuided": "Couples guided",
+    "successRate": "Clinical success rate",
+    "yearsExpertise": "Years of expertise",
+    "cyclesCompleted": "ART cycles completed"
   },
-
   "PainRecognition": {
-    "eyebrow":  "Before anything else",
+    "eyebrow": "Before anything else",
     "headline": "You've been carrying this quietly for a long time.",
-    "body":     "The waiting, the questions, the hope that keeps starting over. We understand — and you don't have to carry it alone anymore."
+    "body": "The waiting, the questions, the hope that keeps starting over. We understand — and you don't have to carry it alone anymore."
   },
-
   "WhyTrust": {
-    "eyebrow":  "Why couples choose us",
-    "heading":  "Trust isn't claimed. It's earned, quietly, over time.",
-    "body":     "For over twenty years, couples have walked in carrying fear — and walked out with clarity. This is the conversation that changes everything.",
+    "eyebrow": "Why couples choose us",
+    "heading": "Trust isn't claimed. It's earned, quietly, over time.",
+    "body": "For over twenty years, couples have walked in carrying fear — and walked out with clarity. This is the conversation that changes everything.",
     "card0": {
-      "label":    "What couples fear",
-      "worry":    "Will we just be another case on a conveyor belt?",
+      "label": "What couples fear",
+      "worry": "Will we just be another case on a conveyor belt?",
       "response": "Never. Your first visit isn't a verdict — it's a conversation. We listen to your whole story before we say a single word about treatment."
     },
     "card1": {
-      "label":    "What couples dread",
-      "worry":    "We won't understand anything they tell us.",
+      "label": "What couples dread",
+      "worry": "We won't understand anything they tell us.",
       "response": "You'll understand every step before it happens. No jargon, no feeling lost — because understanding is what quietens fear."
     },
     "card2": {
-      "label":    "What couples need",
-      "worry":    "Just tell us the truth — even if it's hard.",
+      "label": "What couples need",
+      "worry": "Just tell us the truth — even if it's hard.",
       "response": "Always. We won't inflate your chances to win your trust. You'll get the real picture, with compassion — hope built on honesty, never pressure."
     },
-    "statYears":       "20+ years of care",
-    "statCouples":     "2,000+ couples guided",
+    "statYears": "20+ years of care",
+    "statCouples": "2,000+ couples guided",
     "statSpecialists": "Pune-trained specialists",
-    "statYearsLabel":  "years of care",
-    "statCouplesLabel":"couples guided",
-    "gestosisNote":   "Our lead specialist developed the HDP Gestosis Score — now adopted by India's National Health Mission.",
-    "ctaButton":      "Book your first conversation",
-    "ctaSub":         "An unhurried first visit to understand your story."
+    "statYearsLabel": "years of care",
+    "statCouplesLabel": "couples guided",
+    "gestosisNote": "Our lead specialist developed the HDP Gestosis Score — now adopted by India's National Health Mission.",
+    "ctaButton": "Book your first conversation",
+    "ctaSub": "An unhurried first visit to understand your story."
   },
-
   "CostOfWaiting": {
-    "eyebrow":  "The cost of waiting",
-    "line1":    "It rarely feels like a decision.",
-    "line2":    "It feels like “next year”.",
-    "line3":    "Then next year becomes the year after.",
-    "line4":    "And the hardest part —",
-    "line5":    "is that time is the one thing fertility can’t give back.",
-    "hopeLine1":"But waiting isn’t failing.",
-    "hopeLine2":"Understanding sooner simply gives you more of your story to write.",
-    "closeBody":"Wherever you are in your journey, it’s not too late to understand it.",
-    "ctaButton":"Understand your timeline",
-    "ctaSub":   "An honest, unhurried look at where you stand."
+    "eyebrow": "The cost of waiting",
+    "line1": "It rarely feels like a decision.",
+    "line2": "It feels like “next year”.",
+    "line3": "Then next year becomes the year after.",
+    "line4": "And the hardest part —",
+    "line5": "is that time is the one thing fertility can’t give back.",
+    "hopeLine1": "But waiting isn’t failing.",
+    "hopeLine2": "Understanding sooner simply gives you more of your story to write.",
+    "closeBody": "Wherever you are in your journey, it’s not too late to understand it.",
+    "ctaButton": "Understand your timeline",
+    "ctaSub": "An honest, unhurried look at where you stand."
   },
-
   "UnderstandingIVF": {
     "eyebrow": "How IVF works",
     "heading": "What happens, step by step — and why.",
-    "body":    "IVF can feel overwhelming from the outside. Here are the six steps as they actually unfold, in plain language.",
+    "body": "IVF can feel overwhelming from the outside. Here are the six steps as they actually unfold, in plain language.",
     "steps": {
       "stimulation": {
         "heading": "Preparing your body",
-        "body":    "A gentle head start. Light medication helps your ovaries prepare more eggs than usual, with care at every check-in."
+        "body": "A gentle head start. Light medication helps your ovaries prepare more eggs than usual, with care at every check-in."
       },
       "retrieval": {
         "heading": "Collecting the eggs",
-        "body":    "A short, calm procedure under anesthesia. The matured eggs are gently collected — most people feel only mild discomfort."
+        "body": "A short, calm procedure under anesthesia. The matured eggs are gently collected — most people feel only mild discomfort."
       },
       "fertilisation": {
         "heading": "Egg meets sperm",
-        "body":    "In the lab, egg and sperm are brought together — the quiet beginning of a possible embryo."
+        "body": "In the lab, egg and sperm are brought together — the quiet beginning of a possible embryo."
       },
       "culture": {
         "heading": "The embryo grows",
-        "body":    "Over a few days, embryos develop under close watch, and the healthiest is chosen with care."
+        "body": "Over a few days, embryos develop under close watch, and the healthiest is chosen with care."
       },
       "transfer": {
         "heading": "The transfer",
-        "body":    "A quick, painless step. The embryo is gently placed in the womb — no anesthesia, no bed rest needed."
+        "body": "A quick, painless step. The embryo is gently placed in the womb — no anesthesia, no bed rest needed."
       },
       "wait": {
         "heading": "The wait, together",
-        "body":    "About two weeks until the test. The hardest wait — and the one we walk through with you."
+        "body": "About two weeks until the test. The hardest wait — and the one we walk through with you."
       }
     },
     "closeBody": "By the time treatment begins, you’ll understand every step — and that clarity changes everything.",
     "ctaButton": "Talk us through it",
-    "ctaSub":    "Explained simply, at your pace."
+    "ctaSub": "Explained simply, at your pace."
   },
-
   "MythsFacts": {
     "eyebrow": "The things couples wonder",
     "heading": "The questions almost everyone asks.",
-    "body":    "If something here has been on your mind, you’re not alone — these are the things couples ask us most. Honest answers, in plain language.",
+    "body": "If something here has been on your mind, you’re not alone — these are the things couples ask us most. Honest answers, in plain language.",
     "faqs": {
       "q1": {
         "q": "Are IVF babies as healthy as other babies?",
@@ -320,152 +309,430 @@
     },
     "closeBody": "Still wondering about something? The best answers are the ones about your situation.",
     "ctaButton": "Ask us your question",
-    "ctaSub":    "No pressure — just honest answers."
+    "ctaSub": "No pressure — just honest answers."
   },
-
   "PatientJourney": {
     "eyebrow": "Your journey with us",
     "heading": "From the first question to the last step — with you.",
-    "body":    "This is how the journey unfolds when care comes first — one step at a time, in plain language, at your pace.",
+    "body": "This is how the journey unfolds when care comes first — one step at a time, in plain language, at your pace.",
     "steps": {
       "s1": {
         "heading": "An unhurried first conversation",
-        "body":    "We listen to your whole story before we say a single word about treatment. No hurry, no judgement."
+        "body": "We listen to your whole story before we say a single word about treatment. No hurry, no judgement."
       },
       "s2": {
         "heading": "Careful, thorough evaluation",
-        "body":    "The right tests, thoughtfully chosen. We look at the whole picture — medical, emotional, personal — before drawing any conclusions."
+        "body": "The right tests, thoughtfully chosen. We look at the whole picture — medical, emotional, personal — before drawing any conclusions."
       },
       "s3": {
         "heading": "Your results in plain language",
-        "body":    "We explain what we found, what it means, and what your options are — in words you can actually understand."
+        "body": "We explain what we found, what it means, and what your options are — in words you can actually understand."
       },
       "s4": {
         "heading": "A plan built around you",
-        "body":    "Together, we shape a path that fits your goals, your timeline, and your life — not a protocol off a shelf."
+        "body": "Together, we shape a path that fits your goals, your timeline, and your life — not a protocol off a shelf."
       },
       "s5": {
         "heading": "Precise, supported treatment",
-        "body":    "When the time comes, we move with care and expertise. Nothing happens without your full understanding and readiness."
+        "body": "When the time comes, we move with care and expertise. Nothing happens without your full understanding and readiness."
       },
       "s6": {
         "heading": "With you, however it unfolds",
-        "body":    "Wherever the journey leads, we stay — not just for outcomes, but for every moment of uncertainty along the way."
+        "body": "Wherever the journey leads, we stay — not just for outcomes, but for every moment of uncertainty along the way."
       }
     },
     "closeBody": "By the time treatment begins, you understand everything that’s happening and why. That clarity changes everything.",
     "ctaButton": "Take the first step"
   },
-
   "MeetTheDoctors": {
-    "eyebrow":      "The people behind your care",
-    "heading":      "You won’t be a case number here.",
-    "body":         "For over twenty years, two doctors — and a marriage — have devoted themselves to one thing: helping couples become parents, with honesty and care. Meet the people who’ll walk beside you.",
-    "gorakhEssence":"The doctor who explains until it finally makes sense.",
-    "gorakhIntro":  "Gorakh believes no one should feel lost in their own treatment. He’ll sit with you, draw the picture, and answer every question — twice if you need — until the fear gives way to understanding.",
-    "gorakhCred1":  "Gold Medallist, Pune University",
-    "gorakhCred2":  "20+ years in IVF & reproductive medicine",
-    "gorakhCred3":  "2,000+ couples helped become parents",
-    "gorakhCred4":  "Developed the HDP Gestosis Score — adopted by India’s National Health Mission",
-    "gorakhCta":    "Talk with Dr. Gorakh",
-    "gorakhStory":  "Read Gorakh’s full story",
-    "saieEssence":  "Gentle with people, fierce about their care.",
-    "saieIntro":    "Saie looks after the moments that matter most — the high-risk, the delicate, the frightening. Couples remember how calm she makes them feel when it counts.",
-    "saieCred1":    "Postgraduate, Pune University",
-    "saieCred2":    "20+ years in high-risk obstetrics & reproductive medicine",
-    "saieCred3":    "2,000+ couples guided to parenthood",
-    "saieCta":      "Talk with Dr. Saie",
-    "saieStory":    "Read Saie’s full story",
-    "coupleNote":   "Married for over twenty years — and partners in every couple’s care."
+    "eyebrow": "The people behind your care",
+    "heading": "You won’t be a case number here.",
+    "body": "For over twenty years, two doctors — and a marriage — have devoted themselves to one thing: helping couples become parents, with honesty and care. Meet the people who’ll walk beside you.",
+    "gorakhEssence": "The doctor who explains until it finally makes sense.",
+    "gorakhIntro": "Gorakh believes no one should feel lost in their own treatment. He’ll sit with you, draw the picture, and answer every question — twice if you need — until the fear gives way to understanding.",
+    "gorakhCred1": "Gold Medallist, Pune University",
+    "gorakhCred2": "20+ years in IVF & reproductive medicine",
+    "gorakhCred3": "2,000+ couples helped become parents",
+    "gorakhCred4": "Developed the HDP Gestosis Score — adopted by India’s National Health Mission",
+    "gorakhCta": "Talk with Dr. Gorakh",
+    "gorakhStory": "Read Gorakh’s full story",
+    "saieEssence": "Gentle with people, fierce about their care.",
+    "saieIntro": "Saie looks after the moments that matter most — the high-risk, the delicate, the frightening. Couples remember how calm she makes them feel when it counts.",
+    "saieCred1": "Postgraduate, Pune University",
+    "saieCred2": "20+ years in high-risk obstetrics & reproductive medicine",
+    "saieCred3": "2,000+ couples guided to parenthood",
+    "saieCta": "Talk with Dr. Saie",
+    "saieStory": "Read Saie’s full story",
+    "coupleNote": "Married for over twenty years — and partners in every couple’s care."
   },
-
   "SuccessStories": {
     "eyebrow": "Real journeys",
     "heading": "What patients say",
-    "body":    "These aren’t selected quotes. These are real people who came to us scared, and left with their families complete."
+    "body": "These aren’t selected quotes. These are real people who came to us scared, and left with their families complete."
   },
-
   "FinalCTA": {
-    "eyebrow":        "Get in touch",
-    "headline":       "Ready to talk? Let’s start with understanding.",
-    "body":           "You don’t have to decide anything today. Visit us, call, or message — we’ll explain everything, gently, before anything begins.",
-    "clinicLabel":    "Our clinic",
-    "clinicAddress":  "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Mantri Colony, Urun-Ishwarpur, Maharashtra 415409",
-    "hoursLabel":     "Hours",
-    "hoursDetail":    "Mon–Sat, 10 AM – 6 PM",
-    "reachLabel":     "Reach us",
-    "reachPhone":     "+91 95610 96416",
-    "whatsappCta":    "Message us on WhatsApp",
+    "eyebrow": "Get in touch",
+    "headline": "Ready to talk? Let’s start with understanding.",
+    "body": "You don’t have to decide anything today. Visit us, call, or message — we’ll explain everything, gently, before anything begins.",
+    "clinicLabel": "Our clinic",
+    "clinicAddress": "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Mantri Colony, Urun-Ishwarpur, Maharashtra 415409",
+    "hoursLabel": "Hours",
+    "hoursDetail": "Mon–Sat, 10 AM – 6 PM",
+    "reachLabel": "Reach us",
+    "reachPhone": "+91 95610 96416",
+    "whatsappCta": "Message us on WhatsApp",
     "contactFormCta": "Open the contact form"
   },
-
   "Footer": {
-    "tagline":       "Premium fertility care, with compassion — guiding couples toward parenthood.",
-    "byline":        "by Mandrupkar Clinic",
-    "colExplore":    "Explore",
-    "colClinic":     "Clinic",
-    "colContact":    "Get in touch",
-    "colLanguage":   "Language",
-    "navHome":       "Home",
-    "navLearnIVF":   "Learn about IVF",
+    "tagline": "Premium fertility care, with compassion — guiding couples toward parenthood.",
+    "byline": "by Mandrupkar Clinic",
+    "colExplore": "Explore",
+    "colClinic": "Clinic",
+    "colContact": "Get in touch",
+    "colLanguage": "Language",
+    "navHome": "Home",
+    "navLearnIVF": "Learn about IVF",
     "navProcedures": "Our procedures",
-    "navTeam":       "Our team",
-    "navAbout":      "About us",
-    "navContact":    "Contact",
-    "navFaq":        "FAQ",
-    "address":       "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Mantri Colony, Urun-Ishwarpur, Maharashtra 415409",
-    "hours":         "Mon–Sat, 10 AM – 6 PM",
-    "phone":         "+91 95610 96416",
-    "email":         "ivfmaster.in@gmail.com",
-    "copyright":     "© 2026 IVF Master · Mandrupkar Clinic. All rights reserved.",
+    "navTeam": "Our team",
+    "navAbout": "About us",
+    "navContact": "Contact",
+    "navFaq": "FAQ",
+    "address": "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Mantri Colony, Urun-Ishwarpur, Maharashtra 415409",
+    "hours": "Mon–Sat, 10 AM – 6 PM",
+    "phone": "+91 95610 96416",
+    "email": "ivfmaster.in@gmail.com",
+    "copyright": "© 2026 IVF Master · Mandrupkar Clinic. All rights reserved.",
     "privacyPolicy": "Privacy policy",
-    "termsOfService":"Terms of service"
+    "termsOfService": "Terms of service"
   },
-
   "Procedures": {
-    "metaTitle":       "Fertility Procedures - IVF Master",
+    "metaTitle": "Fertility Procedures - IVF Master",
     "metaDescription": "Learn about IVF, IUI, egg freezing, and other fertility procedures at IVF Master.",
-    "hubEyebrow":  "Treatments, explained simply",
-    "hubHeading":  "Every path to parenthood, in plain language.",
-    "hubBody":     "You may have heard these names from a doctor or a friend. Here’s what each one really means — gently, and without the jargon.",
-    "hubCloseText":"Not sure which path is yours? That’s exactly what a first conversation is for.",
-    "hubCtaButton":"Talk through your options",
-    "detailBack":          "Back to procedures",
+    "hubEyebrow": "Treatments, explained simply",
+    "hubHeading": "Every path to parenthood, in plain language.",
+    "hubBody": "You may have heard these names from a doctor or a friend. Here’s what each one really means — gently, and without the jargon.",
+    "hubCloseText": "Not sure which path is yours? That’s exactly what a first conversation is for.",
+    "hubCtaButton": "Talk through your options",
+    "detailBack": "Back to procedures",
     "detailIsRightForYou": "Is this right for you?",
-    "detailProcessEyebrow":"The process",
-    "detailProcessHeading":"The journey, step by step.",
-    "detailWhatToExpect":  "What to expect",
-    "detailHonestExp":     "Honest about the experience.",
-    "detailFaqEyebrow":    "Common questions",
-    "detailFaqHeading":    "Questions couples ask about {name}.",
-    "detailOtherEyebrow":  "Other treatments",
-    "detailOtherHeading":  "Explore other paths.",
-    "detailCtaText":       "Want to talk through whether {name} is right for you?",
-    "detailCtaSub":        "An unhurried conversation about your situation.",
-    "detailCtaButton":     "Book your consultation",
-    "photoComingSoon":     "Photo coming soon"
+    "detailProcessEyebrow": "The process",
+    "detailProcessHeading": "The journey, step by step.",
+    "detailWhatToExpect": "What to expect",
+    "detailHonestExp": "Honest about the experience.",
+    "detailFaqEyebrow": "Common questions",
+    "detailFaqHeading": "Questions couples ask about {name}.",
+    "detailOtherEyebrow": "Other treatments",
+    "detailOtherHeading": "Explore other paths.",
+    "detailCtaText": "Want to talk through whether {name} is right for you?",
+    "detailCtaSub": "An unhurried conversation about your situation.",
+    "detailCtaButton": "Book your consultation",
+    "photoComingSoon": "Photo coming soon"
   },
-
   "EducateIVF": {
-    "metaTitle":       "Educate IVF - Learn About Fertility Treatment",
+    "metaTitle": "Educate IVF - Learn About Fertility Treatment",
     "metaDescription": "Expert articles and guides about IVF and fertility treatment from IVF Master doctors.",
-    "hubMetaTitle":    "Educate IVF — Understanding fertility, one question at a time",
-    "hubMetaDesc":     "Honest, plain-language articles on IVF, fertility conditions, and common myths — written by the team who will care for you.",
-    "hubEyebrow":      "Learn, at your pace",
-    "hubHeading":      "Understanding, one question at a time.",
-    "hubBody":         "Honest, plain-language answers to the things couples wonder about most — written by the people who will care for you.",
-    "hubCtaQuestion":  "Still have a question we haven’t answered?",
-    "hubCtaButton":    "Ask our specialists",
-    "backLink":        "Back to Educate IVF",
-    "inShort":         "In short",
-    "endCtaHeading":   "Have a question about your situation?",
-    "endCtaButton":    "Talk to our specialists",
-    "endCtaMicro":     "No pressure — just honest answers.",
-    "keepReading":     "Keep reading.",
-    "readArticle":     "Read article",
-    "readMore":        "Read more",
-    "minRead":         "{minutes} min read",
-    "noArticles":      "No articles in this category yet."
+    "hubMetaTitle": "Educate IVF — Understanding fertility, one question at a time",
+    "hubMetaDesc": "Honest, plain-language articles on IVF, fertility conditions, and common myths — written by the team who will care for you.",
+    "hubEyebrow": "Learn, at your pace",
+    "hubHeading": "Understanding, one question at a time.",
+    "hubBody": "Honest, plain-language answers to the things couples wonder about most — written by the people who will care for you.",
+    "hubCtaQuestion": "Still have a question we haven’t answered?",
+    "hubCtaButton": "Ask our specialists",
+    "backLink": "Back to Educate IVF",
+    "inShort": "In short",
+    "endCtaHeading": "Have a question about your situation?",
+    "endCtaButton": "Talk to our specialists",
+    "endCtaMicro": "No pressure — just honest answers.",
+    "keepReading": "Keep reading.",
+    "readArticle": "Read article",
+    "readMore": "Read more",
+    "minRead": "{minutes} min read",
+    "noArticles": "No articles in this category yet.",
+    "articles": {
+      "pcos": {
+        "metaTitle": "PCOS — signs, causes, and how we treat it",
+        "metaDescription": "PCOS is a common, treatable hormonal condition that can affect your periods and fertility. The signs to watch for, why it happens, and how we treat it — with a healthy lifestyle at the heart.",
+        "title": "PCOS",
+        "excerpt": "A common, treatable hormonal condition that can affect your periods and fertility. The signs to watch for, why it happens, and how we treat it.",
+        "intro": "PCOS (Polycystic Ovary Syndrome) — now also called PMOS (Polyendocrine Metabolic Ovarian Syndrome). PCOS is a common condition that affects a woman's hormones. It can make periods irregular and may make it harder to become pregnant. It can also cause weight gain, acne, and extra hair growth on the face or body. PCOS can be treated, and most women with PCOS can live a healthy life.",
+        "signs": {
+          "heading": "Common signs and symptoms",
+          "items": [
+            "Irregular or missed periods",
+            "Difficulty getting pregnant",
+            "Weight gain or difficulty losing weight",
+            "Pimples (acne)",
+            "Extra hair on the face, chest, or tummy",
+            "Hair thinning on the scalp",
+            "Dark skin around the neck or underarms"
+          ],
+          "note": "Not every woman with PCOS has all these symptoms."
+        },
+        "why": {
+          "heading": "Why does PCOS happen?",
+          "body": "The exact cause is not known. It may run in families. Many women with PCOS have a problem called insulin resistance, where the body does not use insulin properly. This can lead to weight gain and make PCOS symptoms worse."
+        },
+        "diagnosis": {
+          "heading": "How is PCOS diagnosed?",
+          "intro": "We will:",
+          "items": [
+            "Ask about your periods and symptoms",
+            "Examine you",
+            "Recommend blood tests",
+            "Suggest an ultrasound scan if needed"
+          ]
+        },
+        "treatment": {
+          "heading": "How is PCOS treated?",
+          "lifestyle": {
+            "heading": "Healthy lifestyle",
+            "intro": "A healthy lifestyle is the most important treatment.",
+            "items": [
+              "Eat healthy home-cooked meals",
+              "Eat more vegetables, fruits, whole grains, pulses, and lean protein",
+              "Reduce sweets, sugary drinks, and junk food",
+              "Exercise for at least 30 minutes a day, 5 days a week",
+              "Losing even a small amount of weight can improve periods and increase the chance of pregnancy"
+            ]
+          },
+          "mantra": "My mantra: Eat less, walk more!",
+          "medicines": {
+            "heading": "Medicines",
+            "intro": "We may prescribe medicines to:",
+            "items": [
+              "Make your periods regular",
+              "Help with acne or unwanted hair growth",
+              "Improve insulin resistance",
+              "Help you become pregnant if you are planning a baby"
+            ],
+            "note": "Always take medicines only as advised by us or the concerned doctor."
+          }
+        },
+        "regular": {
+          "heading": "Why is regular treatment important?",
+          "intro": "If PCOS is not treated, it may increase the risk of:",
+          "items": [
+            "Diabetes (high blood sugar)",
+            "High blood pressure",
+            "High cholesterol",
+            "Problems with pregnancy",
+            "Cancer of the uterus (womb) if periods are absent for a long time"
+          ],
+          "closing": "Regular check-ups help prevent these problems."
+        },
+        "visit": {
+          "heading": "When should you visit us?",
+          "intro": "See your doctor if you:",
+          "items": [
+            "Do not get your period for more than 3 months (and are not pregnant)",
+            "Have very heavy or prolonged bleeding",
+            "Are trying to become pregnant without success",
+            "Notice rapid weight gain, severe acne, or increased facial hair"
+          ]
+        },
+        "remember": {
+          "heading": "Remember",
+          "items": [
+            "PCOS is common and treatable",
+            "Healthy eating, regular exercise, and taking medicines as prescribed can control PCOS",
+            "Regular follow-up with your doctor is important to keep you healthy",
+            "It will reduce future health problems like diabetes, high blood pressure, and some gynecological cancers"
+          ]
+        }
+      },
+      "male-fertility": {
+        "metaTitle": "Male infertility — causes, tests, and treatment",
+        "metaDescription": "Male-factor infertility is common and often very treatable. The causes, the simple checks, what you can do to help, and when to see a doctor.",
+        "title": "Male infertility",
+        "excerpt": "Male-factor infertility is common and often very treatable. The causes, the simple checks, and what men can do to help.",
+        "intro": "Male infertility means a man has trouble helping his partner become pregnant, even after trying for 1 year with regular unprotected sex.",
+        "about": {
+          "heading": "What is male factor infertility?",
+          "body": "Male infertility means a man has trouble helping his partner become pregnant, even after trying for 1 year with regular unprotected sex."
+        },
+        "causes": {
+          "heading": "What causes it?",
+          "items": [
+            "Low sperm count",
+            "Weak or slow-moving sperm",
+            "Blockage in the sperm tubes",
+            "Infection",
+            "Hormone problems",
+            "Smoking, alcohol, drugs, or some medicines",
+            "Being overweight",
+            "Swollen veins around the testicles (varicocele)"
+          ]
+        },
+        "signs": {
+          "heading": "What are the signs?",
+          "body": "Most men do not have any symptoms. The only sign may be difficulty having a baby."
+        },
+        "checked": {
+          "heading": "How is it checked?",
+          "intro": "We may do:",
+          "items": [
+            "A physical examination",
+            "A semen test (to check sperm)",
+            "Blood tests for hormones and general health",
+            "An ultrasound if needed"
+          ]
+        },
+        "treated": {
+          "heading": "Can it be treated?",
+          "intro": "Yes. Treatment depends on the cause and may include:",
+          "items": [
+            "Medicines",
+            "Surgery (if needed)",
+            "Healthy lifestyle changes",
+            "Fertility treatments if required"
+          ]
+        },
+        "doYou": {
+          "heading": "What can you do?",
+          "items": [
+            "Stop smoking and avoid tobacco",
+            "Limit or avoid alcohol",
+            "Eat healthy food",
+            "Exercise regularly",
+            "Maintain a healthy weight",
+            "Get enough sleep",
+            "Avoid too much heat around the testicles"
+          ]
+        },
+        "doctor": {
+          "heading": "When should you see a doctor?",
+          "items": [
+            "If you have problems with erection or ejaculation",
+            "If you have been trying for 1 year and no pregnancy",
+            "If you have pain or swelling in the testicles"
+          ]
+        },
+        "remember": {
+          "heading": "Remember",
+          "line": "Male infertility is common, and many men can be treated successfully."
+        }
+      },
+      "recurrent-pregnancy-loss": {
+        "metaTitle": "Recurrent pregnancy loss — causes, tests, and hope",
+        "metaDescription": "Recurrent miscarriage — two or more losses — is more common than many realise, and a healthy pregnancy is often still possible. The causes, tests, and treatment.",
+        "title": "Recurrent pregnancy loss",
+        "excerpt": "Recurrent miscarriage — two or more losses — is more common than many realise, and a healthy pregnancy is often still possible.",
+        "intro": "Recurrent pregnancy loss means having two or more miscarriages. It is more common than many people realize, and in many cases, a healthy pregnancy is still possible.",
+        "why": {
+          "heading": "Why does it happen?",
+          "intro": "Common reasons include:",
+          "items": [
+            "Problems with the baby's chromosomes (most common)",
+            "Problems with the shape of the uterus",
+            "Hormone problems (such as thyroid disease or diabetes)",
+            "Certain blood-clotting or immune conditions",
+            "Sometimes, no cause is found"
+          ]
+        },
+        "tests": {
+          "heading": "What tests may be needed?",
+          "intro": "Your doctor may recommend:",
+          "items": [
+            "Blood tests for associated medical conditions",
+            "An ultrasound scan of the uterus",
+            "Tests for certain medical conditions",
+            "Special tests for APLAS, ANA, ENA or thrombophilia markers",
+            "Sometimes, genetic tests for the couple or the pregnancy tissue"
+          ]
+        },
+        "treated": {
+          "heading": "Can it be treated?",
+          "intro": "Yes. Treatment depends on the cause and may include:",
+          "items": [
+            "Medicines for thyroid disease, diabetes, or blood-clotting disorders",
+            "Surgery to correct some uterine problems",
+            "Close monitoring during the next pregnancy"
+          ]
+        },
+        "chances": {
+          "heading": "What are the chances of a healthy baby?",
+          "body": "The good news is that most women with recurrent pregnancy loss go on to have a healthy baby, especially with proper medical care and follow-up."
+        },
+        "doctor": {
+          "heading": "When should you see a doctor?",
+          "body": "If you have had two or more miscarriages, consult an obstetrician or fertility specialist for evaluation and advice."
+        },
+        "remember": {
+          "heading": "Remember",
+          "line": "Having recurrent miscarriages does not mean you cannot have a successful pregnancy. Early medical care and support can improve your chances."
+        }
+      },
+      "what-ivf-really-is": {
+        "metaTitle": "Understanding IVF: a guide for your journey",
+        "metaDescription": "A plain-language, step-by-step guide to IVF — all six phases, from preparing your body to the pregnancy test — written to explain exactly what to expect.",
+        "title": "Understanding IVF: a guide for your journey",
+        "excerpt": "A plain-language, step-by-step guide to IVF — all six phases, from preparing your body to the pregnancy test — so you know exactly what to expect.",
+        "intro": "Hello. If you are reading this, you are likely considering In Vitro Fertilisation (IVF) to help grow your family. It is completely normal to feel a mix of hope, excitement, and anxiety right now. This guide is written to explain the IVF process in plain, everyday language so you know exactly what to expect.\n\nThink of IVF as a way to help nature along. 'In vitro' simply means 'outside the body' or in a laboratory. In short, we take eggs from the ovaries and mix them with sperm — or inject the sperm into the eggs (ICSI) — in our lab to create embryos. We then place the healthiest embryo back into your uterus when it is ready to receive it.",
+        "phase1": {
+          "heading": "Phase 1: Preparing your body",
+          "body": "Before we begin the actual IVF cycle, we need to understand your unique reproductive health. This preparation stage ensures we customise the treatment plan specifically for you.",
+          "quote": "Like plants, good preparation of the land before sowing the seeds gives the best yield — this phase is just as crucial.",
+          "items": [
+            "Ovarian reserve testing: done by simple blood tests and a pelvic ultrasound on day 2 or 3 of your period.",
+            "Semen analysis: we test a semen sample to check the count, shape, and movement of the sperm. You can see them on screen.",
+            "Uterine exam: we examine the inside of your uterus using an ultrasound or a small 4 mm hysteroscope to ensure the inner lining is safe to welcome an embryo.",
+            "Lifestyle modifications: we will ask you to start prenatal vitamins, maintain a balanced diet, avoid alcohol, and stop smoking."
+          ]
+        },
+        "phase2": {
+          "heading": "Phase 2: Ovarian stimulation (growing the eggs)",
+          "body": "In a natural monthly cycle, your body usually matures just one or two eggs. For IVF, we want to grow multiple eggs at once to increase your chances of success.",
+          "items": [
+            "Hormone injections: you can take these yourself, under the skin of your belly or thigh, to encourage your ovaries to grow multiple egg follicles.",
+            "Regular monitoring: you will visit our clinic 2–3 times to monitor progress. With blood tests and ultrasounds, we watch the follicles grow and adjust your medication doses safely.",
+            "The trigger shot: once the follicles reach the ideal size, you take one final, precisely timed injection (the \"trigger shot\") that brings the eggs to full maturity, ready for collection."
+          ],
+          "note": "There is no need for daily visits to the clinic."
+        },
+        "phase3": {
+          "heading": "Phase 3: Egg retrieval (the collection)",
+          "body": "The egg retrieval is a minor surgical procedure performed at our clinic. It takes about 20 minutes, and you will not feel any pain during the process, as it is done under a light anaesthetic or sedative so that you are completely asleep and comfortable.",
+          "items": [
+            "Ultrasound guidance: a thin ultrasound probe is inserted into the vagina to clearly see your ovaries and the mature follicles.",
+            "Gentle suction: using a very fine, specialised needle attached to the probe, the fluid — and the egg inside it — is gently drawn out of each follicle.",
+            "Recovery: you will rest for an hour or two and be discharged the same day."
+          ]
+        },
+        "phase4": {
+          "heading": "Phase 4: Fertilisation and embryo development",
+          "body": "While you are resting from your retrieval, our embryologist takes over the next steps. This is where the magic happens behind the scenes over the next 3 to 6 days.",
+          "items": [
+            "IVF with conventional insemination: we place thousands of healthy sperm in a dish alongside the retrieved eggs and let them fertilise naturally.",
+            "ICSI (intracytoplasmic sperm injection): if the sperm count is low or weak, our embryologist uses a tiny needle to inject a single, healthy sperm directly into each mature egg to help it fertilise.",
+            "The incubation phase: the fertilised eggs become embryos. We place them in advanced incubators that mimic the warmth and environment of a human body, monitoring their growth as they divide into multiple cells."
+          ]
+        },
+        "phase5": {
+          "heading": "Phase 5: The embryo transfer",
+          "body": "The embryo transfer is the simplest and most exciting part of the medical process.",
+          "items": [
+            "Selecting the best embryo: together, we choose 1 or 2 of the healthiest embryos to transfer. Remaining high-quality embryos can be frozen for your future use.",
+            "The procedure: under abdominal ultrasound guidance, the embryo(s) are transferred using a very soft, small catheter. You can watch this live on screen.",
+            "Immediate return to routine: the transfer takes less than 10 minutes. You can get up right away, walk around, and go home to rest. You do not need strict bed rest, but we recommend avoiding heavy lifting, intense workouts, and bumpy journeys."
+          ]
+        },
+        "phase6": {
+          "heading": "Phase 6: The 15-day wait",
+          "body": "The final phase requires the most patience. Correct and timely use of progesterone medications, along with other supportive medicines, helps the embryo implant into the uterine lining naturally.",
+          "items": [
+            "Managing anxiety: this waiting period can feel emotionally difficult. We encourage you to focus on light activities and stay connected with loved ones. Surrender to Supreme Nature and pamper yourself — this will help you fulfil your dream of parenthood.",
+            "The official pregnancy test: for a day-3 embryo transfer, the hormone HCG is measured in blood to confirm pregnancy 15 days after the transfer; for a day-5 transfer, 13 days after."
+          ]
+        },
+        "support": {
+          "heading": "Emotional support and next steps",
+          "body": "IVF is a physical journey, but it is also an emotional rollercoaster. Our entire clinical team — including our dedicated nursing staff and counsellors — is here to support you through every single step, question, and milestone. If you are ready to begin, our next step is to schedule your initial consultation and baseline blood tests. Let's take this journey together, one step at a time."
+        },
+        "cta": {
+          "button": "Book your consultation"
+        }
+      }
+    }
   },
 
   "ArticlePcos": {
@@ -841,14 +1108,14 @@
   },
 
   "FloatingCTA": {
-    "contact":           "Get in touch",
-    "instagramTooltip":  "Live case studies",
-    "statusOpen":        "Open now · until {time}",
+    "contact": "Get in touch",
+    "instagramTooltip": "Live case studies",
+    "statusOpen": "Open now · until {time}",
     "statusClosedToday": "Closed now · opens {when}",
-    "statusHoliday":     "Closed today · {name}",
-    "statusWeeklyOff":   "Closed today · opens {when}",
-    "whatsapp":          "Message on WhatsApp",
-    "call":              "Call the clinic",
-    "close":             "Close"
+    "statusHoliday": "Closed today · {name}",
+    "statusWeeklyOff": "Closed today · opens {when}",
+    "whatsapp": "Message on WhatsApp",
+    "call": "Call the clinic",
+    "close": "Close"
   }
 }
