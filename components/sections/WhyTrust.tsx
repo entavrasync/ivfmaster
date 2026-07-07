@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
-import { motion, useInView } from 'motion/react'
+import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
@@ -9,32 +8,6 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
 
 const EASE = [0.22, 1, 0.36, 1] as const
-
-/* ─── Count-up ────────────────────────────────────────────────────────────── */
-
-function useCountUp(target: number, active: boolean, reduced: boolean): number {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    if (reduced) { setCount(target); return }
-    if (!active) return
-
-    const DURATION_MS = 1200
-    const start = performance.now()
-    let raf: number
-
-    function tick(now: number) {
-      const t = Math.min((now - start) / DURATION_MS, 1)
-      setCount(Math.round((1 - (1 - t) ** 3) * target))
-      if (t < 1) raf = requestAnimationFrame(tick)
-    }
-
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [target, active, reduced])
-
-  return count
-}
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
@@ -47,17 +20,6 @@ export function WhyTrust() {
     { side: 'right' as const, label: t('card1.label'), worry: t('card1.worry'), response: t('card1.response') },
     { side: 'left'  as const, label: t('card2.label'), worry: t('card2.worry'), response: t('card2.response') },
   ]
-
-  /* Proof anchor: always-visible wrapper so IntersectionObserver fires
-   * before the motion.p has faded in — count-up starts at the right moment. */
-  const proofRef    = useRef<HTMLDivElement>(null)
-  const proofInView = useInView(proofRef, { once: true, margin: '-60px' })
-  const yearsCount   = useCountUp(20,   proofInView, reduced)
-  const couplesCount = useCountUp(2000, proofInView, reduced)
-
-  const statLine1 = `${yearsCount}+ ${t('statYearsLabel')}`
-  const statLine2 = `${couplesCount >= 1000 ? couplesCount.toLocaleString('en-IN') : couplesCount}+ ${t('statCouplesLabel')}`
-  const statLine3 = t('statSpecialists')
 
   /* Intro stagger: eyebrow → headline → lead, 0.12 s apart */
   const introContainerV = {
@@ -216,57 +178,14 @@ export function WhyTrust() {
           ))}
         </div>
 
-        {/* ── QUIET PROOF ───────────────────────────────────────────────────
-         *  Stat cluster: fade-in with live count-up.
-         *  Gestosis note: scale 0.98→1 settle — "placed down" feel.
+        {/* ── QUIET PROOF — the Gestosis distinction ─────────────────────────
+         *  scale 0.98→1 settle — "placed down" feel.
          * ──────────────────────────────────────────────────────────────── */}
         <div
-          ref={proofRef}
           style={{
-            display:       'flex',
-            flexDirection: 'column',
-            gap:           '2rem',
-            marginBottom:  'clamp(3rem, 6vw, 5rem)',
+            marginBottom: 'clamp(3rem, 6vw, 5rem)',
           }}
         >
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.72, ease: EASE }}
-            style={{
-              fontFamily:    'var(--font-body)',
-              fontSize:      '0.9375rem',
-              lineHeight:    1.65,
-              color:         '#8A8897',
-              letterSpacing: '0.01em',
-            }}
-          >
-            {/* Mobile: vertical dot list */}
-            <ul className="flex flex-col lg:hidden" style={{
-              listStyle: 'none',
-              padding:   0,
-              margin:    0,
-              gap:       '0.5rem',
-            }}>
-              {[statLine1, statLine2, statLine3].map((item, i) => (
-                <li key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-                  <span aria-hidden="true" style={{ opacity: 0.5 }}>·</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            {/* Desktop: inline with separator dots */}
-            <p className="hidden lg:block" style={{ margin: 0 }}>
-              {statLine1}
-              <span aria-hidden="true" style={{ margin: '0 0.75rem', opacity: 0.45 }}>·</span>
-              {statLine2}
-              <span aria-hidden="true" style={{ margin: '0 0.75rem', opacity: 0.45 }}>·</span>
-              {statLine3}
-            </p>
-          </motion.div>
-
           <motion.div
             role="figure"
             aria-label="Clinical distinction"
