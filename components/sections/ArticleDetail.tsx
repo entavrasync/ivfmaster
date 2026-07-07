@@ -54,7 +54,7 @@ function CategoryBadge({ category }: { category: ArticleCategory }) {
 
 /* ─── Cover image placeholder ────────────────────────────────────────────── */
 
-function HeroCover({ article }: { article: Article }) {
+export function HeroCover({ article }: { article: Article }) {
   const cs = CATEGORY_STYLES[article.category]
   /* A real procedure photo takes over the whole frame when the article has one;
    * otherwise we keep the lettered gradient placeholder. The gradient stays as a
@@ -114,7 +114,7 @@ function HeroCover({ article }: { article: Article }) {
 
 /* ─── Related article card ───────────────────────────────────────────────── */
 
-function RelatedCard({ article, reduced }: { article: Article; reduced: boolean }) {
+export function RelatedCard({ article, reduced }: { article: Article; reduced: boolean }) {
   const [hovered, setIsHovered] = useState(false)
   const t  = useTranslations('EducateIVF')
   const h  = !reduced && hovered
@@ -749,19 +749,6 @@ export function ArticleDetail({
             }}
           >
             <CategoryBadge category={article.category} />
-            <span
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize:   '0.8125rem',
-                color:      'rgba(28,42,72,0.46)',
-                display:    'flex',
-                gap:        '0.5rem',
-              }}
-            >
-              {formatted}
-              <span aria-hidden="true" style={{ color: 'rgba(28,42,72,0.25)' }}>·</span>
-              {t('minRead', { minutes: article.readTime })}
-            </span>
           </div>
 
           {/* Title */}
