@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { Footer } from '@/components/shared/Footer'
 import { ArticleDetail } from '@/components/sections/ArticleDetail'
 import { ARTICLES } from '@/lib/articles'
@@ -20,11 +21,20 @@ export async function generateMetadata({
   const { locale, slug } = await params
   const article = ARTICLES.find((a) => a.slug === slug)
   if (!article) return { title: 'Article not found' }
+
+  let title       = article.title
+  let description = article.excerpt
+  if (article.i18nKey) {
+    const t     = await getTranslations({ locale, namespace: 'EducateIVF' })
+    title       = t(`articles.${article.i18nKey}.metaTitle`)
+    description = t(`articles.${article.i18nKey}.metaDescription`)
+  }
+
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/educate-ivf/' + slug,
-    title: article.title,
-    description: article.excerpt,
+    title,
+    description,
     type: 'article',
     publishedTime: article.date,
   })
