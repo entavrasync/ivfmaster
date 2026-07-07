@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
 import { GoogleTagManager } from '@/components/Analytics/GoogleTagManager'
+import { GoogleAnalytics } from '@/components/Analytics/GoogleAnalytics'
 import { Navbar } from '@/components/nav/Navbar'
 import { FloatingContactCTA } from '@/components/shared/FloatingContactCTA'
 import { ReadingProgressProvider } from '@/components/providers/ReadingProgressContext'
@@ -122,6 +123,7 @@ export default async function LocaleLayout({
       className={`${figtree.variable} ${fraunces.variable} ${sacramento.variable}`}
     >
       <GoogleTagManager />
+      <GoogleAnalytics />
       <body suppressHydrationWarning className={figtree.className}>
         <StructuredData />
         <NextIntlClientProvider messages={messages}>
