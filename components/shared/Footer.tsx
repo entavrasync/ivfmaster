@@ -43,7 +43,6 @@ const SOCIAL: ReadonlyArray<{ Icon: LucideIcon; label: string; href: string }> =
 const LOCALES: ReadonlyArray<{ code: Locale; label: string }> = [
   { code: 'en', label: 'English' },
   { code: 'mr', label: 'मराठी'  },
-  { code: 'hi', label: 'हिंदी'  },
 ]
 
 /* ─── Column heading ─────────────────────────────────────────────────────── */
