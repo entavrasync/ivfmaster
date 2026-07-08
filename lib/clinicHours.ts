@@ -32,8 +32,8 @@ export const CLINIC_HOLIDAYS: ReadonlyArray<{ date: string; name: string }> = [
 
 // ⚠️  FLAG — replace with real contact details before launch
 export const CLINIC_CONTACT = {
-  whatsappNumber: '919561096416',       // wa.me format — country code + digits only, NO + or spaces
-  phoneNumber:    '+91 95610 96416',    // display / tel: (spaces stripped when building the tel: href)
+  whatsappNumber: '917559379192',       // wa.me format — country code + digits only, NO + or spaces
+  phoneNumber:    '+91 75593 79192',    // display / tel: (spaces stripped when building the tel: href)
 } as const
 
 /* ─── Status types ───────────────────────────────────────────────── */

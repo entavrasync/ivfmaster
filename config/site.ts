@@ -30,7 +30,7 @@ export const siteConfig = {
   locale: routing.defaultLocale,
   locales: routing.locales,
   address: {
-    streetAddress: '1st Floor, Dr. Gosavi Hospital, Ganesh Bhaji Mandai, Mantri Colony',
+    streetAddress: '1st Floor, Dr. Gosavi Hospital, Ganesh Bhaji Mandai',
     addressLocality: 'Urun-Ishwarpur',
     addressRegion: 'Maharashtra',
     postalCode: '415409',
@@ -38,8 +38,8 @@ export const siteConfig = {
   },
   contact: {
     email: 'ivfmaster.in@gmail.com',
-    telephone: '+91 95610 96416',
-    whatsappNumber: '919561096416',
+    telephone: '+91 75593 79192',
+    whatsappNumber: '917559379192',
   },
   social: {
     instagram:

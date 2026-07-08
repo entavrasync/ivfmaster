@@ -11,8 +11,8 @@ import { useLocale, useTranslations } from 'next-intl'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-const WA_URL     = 'https://wa.me/919561096416'
-const PHONE_HREF = 'tel:+919561096416'
+const WA_URL     = 'https://wa.me/917559379192'
+const PHONE_HREF = 'tel:+917559379192'
 const MAPS_URL   = 'https://maps.app.goo.gl/Y3DsxDj24qMeM35bA'
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */

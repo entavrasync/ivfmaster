@@ -13,7 +13,7 @@ import clinicFrontDoor from "@/assets/Clinic-photos/clinic-front-door.jpg"
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-const WA_URL = `https://wa.me/919561096416?text=${encodeURIComponent(
+const WA_URL = `https://wa.me/917559379192?text=${encodeURIComponent(
   "Hello, I'd like to know more about fertility treatment at IVF Master."
 )}`
 
@@ -33,7 +33,7 @@ export function FinalCTA() {
   }> = [
     { Icon: MapPin, label: t('clinicLabel'), detail: t('clinicAddress'), href: MAPS_URL           },
     { Icon: Clock,  label: t('hoursLabel'),  detail: t('hoursDetail')                           },
-    { Icon: Phone,  label: t('reachLabel'),  detail: t('reachPhone'), href: 'tel:+919561096416' },
+    { Icon: Phone,  label: t('reachLabel'),  detail: t('reachPhone'), href: 'tel:+917559379192' },
   ]
 
   const containerV = {
