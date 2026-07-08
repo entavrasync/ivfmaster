@@ -16,7 +16,6 @@ const LOCALES: { code: Locale; nativeLabel: string }[] = [
   { code: 'en', nativeLabel: 'English' },
 ]
 
-const DISPLAY_CODE: Record<Locale, string> = { en: 'EN', mr: 'मर', hi: 'हि' }
 
 interface LanguageSwitcherProps {
   variant?: 'bar' | 'panel'
@@ -82,7 +81,7 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
           onClick={() => setOpen((v) => !v)}
           aria-label="Switch language"
           className={cn(
-            'flex items-center gap-2 px-4 py-2.5 rounded-full',
+            'flex items-center justify-center gap-2 px-4 py-2.5 rounded-full min-w-[7rem]',
             'border transition-colors duration-200',
             open
               ? 'border-taupe/80 text-navy'
@@ -91,7 +90,7 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
         >
           <Globe size={15} strokeWidth={1.75} />
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500 }}>
-            {DISPLAY_CODE[locale] ?? locale.toUpperCase()}
+            {LOCALES.find(l => l.code === locale)?.nativeLabel ?? locale.toUpperCase()}
           </span>
         </button>
       </Pressable>
@@ -105,7 +104,7 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
             transition={{ duration: 0.2, ease: EASE }}
             className={cn(
               'absolute right-0 top-full mt-2 z-50',
-              'min-w-34 overflow-hidden rounded-xl',
+              'min-w-42 overflow-hidden rounded-xl',
               'bg-ivory border border-taupe shadow-sm py-1.5',
             )}
           >
@@ -122,7 +121,7 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
                   <span
                     style={{
                       fontFamily: 'var(--font-body)',
-                      fontSize: '0.875rem',
+                      fontSize: '1rem',
                       fontWeight: code === locale ? 500 : 400,
                     }}
                   >
