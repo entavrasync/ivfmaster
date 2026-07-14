@@ -98,6 +98,17 @@ export default async function DoctorDetailPage({
                         {chunks}
                       </strong>
                     ),
+                    link: (chunks) => (
+                      <a
+                        href="https://hdpgestosisscore.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 mb-1 inline-flex min-h-11 items-center gap-2 rounded-full border border-navy/25 bg-navy/[0.04] px-6 py-2.5 text-base font-semibold text-navy no-underline shadow-[0_10px_24px_-14px_rgba(46,79,142,0.5)] transition-colors hover:bg-navy/10"
+                      >
+                        {chunks}
+                        <ArrowUpRight aria-hidden="true" className="size-4" />
+                      </a>
+                    ),
                   })}
                 </div>
                 {credentials && credentials.length > 0 && (

@@ -110,14 +110,16 @@ export const careTeam: readonly CareTeamMember[] = [
     ],
     image: { src: pankajPhoto.src, altKey: 'careTeam.embryologist.imageAlt', position: 'center 20%' },
   },
-  {
-    id: 'fertility-nurse',
-    messageKey: 'nurse',
-    name: 'Name to be confirmed',
-    role: 'Fertility nurse',
-    blurb: 'The steady hand beside you through medicines, questions, and next steps.',
-    image: { src: '/team/care-placeholder.svg', altKey: 'careTeam.nurse.imageAlt' },
-  },
+  // Temporarily hidden — fertility-nurse slot is a placeholder awaiting the clinic's
+  // name and photo. Uncomment to restore the card once those details are confirmed.
+  // {
+  //   id: 'fertility-nurse',
+  //   messageKey: 'nurse',
+  //   name: 'Name to be confirmed',
+  //   role: 'Fertility nurse',
+  //   blurb: 'The steady hand beside you through medicines, questions, and next steps.',
+  //   image: { src: '/team/care-placeholder.svg', altKey: 'careTeam.nurse.imageAlt' },
+  // },
 ] as const
 
 // Real clinic-interior photos — warm environment shots, NOT clinical procedure imagery.

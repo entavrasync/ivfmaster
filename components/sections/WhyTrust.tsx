@@ -214,6 +214,26 @@ export function WhyTrust() {
             }}>
               {t('gestosisNote')}
             </p>
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize:   '0.875rem',
+              lineHeight: 1.65,
+              color:      '#5A6B8C',
+              margin:     '0.625rem 0 0',
+            }}>
+              {t.rich('gestosisLink', {
+                link: (chunks) => (
+                  <a
+                    href="https://hdpgestosisscore.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#2E4F8E', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px' }}
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </p>
           </motion.div>
         </div>
 

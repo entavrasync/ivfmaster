@@ -4,9 +4,12 @@ import type { StaticImageData } from 'next/image'
  * so next/image gets intrinsic dimensions; an article with no photo yet simply
  * omits coverImage and falls back to the lettered placeholder. */
 import ivfCover from '@/assets/procedure/IVF/IVF-main.jpeg'
-import maleFertilityCover from '@/assets/procedure/male-fertility/male-fertility.webp'
-import pcosCover from '@/assets/procedure/pcos/PCOS.webp'
+import maleFertilityCover from '@/assets/procedure/male-fertility/male-fertility.jpeg'
+import pcosCover from '@/assets/procedure/pcos/pcos.jpeg'
 import recurrentPregnancyLossCover from '@/assets/pregnancy/recurrent-preganancy-loss.jpg'
+import unexplainedInfertilityCover from '@/assets/procedure/unexplained-infertility/unexplained-infertility.jpeg'
+import ageAndFertilityCover from '@/assets/procedure/age-and-fertility/age-and-fertility.jpeg'
+import mythsFactsCover from '@/assets/myths-facts/mtyhs-facts.jpeg'
 
 export type ArticleCategory = 'Conditions' | 'Understanding IVF' | 'Myths'
 
@@ -160,6 +163,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'All the tests come back normal, yet pregnancy is not happening. "Unexplained infertility" is not a diagnosis of nothing.',
     date:     '2026-02-14',
     readTime: 7,
+    coverImage: unexplainedInfertilityCover,
     intro:
       'You have had the tests. Ovulation is confirmed, the tubes are clear, the semen analysis is normal. And yet, month after month, pregnancy does not happen. "Unexplained infertility" is a phrase that frustrates nearly everyone who hears it — because it sounds like the doctor has given up, when the truth is that modern fertility investigation has real limits. Here is what unexplained infertility actually means, and what we do next.',
     sections: [],
@@ -175,6 +179,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'Age is one of the most important factors in fertility — but it is not the only one, and 40 is not a closed door.',
     date:     '2026-03-22',
     readTime: 8,
+    coverImage: ageAndFertilityCover,
     intro:
       'Age and fertility is a conversation that makes many women uncomfortable — understandably, because it is often delivered as a warning or a deadline. But understanding how age affects fertility, and what this means in practical terms for treatment, allows for much better decisions. Age matters. It is not the only thing that matters, and it does not make the conversation simple.',
     sections: [],
@@ -190,6 +195,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     excerpt:  'Myths about IVF spread faster than facts. Here is what is actually true — in plain language, without the dramatics.',
     date:     '2025-09-10',
     readTime: 10,
+    coverImage: mythsFactsCover,
     intro:
       'Almost everyone who comes to us carrying a fertility question has also carried a collection of myths about IVF — things overheard, things read online, things a well-meaning relative said. Most myths start with a grain of something real and then grow in a direction that makes people more anxious than they need to be. Here is what is actually true.',
     sections: [],

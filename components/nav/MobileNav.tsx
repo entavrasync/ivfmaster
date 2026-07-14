@@ -19,7 +19,7 @@ const NAV_LINKS: { key: NavKey; href: string }[] = [
   { key: 'home',       href: '/'            },
   { key: 'educateIVF', href: '/educate-ivf' },
   { key: 'procedures', href: '/procedures'  },
-  { key: 'about',      href: '/about'       },
+  // { key: 'about',      href: '/about'       }, // temporarily hidden — page still live at /about
   { key: 'team',       href: '/team'        },
   { key: 'contact',    href: '/contact'     },
 ]
