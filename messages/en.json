@@ -90,7 +90,7 @@
     "doctorsLead": "Warmth comes first. Decades of experience, careful medicine, and honest explanations are the quiet proof behind it.",
     "coupleNote": "Married for over twenty years — and partners in every couple’s care.",
     "portraitPlaceholder": "Portrait photo to be provided by the clinic.",
-    "doctorTalkCta": "Talk with Dr. {name}",
+    "doctorTalkCta": "interact with Dr. {name}",
     "doctorStoryCta": "Read {name}’s full story",
     "careTeamEyebrow": "Around you at every step",
     "careTeamHeading": "The people who’ll look after you.",
@@ -113,7 +113,7 @@
         "title": "Reproductive medicine and infertility specialist",
         "essence": "The doctor who explains until it finally makes sense.",
         "intro": "Dr. Gorakh believes that understanding your treatment is part of feeling safe in it. He takes time to explain the science plainly, answer every question, and build a plan around the couple in front of him.",
-        "biography": "Dr. Gorakh Gopalkrishna Mandrupkar is a distinguished Reproductive Medicine and Infertility Specialist with over 20 years of experience in infertility management. He was awarded the Gold Medal in Gynecology by Pune University in 2004 and has been serving as a Consultant in Reproductive Medicine since March 2006.<br></br><br></br>Over the course of his career, Dr. Mandrupkar has helped more than 2,000 couples achieve successful pregnancies through advanced fertility treatments and personalized patient care.<br></br><br></br><b>Academic & Training Excellence</b><br></br>• Gold Medallist in Gynecology, Pune University (2004)<br></br>• Consultant in Reproductive Medicine since March 2006<br></br>• Over 20 years of experience in infertility management<br></br>• Successfully treated more than 2,000 infertile couples<br></br>• Director of a FOGSI-recognized IVF Training Centre for the past 10 years, where numerous gynecologists have received specialized training in IUI and IVF techniques.<br></br><br></br><b>Research & Innovation</b><br></br>Dr. Mandrupkar has made a significant contribution to maternal healthcare by developing the HDP Gestosis Score, a simple and innovative screening tool for identifying women at risk of preeclampsia (pregnancy-induced hypertension). Preeclampsia is a major cause of maternal mortality worldwide, accounting for nearly 19% of maternal deaths, according to WHO reports. The HDP Gestosis Score has been adopted by the National Health Mission (NHM), Government of India, for clinical use.<br></br><br></br><b>Professional Leadership</b><br></br>Dr. Mandrupkar serves as an honorary member on various national committees of the Government of India and leading national organizations of gynecologists, contributing to the advancement of women's healthcare and reproductive medicine.<br></br><br></br><b>Commitment to Women's Health</b><br></br>In addition to providing comprehensive fertility care, Mandrupkar Clinic actively conducts clinical research aimed at improving women's health and advancing evidence-based reproductive medicine. The clinic remains committed to delivering ethical, innovative, and patient-centered care.",
+        "biography": "Dr. Gorakh Gopalkrishna Mandrupkar is a distinguished Reproductive Medicine and Infertility Specialist with over 20 years of experience in infertility management. He was awarded the Gold Medal in Gynecology by Pune University in 2004 and has been serving as a Consultant in Reproductive Medicine since March 2006.<br></br><br></br>Over the course of his career, Dr. Mandrupkar has helped more than 2,000 couples achieve successful pregnancies through advanced fertility treatments and personalized patient care.<br></br><br></br><b>Academic & Training Excellence</b><br></br>• Gold Medallist in Gynecology, Pune University (2004)<br></br>• Consultant in Reproductive Medicine since March 2006<br></br>• Over 20 years of experience in infertility management<br></br>• Successfully treated more than 2,000 infertile couples<br></br>• Director of a FOGSI-recognized IVF Training Centre for the past 10 years, where numerous gynecologists have received specialized training in IUI and IVF techniques.<br></br><br></br><b>Research & Innovation</b><br></br>Dr. Mandrupkar has made a significant contribution to maternal healthcare by developing the HDP Gestosis Score, a simple and innovative screening tool for identifying women at risk of preeclampsia (pregnancy-induced hypertension). Preeclampsia is a major cause of maternal mortality worldwide, accounting for nearly 19% of maternal deaths, according to WHO reports. The HDP Gestosis Score has been adopted by the National Health Mission (NHM), Government of India, for clinical use.<br></br><br></br><link>Know more about the Gestosis Score</link><br></br><br></br><b>Professional Leadership</b><br></br>Dr. Mandrupkar serves as an honorary member on various national committees of the Government of India and leading national organizations of gynecologists, contributing to the advancement of women's healthcare and reproductive medicine.<br></br><br></br><b>Commitment to Women's Health</b><br></br>In addition to providing comprehensive fertility care, Mandrupkar Clinic actively conducts clinical research aimed at improving women's health and advancing evidence-based reproductive medicine. The clinic remains committed to delivering ethical, innovative, and patient-centered care.",
         "credentials": [],
         "imageAlt": "Reserved portrait space for Dr. Gorakh Mandrupkar",
         "metaDescription": "Meet Dr. Gorakh Mandrupkar — reproductive medicine and infertility specialist, Pune University Gold Medallist (2004), and developer of the HDP Gestosis Score."
@@ -241,6 +241,7 @@
     "statYearsLabel": "years of care",
     "statCouplesLabel": "couples guided",
     "gestosisNote": "Our lead specialist developed the HDP Gestosis Score — now adopted by India's National Health Mission.",
+    "gestosisLink": "To know more about the Gestosis Score, visit <link>hdpgestosisscore.com</link>.",
     "ctaButton": "Book your first conversation",
     "ctaSub": "An unhurried first visit to understand your story."
   },
@@ -415,7 +416,7 @@
     "navAbout": "About us",
     "navContact": "Contact",
     "navFaq": "FAQ",
-    "address": "1st Floor, of Dr. Gosavi Hospital Ganesh, Bhaji Mandai, Urun-Ishwarpur, Maharashtra 415409",
+    "address": "1st Floor, of Dr. Gosavi Hospital Ganesh Urun-Ishwarpur, Maharashtra 415409",
     "hours": "Mon–Sat, 10 AM – 6 PM",
     "phone": "+91 75593 79192",
     "email": "ivfmaster.in@gmail.com",
@@ -831,8 +832,7 @@
     "metaDescription": "A plain-language guide to IVF at IVF Master — the six phases from preparing your body to the pregnancy test, and the support around you at every step.",
     "category": "Understanding IVF",
     "title": "What IVF really is",
-    "intro1": "Hello. If you are reading this, you are likely considering In Vitro Fertilisation (IVF) to help grow your family. It is completely normal to feel a mix of hope, excitement, and anxiety right now. This guide is written to explain the IVF process in plain, everyday language so you know exactly what to expect.",
-    "intro2": "Think of IVF as a way to help nature along. “In vitro” simply means “outside body” or in a laboratory. In short, we take eggs from the ovaries and mix them with sperm or inject the sperm in eggs (ICSI) in our lab to create embryos. We then place the healthiest embryo back into your uterus when it is ready for its acceptance.",
+    "intro1": "Think of IVF as a way to help nature along. “In vitro” simply means “outside body” or in a laboratory. In short, we take eggs from the ovaries and mix them with sperm or inject the sperm in eggs (ICSI) in our lab to create embryos. We then place the healthiest embryo back into your uterus when it is ready for its acceptance.",
     "phases": [
       {
         "heading": "Phase 1 — Preparing your body",
@@ -887,7 +887,7 @@
         "intro": "The final phase requires the most patience. Correct and timely usage of progesterone medications along with other supportive medicines help embryo implant into the uterine lining naturally.",
         "items": [
           { "label": "Managing anxiety", "body": "This waiting period can feel emotionally difficult. We encourage you to focus on light activities, stay connected with loved ones. Surrender to Supreme Nature and pamper yourself; this will help you to fulfil your dream of parenthood." },
-          { "label": "The official pregnancy test", "body": "In case of day 3 embryo transfer, the hormone HCG is measured in blood to confirm the pregnancy 15 days after the transfer. While, 13 days after in case of day 5 transfer." }
+          { "label": "The official pregnancy test", "body": "In case of day 3 embryo transfer, the hormone HCG is measured in blood to confirm the pregnancy 16 days after the transfer. While, 14 days after in case of day 5 transfer." }
         ]
       }
     ],
@@ -900,7 +900,7 @@
     "metaTitle": "IVF myths vs facts — ten common myths, honestly answered",
     "metaDescription": "Ten of the most common IVF myths, and what is actually true — clear, honest answers from the team at IVF Master.",
     "category": "Myths",
-    "title": "IVF myths vs facts",
+    "title": " 10 IVF myths of IVF",
     "intro": "Myths about IVF travel fast — and they often cause more worry than they need to. Here are ten of the most common ones, and what is actually true.",
     "mythLabel": "Myth",
     "factLabel": "Fact",

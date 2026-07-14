@@ -224,18 +224,9 @@ export function WhatIvfArticle({
               fontSize:   'clamp(1.125rem, 1vw + 0.75rem, 1.375rem)',
               lineHeight: 1.78,
               color:      'rgba(28,42,72,0.70)',
-              margin:     0,
+              // margin:     0,
             }}>
               {t('intro1')}
-            </p>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize:   'clamp(1.0625rem, 0.75vw + 0.75rem, 1.25rem)',
-              lineHeight: 1.78,
-              color:      'rgba(28,42,72,0.66)',
-              margin:     '1.25rem 0 0',
-            }}>
-              {t('intro2')}
             </p>
           </div>
 

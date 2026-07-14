@@ -113,9 +113,7 @@ export async function TeamPageContent() {
                         aria-hidden="true"
                         className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-ink/15 to-transparent"
                       />
-                      <p className="absolute bottom-6 left-6 rounded-full border border-white/45 bg-ivory/80 px-4 py-2 text-sm font-medium text-navy shadow-sm backdrop-blur-md sm:bottom-8 sm:left-8">
-                        {t('portraitPlaceholder')}
-                      </p>
+                  
                     </div>
 
                     <div
@@ -156,7 +154,7 @@ export async function TeamPageContent() {
                         </Pressable>
                         <Link
                           href={`/team/${doctor.slug}`}
-                          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-4 text-base font-semibold text-navy outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-4"
+                          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 text-base font-semibold text-navy outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-4"
                         >
                           {t('doctorStoryCta', { name: doctor.name.replace('Dr. ', '') })}
                           <ArrowRight aria-hidden="true" className="size-4" />
