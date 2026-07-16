@@ -104,8 +104,8 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
             transition={{ duration: 0.2, ease: EASE }}
             className={cn(
               'absolute right-0 top-full mt-2 z-50',
-              'min-w-42 overflow-hidden rounded-xl',
-              'bg-ivory border border-taupe shadow-sm py-1.5',
+              'min-w-48 overflow-hidden rounded-xl',
+              'bg-ivory border border-taupe shadow-md py-2',
             )}
           >
             {LOCALES.map(({ code, nativeLabel }) => (
@@ -113,7 +113,7 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
                 <button
                   onClick={() => select(code)}
                   className={cn(
-                    'w-full flex items-center justify-between px-3.5 py-2',
+                    'w-full flex items-center justify-between px-4 py-2.5',
                     'transition-colors duration-150',
                     code === locale ? 'text-navy' : 'text-slate hover:text-ink',
                   )}
@@ -121,14 +121,14 @@ export function LanguageSwitcher({ variant = 'bar' }: Readonly<LanguageSwitcherP
                   <span
                     style={{
                       fontFamily: 'var(--font-body)',
-                      fontSize: '1rem',
+                      fontSize: '1.05rem',
                       fontWeight: code === locale ? 500 : 400,
                     }}
                   >
                     {nativeLabel}
                   </span>
                   {code === locale && (
-                    <Check size={13} strokeWidth={2.5} className="text-navy ml-2 shrink-0" />
+                    <Check size={14} strokeWidth={2.5} className="text-navy ml-2 shrink-0" />
                   )}
                 </button>
               </Pressable>
