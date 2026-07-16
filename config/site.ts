@@ -30,7 +30,7 @@ export const siteConfig = {
   locale: routing.defaultLocale,
   locales: routing.locales,
   address: {
-    streetAddress: '1st Floor, Dr. Gosavi Hospital, Ganesh Bhaji Mandai',
+    streetAddress: '1st Floor, Dr. Gosavi Hospital, Ganesh Mandai',
     addressLocality: 'Urun-Ishwarpur',
     addressRegion: 'Maharashtra',
     postalCode: '415409',
