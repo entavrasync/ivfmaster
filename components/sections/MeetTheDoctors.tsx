@@ -304,7 +304,7 @@ export function MeetTheDoctors() {
       id:             'gorakh',
       photo:          gorakhPhoto,
       objectPosition: 'center 20%',
-      name:           'Dr. Gorakh Mandrupkar',
+      name:           t('gorakhName'),
       essence:     t('gorakhEssence'),
       intro:       t('gorakhIntro'),
       credentials: [
@@ -322,7 +322,7 @@ export function MeetTheDoctors() {
       id:             'saie',
       photo:          saiePhoto,
       objectPosition: 'center 20%',
-      name:           'Dr. Saie Mandrupkar',
+      name:           t('saieName'),
       essence:     t('saieEssence'),
       intro:       t('saieIntro'),
       credentials: [
