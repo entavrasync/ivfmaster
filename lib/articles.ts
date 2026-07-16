@@ -8,7 +8,7 @@ import maleFertilityCover from '@/assets/procedure/male-fertility/male-fertility
 import pcosCover from '@/assets/procedure/pcos/pcos.jpeg'
 import recurrentPregnancyLossCover from '@/assets/pregnancy/recurrent-preganancy-loss.jpg'
 import unexplainedInfertilityCover from '@/assets/procedure/unexplained-infertility/unexplained-infertility.jpeg'
-import ageAndFertilityCover from '@/assets/procedure/age-and-fertility/age-and-fertility.jpeg'
+import ageAndFertilityCover from '@/assets/procedure/age-and-fertility/age-and-fertility.png'
 import mythsFactsCover from '@/assets/myths-facts/mtyhs-facts.jpeg'
 
 export type ArticleCategory = 'Conditions' | 'Understanding IVF' | 'Myths'

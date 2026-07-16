@@ -78,9 +78,9 @@ export default function Home() {
           <MythsFacts />
         </RevealSection>
 
-        <RevealSection y={40}>
+        {/* <RevealSection y={40}>
           <SuccessStories />
-        </RevealSection>
+        </RevealSection> */}
 
         {/* Dark closing block — FinalCTA flows directly into Footer (shared navy bg) */}
         <FinalCTA />
