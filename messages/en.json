@@ -574,8 +574,7 @@
         "causes": {
           "heading": "What causes it?",
           "items": [
-            "Low sperm count",
-            "Weak or slow-moving sperm",
+            "Low sperm count or slow-moving sperm",
             "Blockage in the sperm tubes",
             "Infection",
             "Hormone problems",
@@ -605,7 +604,7 @@
             "Medicines",
             "Surgery (if needed)",
             "Healthy lifestyle changes",
-            "Fertility treatments if required"
+            "Fertility treatments if required (e.g., IVF)"
           ]
         },
         "doYou": {
@@ -623,7 +622,7 @@
         "doctor": {
           "heading": "When should you see a doctor?",
           "items": [
-            "If you have problems with erection or ejaculation",
+            "If you have problems with erection, ejaculation, or intercourse",
             "If you have been trying for 1 year and no pregnancy",
             "If you have pain or swelling in the testicles"
           ]
