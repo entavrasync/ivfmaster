@@ -1,5 +1,6 @@
 'use client'
 
+import { siteConfig } from '@/config/site'
 import { buildWhatsappMessage } from '@/lib/buildWhatsappMessage'
 import { CLINIC_CONTACT, getClinicStatus, type ClinicStatus } from '@/lib/clinicHours'
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
@@ -464,7 +465,7 @@ export function ContactPage() {
 
               {/* Map placeholder */}
               <a
-                href="https://maps.google.com/?q=Dr.+Gosavi+Hospital,+Urun-Ishwarpur,+Maharashtra+415409"
+                href={siteConfig.maps.placeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}

@@ -121,6 +121,7 @@ function CoverPlaceholder({
 
 function CategoryBadge({ category }: { category: ArticleCategory }) {
   const cs = CATEGORY_STYLES[category]
+  const t  = useTranslations('EducateIVF')
   return (
     <span
       style={{
@@ -137,7 +138,7 @@ function CategoryBadge({ category }: { category: ArticleCategory }) {
         whiteSpace:    'nowrap',
       }}
     >
-      {category}
+      {t(`categories.${category}`)}
     </span>
   )
 }
@@ -395,6 +396,7 @@ function CategoryFilter({
   onChange: (c: string) => void
   reduced:  boolean
 }) {
+  const t = useTranslations('EducateIVF')
   return (
     <div
       style={{
@@ -432,7 +434,7 @@ function CategoryFilter({
               whiteSpace:    'nowrap',
             }}
           >
-            {cat}
+            {t(`categories.${cat}`)}
           </button>
         )
       })}

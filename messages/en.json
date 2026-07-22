@@ -751,7 +751,25 @@
         "cta": {
           "button": "Book your consultation"
         }
+      },
+      "unexplained-infertility": {
+        "title": "Unexplained infertility",
+        "excerpt": "All the tests come back normal, yet pregnancy is not happening. \"Unexplained infertility\" is not a diagnosis of nothing."
+      },
+      "age-and-ivf-success": {
+        "title": "Age and IVF success",
+        "excerpt": "Age is one of the most important factors in fertility — but it is not the only one, and 40 is not a closed door."
+      },
+      "ivf-myths-vs-facts": {
+        "title": "IVF myths vs facts",
+        "excerpt": "Myths about IVF spread faster than facts. Here is what is actually true — in plain language, without the dramatics."
       }
+    },
+    "categories": {
+      "All": "All",
+      "Understanding IVF": "Understanding IVF",
+      "Conditions": "Conditions",
+      "Myths": "Myths"
     }
   },
 
