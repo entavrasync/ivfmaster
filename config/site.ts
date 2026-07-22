@@ -36,6 +36,14 @@ export const siteConfig = {
     postalCode: '415409',
     addressCountry: 'IN',
   },
+  // Single source of truth for the clinic's Google Maps location (Mandrupkar
+  // Clinic). Used for every "View on Google Maps" link and the MedicalClinic
+  // structured data (hasMap + geo).
+  maps: {
+    placeUrl: 'https://maps.app.goo.gl/XtU1K58zCSw5HvnX8',
+    latitude: 17.0502,
+    longitude: 74.2624931,
+  },
   contact: {
     email: 'ivfmaster.in@gmail.com',
     telephone: '+91 75593 79192',

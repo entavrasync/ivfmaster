@@ -164,6 +164,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     date:     '2026-02-14',
     readTime: 7,
     coverImage: unexplainedInfertilityCover,
+    i18nKey:  'unexplained-infertility',
     intro:
       'You have had the tests. Ovulation is confirmed, the tubes are clear, the semen analysis is normal. And yet, month after month, pregnancy does not happen. "Unexplained infertility" is a phrase that frustrates nearly everyone who hears it — because it sounds like the doctor has given up, when the truth is that modern fertility investigation has real limits. Here is what unexplained infertility actually means, and what we do next.',
     sections: [],
@@ -180,6 +181,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     date:     '2026-03-22',
     readTime: 8,
     coverImage: ageAndFertilityCover,
+    i18nKey:  'age-and-ivf-success',
     intro:
       'Age and fertility is a conversation that makes many women uncomfortable — understandably, because it is often delivered as a warning or a deadline. But understanding how age affects fertility, and what this means in practical terms for treatment, allows for much better decisions. Age matters. It is not the only thing that matters, and it does not make the conversation simple.',
     sections: [],
@@ -196,6 +198,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
     date:     '2025-09-10',
     readTime: 10,
     coverImage: mythsFactsCover,
+    i18nKey:  'ivf-myths-vs-facts',
     intro:
       'Almost everyone who comes to us carrying a fertility question has also carried a collection of myths about IVF — things overheard, things read online, things a well-meaning relative said. Most myths start with a grain of something real and then grow in a direction that makes people more anxious than they need to be. Here is what is actually true.',
     sections: [],

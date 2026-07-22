@@ -51,6 +51,12 @@ export function buildRootJsonLd() {
           postalCode: siteConfig.address.postalCode,
           addressCountry: siteConfig.address.addressCountry,
         },
+        hasMap: siteConfig.maps.placeUrl,
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: siteConfig.maps.latitude,
+          longitude: siteConfig.maps.longitude,
+        },
         openingHoursSpecification: [
           {
             '@type': 'OpeningHoursSpecification',

@@ -1,6 +1,7 @@
 'use client'
 
 import { Container } from '@/components/layout/Container'
+import { siteConfig } from '@/config/site'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { type Locale } from '@/i18n/routing'
@@ -13,7 +14,7 @@ const EASE = [0.22, 1, 0.36, 1] as const
 
 const WA_URL     = 'https://wa.me/917559379192'
 const PHONE_HREF = 'tel:+917559379192'
-const MAPS_URL   = 'https://maps.app.goo.gl/Y3DsxDj24qMeM35bA'
+const MAPS_URL   = siteConfig.maps.placeUrl
 
 /* ─── Data ───────────────────────────────────────────────────────────────── */
 

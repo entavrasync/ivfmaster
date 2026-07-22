@@ -6,6 +6,7 @@ import { MapPin, Clock, Phone, MessageCircle, ArrowRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
+import { siteConfig } from '@/config/site'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
@@ -17,7 +18,7 @@ const WA_URL = `https://wa.me/917559379192?text=${encodeURIComponent(
   "Hello, I'd like to know more about fertility treatment at IVF Master."
 )}`
 
-const MAPS_URL = 'https://maps.app.goo.gl/Y3DsxDj24qMeM35bA'
+const MAPS_URL = siteConfig.maps.placeUrl
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
