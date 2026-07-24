@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
+import { buildLocalizedPath } from '@/lib/seo/routes'
 import { Footer } from '@/components/shared/Footer'
 import { ArticleDetail } from '@/components/sections/ArticleDetail'
 import { PcosArticle } from '@/components/sections/PcosArticle'
@@ -16,7 +17,11 @@ import { buildPageMetadata } from '@/lib/seo/metadata'
 
 export async function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
-    ARTICLES.map((article) => ({ locale, slug: article.slug }))
+    ARTICLES.flatMap((article) => [
+      { locale, slug: article.slug },
+      // Keep renamed URLs routable so they can 308-redirect (see below).
+      ...(article.legacySlugs ?? []).map((slug) => ({ locale, slug })),
+    ])
   )
 }
 
@@ -137,9 +142,17 @@ export default async function ArticleDetailPage({
 }: {
   params: Promise<{ locale: string; slug: string }>
 }) {
-  const { slug } = await params
+  const { locale, slug } = await params
   const article = ARTICLES.find((a) => a.slug === slug)
-  if (!article) notFound()
+  if (!article) {
+    // A previously-published slug that has since been renamed: send it to the
+    // current URL with a permanent (308) redirect so search ranking carries over.
+    const moved = ARTICLES.find((a) => a.legacySlugs?.includes(slug))
+    if (moved) {
+      permanentRedirect(buildLocalizedPath(locale as Locale, `/educate-ivf/${moved.slug}`))
+    }
+    notFound()
+  }
   const components: Record<string, any> = {
     'pcos': PcosArticle,
     'what-ivf-really-is': WhatIvfArticle,
