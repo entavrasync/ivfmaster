@@ -30,6 +30,10 @@ export type Article = {
   readonly sections:      readonly ArticleSection[]
   readonly keyTakeaways?: readonly string[]
   readonly relatedSlugs?: readonly string[]
+  /* Previous slugs this article used to live at. They stay routable and issue a
+   * permanent (308) redirect to the current slug, so already-indexed URLs keep
+   * their search ranking after a rename instead of 404-ing. */
+  readonly legacySlugs?: readonly string[]
   /* When set, the article's text (title, excerpt, intro, headings, lists,
    * takeaways, meta) is read from next-intl under EducateIVF.articles.<i18nKey>
    * rather than the literal English strings above. This is how a fully
@@ -108,6 +112,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
    * variant. The strings below are English fallbacks only. */
   {
     slug:     'pcos',
+    legacySlugs: ['understanding-pcos'],
     title:    'PCOS',
     category: 'Conditions',
     excerpt:  'PCOS is a common, treatable hormonal condition that can affect your periods and fertility. Here’s what it is, the signs to watch for, and how we treat it.',
@@ -124,6 +129,7 @@ export const ARTICLES: ReadonlyArray<Article> = [
   /* ─── 3. Male fertility, explained ───────────────────────────────────────*/
   {
     slug:     'male-fertility',
+    legacySlugs: ['male-fertility-explained'],
     title:    'Male infertility',
     category: 'Conditions',
     excerpt:  'Male-factor infertility is common and often very treatable. The causes, the simple checks, and what men can do to help — explained clearly and kindly.',
