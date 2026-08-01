@@ -26,6 +26,10 @@ export const siteConfig = {
     'Personalized IVF and fertility treatment at IVF Master. Experience compassionate care from expert doctors in Sangli, Maharashtra.',
   url: siteUrl,
   domain: getSiteDomain(siteUrl),
+  alternateDomains: [
+    'https://www.ivfmaster.in',
+    'https://ivfmaster.in'
+  ],
   environment: resolveSiteEnvironment(),
   locale: routing.defaultLocale,
   locales: routing.locales,
