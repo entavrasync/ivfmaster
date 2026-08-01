@@ -13,14 +13,14 @@ test('builds canonical URLs with clean default-locale paths', () => {
   assert.equal(buildLocalizedPath('en', '/contact'), '/contact')
   assert.equal(buildLocalizedPath('hi', '/contact'), '/hi/contact')
   assert.equal(buildLocalizedPath('mr', '/contact'), '/mr/contact')
-  assert.equal(buildAbsoluteUrl('/hi/contact'), 'https://ivfmaster.in/hi/contact')
+  assert.equal(buildAbsoluteUrl('/hi/contact'), 'https://www.ivfmaster.in/hi/contact')
 })
 
 test('builds hreflang alternates for every configured locale', () => {
   assert.deepEqual(getLocalizedAlternates('/procedures/ivf'), {
-    en: 'https://ivfmaster.in/procedures/ivf',
-    hi: 'https://ivfmaster.in/hi/procedures/ivf',
-    mr: 'https://ivfmaster.in/mr/procedures/ivf',
+    en: 'https://www.ivfmaster.in/procedures/ivf',
+    hi: 'https://www.ivfmaster.in/hi/procedures/ivf',
+    mr: 'https://www.ivfmaster.in/mr/procedures/ivf',
   })
 })
 
@@ -44,12 +44,12 @@ test('builds route-specific canonical and social metadata', () => {
   })
 
   assert.deepEqual(metadata.title, { absolute: 'Contact IVF Master' })
-  assert.equal(metadata.alternates?.canonical, 'https://ivfmaster.in/hi/contact')
+  assert.equal(metadata.alternates?.canonical, 'https://www.ivfmaster.in/hi/contact')
   assert.deepEqual(metadata.alternates?.languages, {
-    en: 'https://ivfmaster.in/contact',
-    hi: 'https://ivfmaster.in/hi/contact',
-    mr: 'https://ivfmaster.in/mr/contact',
-    'x-default': 'https://ivfmaster.in/contact',
+    en: 'https://www.ivfmaster.in/contact',
+    hi: 'https://www.ivfmaster.in/hi/contact',
+    mr: 'https://www.ivfmaster.in/mr/contact',
+    'x-default': 'https://www.ivfmaster.in/contact',
   })
-  assert.equal(metadata.openGraph?.url, 'https://ivfmaster.in/hi/contact')
+  assert.equal(metadata.openGraph?.url, 'https://www.ivfmaster.in/hi/contact')
 })

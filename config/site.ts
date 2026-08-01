@@ -3,7 +3,7 @@ import { routing } from '../i18n/routing.ts'
 type SiteEnvironment = 'production' | 'preview' | 'development'
 
 function normalizeSiteUrl(url: string | undefined): string {
-  return (url || 'https://ivfmaster.in').replace(/\/+$/, '')
+  return (url || 'https://www.ivfmaster.in').replace(/\/+$/, '')
 }
 
 function getSiteDomain(url: string): string {
