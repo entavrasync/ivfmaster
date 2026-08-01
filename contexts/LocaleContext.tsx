@@ -2,12 +2,11 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 
-export type Locale = 'en' | 'mr' | 'hi'
+export type Locale = 'en' | 'mr'
 
 export const LOCALES: { code: Locale; label: string; nativeLabel: string }[] = [
   { code: 'en', label: 'English',  nativeLabel: 'English' },
   { code: 'mr', label: 'Marathi',  nativeLabel: 'मराठी'   },
-  { code: 'hi', label: 'Hindi',    nativeLabel: 'हिंदी'   },
 ]
 
 interface LocaleContextValue {

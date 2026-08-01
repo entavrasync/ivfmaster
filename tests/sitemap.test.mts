@@ -156,14 +156,13 @@ test('sitemap priorities and change frequencies follow the SEO taxonomy', async 
 
 test('sitemap emits hreflang alternates for every supported locale', async () => {
   const entries = await getSitemapEntries()
-  const hiProcedure = entries.find(
-    (entry) => entry.url === localizedUrl('hi', '/procedures/ivf')
+  const enProcedure = entries.find(
+    (entry) => entry.url === localizedUrl('en', '/procedures/ivf')
   )
 
-  assert(hiProcedure, 'Expected Hindi IVF procedure sitemap entry')
-  assert.deepEqual(hiProcedure.alternates?.languages, {
-    en: localizedUrl('en', '/procedures/ivf'),
-    hi: localizedUrl('hi', '/procedures/ivf'),
+  assert(enProcedure, 'Expected English IVF procedure sitemap entry')
+  assert.deepEqual(enProcedure.alternates?.languages, {
     mr: localizedUrl('mr', '/procedures/ivf'),
+    en: localizedUrl('en', '/procedures/ivf'),
   })
 })

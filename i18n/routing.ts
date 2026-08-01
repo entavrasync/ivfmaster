@@ -4,7 +4,7 @@ import { defineRouting } from 'next-intl/routing';
 // Import this in: middleware, i18n/request.ts, i18n/navigation.ts,
 // and any generateStaticParams that needs to enumerate all locales.
 export const routing = defineRouting({
-  locales: ['mr', 'hi', 'en'] as const,
+  locales: ['mr', 'en'] as const,
   defaultLocale: 'mr',
 
   // 'as-needed': the default locale (mr) has no URL prefix.

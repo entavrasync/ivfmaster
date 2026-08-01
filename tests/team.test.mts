@@ -43,7 +43,7 @@ test('team data defines the two real doctors and editable supporting-team slots'
 })
 
 test('all locales expose the same complete team-page message contract', () => {
-  const localeFiles = ['en', 'hi', 'mr'] as const
+  const localeFiles = ['en', 'mr'] as const
   const messages = localeFiles.map((locale) =>
     JSON.parse(
       readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), 'utf8')
