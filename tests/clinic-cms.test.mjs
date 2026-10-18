@@ -14,6 +14,9 @@ import { getClinicStatus } from '../lib/clinicHours.ts'
 import { localizedString, localizedText } from '../sanity/schemaTypes/procedure.ts'
 import { doctor } from '../sanity/schemaTypes/doctor.ts'
 import { clinicSettings } from '../sanity/schemaTypes/clinic-settings.ts'
+// SEO social text and image alt use the shared Studio localized types, registered alongside in the real Studio.
+import { localizedString as sharedLocalizedString } from '../sanity/reference/schemaTypes/locale/localizedString.ts'
+import { localizedText as sharedLocalizedText } from '../sanity/reference/schemaTypes/locale/localizedText.ts'
 
 const messages = JSON.parse(readFileSync(new URL('../messages/en.json', import.meta.url), 'utf8'))
 const mr = JSON.parse(readFileSync(new URL('../messages/mr.json', import.meta.url), 'utf8'))
@@ -153,7 +156,7 @@ test('real settings query detects approved duplicates without selecting an arbit
   assert.equal(resolveClinicSettings(duplicate, 'en').status, 'ambiguous')
 })
 
-const schema = createSchema({ name: 'phase-three-test', types: [localizedString, localizedText, doctor, clinicSettings, clinicAvailability] })
+const schema = createSchema({ name: 'phase-three-test', types: [localizedString, localizedText, sharedLocalizedString, sharedLocalizedText, doctor, clinicSettings, clinicAvailability] })
 test('doctor and settings schemas compile without schema problems', () => assert.deepEqual(schema._validation, []))
 
 async function validate(type, value, document) {

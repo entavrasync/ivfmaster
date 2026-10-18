@@ -9,6 +9,9 @@ import { articleBodySchema, articleDocument, localizeArticleBody, mergeArticleMe
 import { articlesQuery } from '../sanity/lib/article-query.ts'
 import { article } from '../sanity/schemaTypes/article.ts'
 import { localizedString, localizedText } from '../sanity/schemaTypes/procedure.ts'
+// SEO social text and image alt use the shared Studio localized types, registered alongside in the real Studio.
+import { localizedString as sharedLocalizedString } from '../sanity/reference/schemaTypes/locale/localizedString.ts'
+import { localizedText as sharedLocalizedText } from '../sanity/reference/schemaTypes/locale/localizedText.ts'
 
 const require = createRequire(import.meta.url)
 const { parse, evaluate } = require(require.resolve('groq-js', { paths: [require.resolve('sanity')] }))
@@ -116,7 +119,7 @@ test('related references resolve in order; self, broken, duplicate and unapprove
 test('SEO overrides localize without changing the canonical slug; system copy remains untouched', () => {
   const doc = document('pcos'); doc.seo = { metaTitle: { en: en.ArticlePcos.metaTitle }, metaDescription: { en: en.ArticlePcos.metaDescription } }
   const result = resolveArticles([doc], fallback, 'mr')
-  assert.equal(result.articles.find((a) => a.slug === 'pcos').seo.metaTitle, en.ArticlePcos.metaTitle)
+  assert.equal(result.articles.find((a) => a.slug === 'pcos').pageSeo.title, en.ArticlePcos.metaTitle)
   const merged = mergeArticleMessages(mr, result.overrides)
   assert.equal(merged.EducateIVF.backLink, mr.EducateIVF.backLink)
   assert.equal(merged.Footer, mr.Footer)
@@ -161,7 +164,7 @@ test('actual GROQ excludes drafts/releases/unapproved records and dereferences r
   assert.equal(resolveArticles(broken, fallback, 'en').status, 'invalid')
 })
 
-const schema = createSchema({ name: 'article-test', types: [localizedString, localizedText, article] })
+const schema = createSchema({ name: 'article-test', types: [localizedString, localizedText, sharedLocalizedString, sharedLocalizedText, article] })
 test('article schema compiles with native references and all existing body variants', () => assert.deepEqual(schema._validation, []))
 
 test('actual Studio rules reject pending approval, missing body, unknown and changed published slugs', async () => {
