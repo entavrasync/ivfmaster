@@ -6,8 +6,8 @@ import { Reveal } from '@/components/motion/Reveal'
 import { Link } from '@/i18n/navigation'
 import { aboutContent } from '@/lib/content/about'
 
-export function AboutClosing() {
-  const { closing } = aboutContent
+export function AboutClosing({ content }: { content?: typeof aboutContent.closing }) {
+  const closing = content ?? aboutContent.closing
 
   return (
     <section className="bg-navy py-20 text-ivory sm:py-28 lg:py-36">

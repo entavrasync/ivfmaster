@@ -46,3 +46,28 @@ test('continues to localize application routes', () => {
     true,
   )
 })
+
+test('leaves the Studio root and nested routes outside localization', () => {
+  for (const url of [
+    '/ivfmaster-studio',
+    '/ivfmaster-studio/',
+    '/ivfmaster-studio/structure',
+    '/ivfmaster-studio/structure/example',
+  ]) {
+    assert.equal(
+      unstable_doesMiddlewareMatch({ config, nextConfig: {}, url }),
+      false,
+      url,
+    )
+  }
+})
+
+test('preserves both locales and similarly named public routes', () => {
+  for (const url of ['/', '/contact', '/en', '/en/contact', '/ivfmaster-studio-example']) {
+    assert.equal(
+      unstable_doesMiddlewareMatch({ config, nextConfig: {}, url }),
+      true,
+      url,
+    )
+  }
+})

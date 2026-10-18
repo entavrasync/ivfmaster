@@ -1,6 +1,7 @@
 'use client'
 
 import { siteConfig } from '@/config/site'
+import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
 import { buildWhatsappMessage } from '@/lib/buildWhatsappMessage'
 import { CLINIC_CONTACT, getClinicStatus, type ClinicStatus } from '@/lib/clinicHours'
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
@@ -176,6 +177,8 @@ function InfoRow({ icon, labelText, valueText }: Readonly<{ icon: React.ReactNod
 /* ─── Main export ────────────────────────────────────────────────────────── */
 
 export function ContactPage() {
+  const settings = useClinicSettings()
+  const whatsappNumber = settings?.whatsappNumber ?? CLINIC_CONTACT.whatsappNumber
   const t = useTranslations('Contact')
 
   const [form, setForm] = useState<FormState>({
@@ -187,8 +190,8 @@ export function ContactPage() {
 
   useEffect(() => { setStatus(getClinicStatus()) }, [])
 
-  const waHref  = `https://wa.me/${CLINIC_CONTACT.whatsappNumber}`
-  const telHref = `tel:${CLINIC_CONTACT.phoneNumber.replace(/\s/g, '')}`
+  const waHref  = `https://wa.me/${whatsappNumber}`
+  const telHref = `tel:${(settings?.telephone ?? CLINIC_CONTACT.phoneNumber).replace(/\s/g, '')}`
 
   const statusLabel: string | null = status ? (() => {
     switch (status.state) {
@@ -218,7 +221,7 @@ export function ContactPage() {
       openMessage:      form.openMessage.trim(),
     })
     window.open(
-      `https://wa.me/${CLINIC_CONTACT.whatsappNumber}?text=${encodeURIComponent(message)}`,
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
       '_blank',
       'noopener,noreferrer',
     )
@@ -446,9 +449,9 @@ export function ContactPage() {
                   <ContactRow icon={<Phone size={18} strokeWidth={1.75} />} label={t('panelCall')} sub={t('panelCallSub')} href={telHref} target="_self" />
                 </div>
                 <div style={{ borderBottom: '1px solid rgba(216,204,190,0.40)' }}>
-                  <ContactRow icon={<Mail size={18} strokeWidth={1.75} />} label={t('panelEmail')} sub={t('panelEmailSub')} href="mailto:ivfmaster.in@gmail.com" />
+                  <ContactRow icon={<Mail size={18} strokeWidth={1.75} />} label={t('panelEmail')} sub={settings?.email ?? t('panelEmailSub')} href={`mailto:${settings?.email ?? 'ivfmaster.in@gmail.com'}`} />
                 </div>
-                <ContactRow icon={<InstagramIcon size={18} />} label={t('panelInstagram')} sub={t('panelInstagramSub')} href={IG_URL} />
+                <ContactRow icon={<InstagramIcon size={18} />} label={t('panelInstagram')} sub={t('panelInstagramSub')} href={settings?.instagram ?? IG_URL} />
               </div>
 
               {/* Address + hours card */}
@@ -459,13 +462,13 @@ export function ContactPage() {
                 boxShadow: '0 4px 20px -8px rgba(28,42,72,0.12), 0 1px 4px -2px rgba(28,42,72,0.06)',
                 display: 'flex', flexDirection: 'column', gap: '1rem',
               }}>
-                <InfoRow icon={<MapPin size={17} strokeWidth={1.75} />} labelText={t('panelAddressLabel')} valueText={t('panelAddress')} />
+                <InfoRow icon={<MapPin size={17} strokeWidth={1.75} />} labelText={t('panelAddressLabel')} valueText={settings?.displayAddress ?? t('panelAddress')} />
                 <InfoRow icon={<Clock size={17} strokeWidth={1.75} />} labelText={t('panelHoursLabel')} valueText={t('panelHours')} />
               </div>
 
               {/* Map placeholder */}
               <a
-                href={siteConfig.maps.placeUrl}
+                href={settings?.mapUrl ?? siteConfig.maps.placeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}

@@ -5,13 +5,6 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.1 },
-  },
-}
-
 interface StaggerProps {
   children: React.ReactNode
   className?: string

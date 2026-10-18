@@ -2,7 +2,8 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import Image, { type StaticImageData } from 'next/image'
+import Image from 'next/image'
+import type { FacilityImage } from '@/sanity/lib/editorial-mapping'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -14,7 +15,7 @@ const SWIPE_THRESHOLD = 48
 
 interface FacilityCarouselProps {
   /** Two or more photos. A single-photo area renders a plain <Image>, not this. */
-  images: readonly StaticImageData[]
+  images: readonly FacilityImage[]
   /** Shared alt text for the area (the caption sits below, fixed). */
   alt: string
   sizes: string
@@ -111,6 +112,7 @@ export function FacilityCarousel({ images, alt, sizes, labels }: FacilityCarouse
             fill
             sizes={sizes}
             placeholder="blur"
+            style={{ objectPosition: images[index].position }}
             className="object-cover"
           />
         </motion.div>

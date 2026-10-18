@@ -127,9 +127,6 @@ export function MythsArticle({
     return () => disableProgress()
   }, [enableProgress, disableProgress])
 
-  const d         = new Date(article.date)
-  const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-
   const items     = t.raw('items') as MythItem[]
   const mythLabel = t('mythLabel')
   const factLabel = t('factLabel')

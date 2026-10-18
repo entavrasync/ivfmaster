@@ -79,11 +79,11 @@ export function HeroCover({ article }: { article: Article }) {
       {article.coverImage ? (
         <Image
           src={article.coverImage}
-          alt={article.title}
+          alt={article.coverImageAlt ?? article.title}
           fill
           priority
           sizes="(max-width: 768px) 100vw, 1120px"
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', objectPosition: article.coverPosition }}
         />
       ) : (
         <>
@@ -161,10 +161,10 @@ export function RelatedCard({ article, reduced }: { article: Article; reduced: b
           {article.coverImage ? (
             <Image
               src={article.coverImage}
-              alt={title}
+              alt={article.coverImageAlt ?? title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: 'cover', objectPosition: article.coverPosition }}
             />
           ) : (
             <>
@@ -678,9 +678,6 @@ export function ArticleDetail({
     enableProgress()
     return () => disableProgress()
   }, [enableProgress, disableProgress])
-
-  const d         = new Date(article.date)
-  const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
 
   /* Translated articles read their title/intro from messages; others keep the
    * literal English strings on the article object. */

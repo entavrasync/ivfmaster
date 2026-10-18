@@ -6,6 +6,9 @@ import { Pressable } from '@/components/motion/Pressable'
 import { Reveal } from '@/components/motion/Reveal'
 import { Link } from '@/i18n/navigation'
 import { aboutContent, type DoctorStory } from '@/lib/content/about'
+import { getLocale } from 'next-intl/server'
+import type { Locale } from '@/i18n/routing'
+import { getDoctorContent } from '@/sanity/lib/clinic'
 
 import { EditorialPicture } from './EditorialPicture'
 
@@ -75,10 +78,20 @@ function DoctorChapter({ doctor, index }: { doctor: DoctorStory; index: number }
   )
 }
 
-export function DoctorStories() {
+export async function DoctorStories({ content }: { content?: readonly DoctorStory[] }) {
+  const profiles = await getDoctorContent(await getLocale() as Locale)
+  const stories = (content ?? aboutContent.doctors).map((story) => {
+    const profile = profiles.find((item) => item.slug === `${story.id}-mandrupkar`)
+    return profile ? { ...story, ...profile.about, name: profile.name,
+      image: profile.portrait ? { desktop: profile.portrait.photo, mobile: profile.portrait.photo, alt: profile.portrait.alt, position: profile.portrait.position } : story.image,
+    } : story
+  }).sort((a, b) => {
+    const order = (id: string) => profiles.find((p) => p.slug === `${id}-mandrupkar`)?.order ?? aboutContent.doctors.findIndex((d) => d.id === id)
+    return order(a.id) - order(b.id) || a.id.localeCompare(b.id)
+  })
   return (
     <section aria-label="Meet the doctors">
-      {aboutContent.doctors.map((doctor, index) => (
+      {stories.map((doctor, index) => (
         <DoctorChapter key={doctor.id} doctor={doctor} index={index} />
       ))}
     </section>

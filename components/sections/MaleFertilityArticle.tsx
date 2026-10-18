@@ -138,9 +138,6 @@ export function MaleFertilityArticle({
     return () => disableProgress()
   }, [enableProgress, disableProgress])
 
-  const d         = new Date(article.date)
-  const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-
   const sections = t.raw('sections') as MFSection[]
 
   const related = (article.relatedSlugs ?? [])

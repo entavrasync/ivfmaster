@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import type { ComponentType } from 'react'
+import { NextIntlClientProvider } from 'next-intl'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { buildLocalizedPath } from '@/lib/seo/routes'
@@ -11,7 +13,8 @@ import { MaleFertilityArticle } from '@/components/sections/MaleFertilityArticle
 import { RecurrentLossArticle } from '@/components/sections/RecurrentLossArticle'
 import { UnexplainedArticle } from '@/components/sections/UnexplainedArticle'
 import { AgeArticle } from '@/components/sections/AgeArticle'
-import { ARTICLES } from '@/lib/articles'
+import { ARTICLES, type Article } from '@/lib/articles'
+import { getArticles } from '@/sanity/lib/articles'
 import { routing, type Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 
@@ -31,8 +34,15 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
   const { locale, slug } = await params
-  const article = ARTICLES.find((a) => a.slug === slug)
+  const { articles } = await getArticles(locale as Locale)
+  const article = articles.find((a) => a.slug === slug)
   if (!article) return { title: 'Article not found' }
+
+  if (article.seo) return buildPageMetadata({
+    locale: locale as Locale, path: '/educate-ivf/' + slug,
+    title: article.seo.metaTitle, description: article.seo.metaDescription,
+    type: 'article', publishedTime: article.date,
+  })
 
   // Some articles carry localised, hand-written meta in a dedicated namespace.
   if (slug === 'pcos') {
@@ -143,7 +153,8 @@ export default async function ArticleDetailPage({
   params: Promise<{ locale: string; slug: string }>
 }) {
   const { locale, slug } = await params
-  const article = ARTICLES.find((a) => a.slug === slug)
+  const { articles, messages } = await getArticles(locale as Locale)
+  const article = articles.find((a) => a.slug === slug)
   if (!article) {
     // A previously-published slug that has since been renamed: send it to the
     // current URL with a permanent (308) redirect so search ranking carries over.
@@ -153,7 +164,7 @@ export default async function ArticleDetailPage({
     }
     notFound()
   }
-  const components: Record<string, any> = {
+  const components: Record<string, ComponentType<{ article: Article; allArticles: readonly Article[] }>> = {
     'pcos': PcosArticle,
     'what-ivf-really-is': WhatIvfArticle,
     'ivf-myths-vs-facts': MythsArticle,
@@ -167,7 +178,9 @@ export default async function ArticleDetailPage({
 
   return (
     <>
-      <Selected article={article} allArticles={ARTICLES} />
+      <NextIntlClientProvider messages={messages}>
+        <Selected article={article} allArticles={articles} />
+      </NextIntlClientProvider>
       <Footer />
     </>
   )

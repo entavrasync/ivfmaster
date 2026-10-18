@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { motion } from 'motion/react'
 import { Link } from '@/i18n/navigation'
@@ -17,6 +18,7 @@ const EASE = [0.22, 1, 0.36, 1] as const
  * CTA is an open hand — quiet invitation, zero hard-sell.
  */
 export function PainRecognitionCTA() {
+  const actionHref = useSiteAction('home.painCta.primary', '/contact')
   const reduced = useReducedMotion()
   const t = useTranslations('PainRecognitionCTA')
 
@@ -120,7 +122,7 @@ export function PainRecognitionCTA() {
              */}
             <Pressable haptic>
               <Link
-                href="/contact"
+                href={actionHref}
                 className="group inline-flex items-center gap-2.5 rounded-full transition-all duration-300 hover:-translate-y-px"
                 style={{
                   border:      '1.5px solid rgba(46,79,142,0.28)',

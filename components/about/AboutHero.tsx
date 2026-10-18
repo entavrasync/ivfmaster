@@ -9,8 +9,8 @@ import { aboutContent } from '@/lib/content/about'
 
 import { EditorialPicture } from './EditorialPicture'
 
-export function AboutHero() {
-  const { hero } = aboutContent
+export function AboutHero({ content }: { content?: typeof aboutContent.hero }) {
+  const hero = content ?? aboutContent.hero
 
   return (
     <section className="relative overflow-hidden bg-ivory pb-16 pt-28 sm:pb-20 sm:pt-32 lg:min-h-[88svh] lg:pb-24 lg:pt-36">

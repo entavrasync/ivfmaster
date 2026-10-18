@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import type { JSX } from 'react'
 import { motion } from 'motion/react'
@@ -264,6 +265,7 @@ function CardInterior({
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function UnderstandingIVF() {
+  const actionHref = useSiteAction('home.understandingIvf.closing.primary', '/contact')
   const reduced = useReducedMotion()
   const t       = useTranslations('UnderstandingIVF')
 
@@ -503,7 +505,7 @@ export function UnderstandingIVF() {
           <div>
             <Pressable className="w-full sm:w-auto">
               <Link
-                href="/contact"
+                href={actionHref}
                 className="block text-center sm:inline-block"
                 style={{
                   fontFamily:     'var(--font-body)',

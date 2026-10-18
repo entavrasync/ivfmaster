@@ -9,6 +9,7 @@ import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { type Procedure } from '@/lib/procedures'
+import Image from 'next/image'
 import { ProcVisual } from './ProcedureVisuals'
 
 const EASE        = [0.22, 1, 0.36, 1] as const
@@ -18,6 +19,14 @@ const SHADOW_LIFT = '0 36px 68px -12px rgba(46,79,142,0.24), 0 10px 22px -8px rg
 /* ─── Hero image placeholder ─────────────────────────────────────────────── */
 
 function HeroImage({ proc, photoComingSoon }: { proc: Procedure; photoComingSoon: string }) {
+  if (proc.bannerImage) {
+    return (
+      <div style={{ width: '100%', aspectRatio: '5 / 4', borderRadius: '20px', boxShadow: SHADOW_REST, position: 'relative', overflow: 'hidden' }}>
+        <Image src={proc.bannerImage.src} alt={proc.bannerImage.alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw"
+          style={{ objectFit: 'cover', objectPosition: proc.bannerImage.position }} />
+      </div>
+    )
+  }
   return (
     <div
       aria-hidden="true"

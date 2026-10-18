@@ -143,9 +143,6 @@ export function WhatIvfArticle({
     return () => disableProgress()
   }, [enableProgress, disableProgress])
 
-  const d         = new Date(article.date)
-  const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-
   const phases = t.raw('phases') as Phase[]
 
   const related = (article.relatedSlugs ?? [])

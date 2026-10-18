@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
@@ -12,6 +13,7 @@ const EASE = [0.22, 1, 0.36, 1] as const
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function WhyTrust() {
+  const actionHref = useSiteAction('home.whyTrust.closing.primary', '/contact')
   const reduced = useReducedMotion()
   const t       = useTranslations('WhyTrust')
 
@@ -257,7 +259,7 @@ export function WhyTrust() {
         >
           <Pressable className="w-full lg:w-auto">
             <Link
-              href="/contact"
+              href={actionHref}
               className="block text-center lg:inline-block"
               style={{
                 fontFamily:     'var(--font-body)',

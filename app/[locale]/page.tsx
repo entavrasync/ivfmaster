@@ -12,9 +12,12 @@ import { CostOfWaiting } from '@/components/sections/CostOfWaiting';
 import { UnderstandingIVF } from '@/components/sections/UnderstandingIVF';
 import { MeetTheDoctors } from '@/components/sections/MeetTheDoctors';
 import { MythsFacts } from '@/components/sections/MythsFacts';
-import { SuccessStories } from '@/components/sections/SuccessStories';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 import { RevealSection } from '@/components/motion';
+import { getDoctorContent } from '@/sanity/lib/clinic';
+import { getHomeFaq } from '@/sanity/lib/editorial';
+import { getSiteContent } from '@/sanity/lib/site-content';
+import { resolveHomePageFaq } from '@/sanity/lib/site-content-mapping';
 
 export async function generateMetadata({
   params,
@@ -32,7 +35,9 @@ export async function generateMetadata({
   })
 }
 
-export default function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const [profiles, homeFaq, siteContent] = await Promise.all([getDoctorContent(locale as Locale), getHomeFaq(locale as Locale), getSiteContent(locale)])
   return (
     <>
       <main className="min-h-screen">
@@ -71,16 +76,12 @@ export default function Home() {
         </RevealSection>
 
         <RevealSection y={48}>
-          <MeetTheDoctors />
+          <MeetTheDoctors profiles={profiles} />
         </RevealSection>
 
         <RevealSection y={48}>
-          <MythsFacts />
+          <MythsFacts content={homeFaq ?? resolveHomePageFaq(siteContent.home) ?? undefined} />
         </RevealSection>
-
-        {/* <RevealSection y={40}>
-          <SuccessStories />
-        </RevealSection> */}
 
         {/* Dark closing block — FinalCTA flows directly into Footer (shared navy bg) */}
         <FinalCTA />

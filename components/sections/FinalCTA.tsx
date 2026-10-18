@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import type { LucideIcon } from 'lucide-react'
 import { motion } from 'motion/react'
@@ -7,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { siteConfig } from '@/config/site'
+import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
@@ -23,6 +25,10 @@ const MAPS_URL = siteConfig.maps.placeUrl
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function FinalCTA() {
+  const actionHref = useSiteAction('home.finalCta.formCta', '/contact')
+  const settings = useClinicSettings()
+  const mapsUrl = settings?.mapUrl ?? MAPS_URL
+  const waUrl = settings ? WA_URL.replace('917559379192', settings.whatsappNumber) : WA_URL
   const reduced = useReducedMotion()
   const t       = useTranslations('FinalCTA')
 
@@ -32,9 +38,9 @@ export function FinalCTA() {
     detail: string
     href?:  string
   }> = [
-    { Icon: MapPin, label: t('clinicLabel'), detail: t('clinicAddress'), href: MAPS_URL           },
+    { Icon: MapPin, label: t('clinicLabel'), detail: settings?.displayAddress ?? t('clinicAddress'), href: mapsUrl },
     { Icon: Clock,  label: t('hoursLabel'),  detail: t('hoursDetail')                           },
-    { Icon: Phone,  label: t('reachLabel'),  detail: t('reachPhone'), href: 'tel:+917559379192' },
+    { Icon: Phone,  label: t('reachLabel'),  detail: settings?.telephone ?? t('reachPhone'), href: settings ? `tel:${settings.telephone.replace(/\s/g, '')}` : 'tel:+917559379192' },
   ]
 
   const containerV = {
@@ -236,7 +242,7 @@ export function FinalCTA() {
               {/* Primary — blush WhatsApp */}
               <Pressable>
                 <a
-                  href={WA_URL}
+                  href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -264,7 +270,7 @@ export function FinalCTA() {
               {/* Secondary — outline */}
               <Pressable>
                 <Link
-                  href="/contact"
+                  href={actionHref}
                   style={{
                     display:        'inline-flex',
                     alignItems:     'center',
@@ -319,7 +325,7 @@ export function FinalCTA() {
 
             {/* Whole photo opens the clinic on Google Maps */}
             <a
-              href={MAPS_URL}
+              href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Open Mandrupkar Clinic location on Google Maps"
