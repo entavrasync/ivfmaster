@@ -142,23 +142,33 @@ function dedupeSitemapRoutes(routes: readonly SitemapRoute[]): readonly SitemapR
   return Array.from(routesByPath.values())
 }
 
-export async function getCanonicalSitemapRoutes(): Promise<readonly SitemapRoute[]> {
+/** CMS-driven adjustments: procedures added in the Studio, and pages editors hid or canonicalized. */
+export type SitemapOverrides = {
+  readonly extraProcedureSlugs?: readonly string[]
+  readonly excludedPaths?: ReadonlySet<string>
+}
+
+export async function getCanonicalSitemapRoutes(overrides: SitemapOverrides = {}): Promise<readonly SitemapRoute[]> {
   const [treatmentRoutes, educationRoutes, doctorRoutes] = await Promise.all([
     getTreatmentRoutes(),
     getEducationRoutes(),
     getDoctorRoutes(),
   ])
+  const extraTreatmentRoutes = (overrides.extraProcedureSlugs ?? []).map((slug) =>
+    createSitemapRoute(`/procedures/${slug}`, 'treatment')
+  )
 
   return dedupeSitemapRoutes([
     ...staticSitemapRoutes,
     ...treatmentRoutes,
+    ...extraTreatmentRoutes,
     ...educationRoutes,
     ...doctorRoutes,
-  ])
+  ]).filter((route) => !overrides.excludedPaths?.has(route.path))
 }
 
-export async function getLocalizedSitemapEntries(): Promise<MetadataRoute.Sitemap> {
-  const routes = await getCanonicalSitemapRoutes()
+export async function getLocalizedSitemapEntries(overrides: SitemapOverrides = {}): Promise<MetadataRoute.Sitemap> {
+  const routes = await getCanonicalSitemapRoutes(overrides)
 
   return routes.flatMap((route) =>
     routing.locales.map((locale) => ({
@@ -173,8 +183,8 @@ export async function getLocalizedSitemapEntries(): Promise<MetadataRoute.Sitema
   )
 }
 
-export async function getLocalizedSitemapPaths(): Promise<readonly string[]> {
-  const routes = await getCanonicalSitemapRoutes()
+export async function getLocalizedSitemapPaths(overrides: SitemapOverrides = {}): Promise<readonly string[]> {
+  const routes = await getCanonicalSitemapRoutes(overrides)
 
   return routes.flatMap((route) =>
     routing.locales.map((locale) => buildLocalizedPath(locale, route.path))

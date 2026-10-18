@@ -5,6 +5,8 @@ import { ProceduresHub } from '@/components/sections/ProceduresHub'
 import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getProcedures } from '@/sanity/lib/procedures'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { SectionJsonLd } from '@/components/SEO/StructuredData'
 
 export async function generateMetadata({
   params,
@@ -16,6 +18,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/procedures',
+    ...(await getSeoContext(locale, 'procedures')),
     title: t('metaTitle'),
     description: t('metaDescription'),
   })
@@ -31,6 +34,7 @@ export default async function ProceduresPage({
   return (
     <>
       <ProceduresHub procedures={procedures} />
+      <SectionJsonLd locale={locale} section="procedures" seoPage="procedures" />
       <Footer />
     </>
   )

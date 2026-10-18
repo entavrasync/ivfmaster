@@ -17,6 +17,9 @@ import { ARTICLES, type Article } from '@/lib/articles'
 import { getArticles } from '@/sanity/lib/articles'
 import { routing, type Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { JsonLdScript, absoluteImage, breadcrumbTrail, pageLocale } from '@/components/SEO/StructuredData'
+import { buildArticleJsonLd } from '@/lib/seo/jsonLd'
 
 export async function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -38,11 +41,8 @@ export async function generateMetadata({
   const article = articles.find((a) => a.slug === slug)
   if (!article) return { title: 'Article not found' }
 
-  if (article.seo) return buildPageMetadata({
-    locale: locale as Locale, path: '/educate-ivf/' + slug,
-    title: article.seo.metaTitle, description: article.seo.metaDescription,
-    type: 'article', publishedTime: article.date,
-  })
+  // The article's SEO fields override every branch below; empty fields keep the existing copy.
+  const seoContext = { ...(await getSeoContext(locale)), ...(article.pageSeo ? { seo: article.pageSeo } : {}) }
 
   // Some articles carry localised, hand-written meta in a dedicated namespace.
   if (slug === 'pcos') {
@@ -54,6 +54,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -66,6 +67,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -78,6 +80,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -90,6 +93,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -102,6 +106,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -114,6 +119,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -126,6 +132,7 @@ export async function generateMetadata({
       description: t('metaDescription'),
       type: 'article',
       publishedTime: article.date,
+      ...seoContext,
     })
   }
 
@@ -144,6 +151,7 @@ export async function generateMetadata({
     description,
     type: 'article',
     publishedTime: article.date,
+      ...seoContext,
   })
 }
 
@@ -175,12 +183,19 @@ export default async function ArticleDetailPage({
   }
 
   const Selected = components[slug] ?? ArticleDetail
+  const path = `/educate-ivf/${article.slug}`
+  const structuredData = article.pageSeo?.structuredData === false ? null : buildArticleJsonLd({
+    locale: pageLocale(locale), trail: await breadcrumbTrail(locale, 'educateIVF', { name: article.title, path }),
+    headline: article.title, description: article.pageSeo?.description ?? article.excerpt,
+    datePublished: article.date, image: absoluteImage(article.coverImage?.src),
+  })
 
   return (
     <>
       <NextIntlClientProvider messages={messages}>
         <Selected article={article} allArticles={articles} />
       </NextIntlClientProvider>
+      {structuredData && <JsonLdScript data={structuredData} />}
       <Footer />
     </>
   )

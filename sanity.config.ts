@@ -6,6 +6,7 @@ import { schemaTypes } from './sanity/schemaTypes'
 import { projectId, dataset, apiVersion } from './sanity/project'
 import { SINGLETONS, SINGLETON_TYPES } from './sanity/reference/schemaTypes/shared/singletons'
 import initialContent from './sanity/reference/initial-content.json' with { type: 'json' }
+import { RecordHoursConfirmationAction } from './sanity/studio/RecordHoursConfirmationAction'
 
 // Superseded by the page singletons and the shared Question type; schemas stay
 // registered so any stored documents remain readable, but editors no longer see them.
@@ -67,6 +68,7 @@ export default defineConfig({
   dataset,
   plugins: [structureTool({ structure: (S) => S.list().title('IVF Master').items([
     S.listItem().title('Shared clinic settings').child(S.document().schemaType('clinicSettings').documentId('clinicSettings')),
+    S.listItem().id('clinicAvailability').title('Clinic hours & availability').child(S.document().schemaType('clinicAvailability').documentId('clinicAvailability').initialValueTemplate('clinicAvailability')),
     ...SINGLETONS.map((singleton) => S.listItem().id(singleton.id).title(singleton.title).child(S.document().schemaType(singleton.type).documentId(singleton.id).title(singleton.title))),
     S.divider(),
     S.listItem().id('procedure').title('Procedures — treatment details').schemaType('procedure').child(
@@ -79,7 +81,7 @@ export default defineConfig({
         )),
       ]),
     ),
-    ...S.documentTypeListItems().filter((item) => !['clinicSettings', 'procedure'].includes(item.getId() ?? '') && !SINGLETON_TYPES.has(item.getId() ?? '') && !LEGACY_TYPES.has(item.getId() ?? '')),
+    ...S.documentTypeListItems().filter((item) => !['clinicSettings', 'clinicAvailability', 'procedure'].includes(item.getId() ?? '') && !SINGLETON_TYPES.has(item.getId() ?? '') && !LEGACY_TYPES.has(item.getId() ?? '')),
   ]) })],
   schema: { types: schemaTypes, templates: (prev) => [
     ...prev,
@@ -90,8 +92,9 @@ export default defineConfig({
   ] },
   document: {
     // The fixed-ID editor still needs its template to initialize a missing document.
-    newDocumentOptions: (prev) => prev.filter((option) => option.templateId !== 'clinicSettings' && !SINGLETON_TYPES.has(option.templateId) && !LEGACY_TYPES.has(option.templateId)),
+    newDocumentOptions: (prev) => prev.filter((option) => !['clinicSettings', 'clinicAvailability'].includes(option.templateId) && !SINGLETON_TYPES.has(option.templateId) && !LEGACY_TYPES.has(option.templateId)),
     actions: (prev, context) => {
+      if (context.schemaType === 'clinicAvailability') return [...prev.filter(action => action.action !== 'duplicate' && action.action !== 'delete'), RecordHoursConfirmationAction]
       if (context.schemaType === 'procedure') return [...prev, fillFromWebsite(procedureWebsiteValues)]
       if (context.schemaType !== 'clinicSettings' && !SINGLETON_TYPES.has(context.schemaType)) return prev
       const kept = prev.filter((action) => action.action !== 'duplicate' && action.action !== 'delete')

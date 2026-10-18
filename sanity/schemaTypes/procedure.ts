@@ -2,6 +2,8 @@ import { ClipboardList } from 'lucide-react'
 import { defineArrayMember, defineField, defineType, getPublishedId } from 'sanity'
 import { apiVersion } from '../project.ts'
 import { defineImageField } from '../reference/schemaTypes/shared/fields.ts'
+import { SEO_FIELDSETS, seoAdvancedFields } from '../reference/schemaTypes/objects/seo.ts'
+import { SeoPanel } from '../studio/SeoPanel.ts'
 
 const nonBlank = (value: string | undefined) =>
   value === undefined || value.trim().length > 0 || 'Enter text rather than whitespace.'
@@ -124,11 +126,13 @@ export const procedure = defineType({
       description: 'Shown at the top of this procedure page. Photo at least 1500×1200 (5:4), subject centred. If empty, the card image is used.',
     },
     defineField({
-      name: 'seo', title: 'SEO overrides (optional)', type: 'object',
-      description: 'Leave empty to use the page title and summary. Canonicals, language alternates and social images remain controlled by the existing metadata helper.',
+      name: 'seo', title: 'SEO', type: 'object',
+      description: 'Every field is optional: empty fields use the procedure name and summary. Language alternates are always generated automatically.',
+      fieldsets: SEO_FIELDSETS, components: { input: SeoPanel },
       fields: [
         defineField({ name: 'metaTitle', title: 'Search title', type: 'procedureLocalizedString', description: 'Shown as the page title in search results. About 50–60 characters.' }),
         defineField({ name: 'metaDescription', title: 'Search description', type: 'procedureLocalizedText', description: 'Shown under the title in search results. About 140–160 characters.' }),
+        ...seoAdvancedFields(),
       ],
     }),
   ].map((field) => ({ ...field, group: ['slug', 'reviewStatus', 'name', 'fullName'].includes(field.name) ? 'identity' : ['oneLiner', 'heroDescription', 'quickFacts'].includes(field.name) ? 'hero' : field.name === 'faqs' ? 'faqs' : field.name === 'seo' ? 'seo' : ['cardImage', 'bannerImage'].includes(field.name) ? 'images' : 'content' })),

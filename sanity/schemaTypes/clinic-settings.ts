@@ -11,7 +11,7 @@ export const clinicSettings = defineType({
     { name: 'location', title: 'Address & map' },
     { name: 'social', title: 'Social' },
   ],
-  description: 'Shared contact/location information only. Branding, routing, navigation, hours and SEO behavior remain in code.',
+  description: 'Shared contact/location information. Edit the schedule in Clinic hours & availability. Branding, routing, navigation and SEO behavior remain separate.',
   fields: [
     approvalField,
     defineField({ name: 'telephone', title: 'Display phone number', type: 'string', description: 'As visitors should read it, for example +91 75593 79192.', validation: (r) => r.required().custom((value) => value == null || /^\+?[0-9 ()-]{7,24}$/.test(value) && settingsDocument.shape.telephone.safeParse(value).success || 'Use digits, spaces, brackets or hyphens, for example +91 75593 79192.') }),

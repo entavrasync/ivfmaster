@@ -4,6 +4,8 @@ import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 import { ContactPage } from '@/components/sections/ContactPage'
 import { Footer } from '@/components/shared/Footer'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { SectionJsonLd } from '@/components/SEO/StructuredData'
 
 export async function generateMetadata({
   params,
@@ -16,15 +18,18 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/contact',
+    ...(await getSeoContext(locale, 'contact')),
     title: t('metaTitle'),
     description: t('metaDescription'),
   })
 }
 
-export default function ContactRoute() {
+export default async function ContactRoute({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   return (
     <>
       <ContactPage />
+      <SectionJsonLd locale={locale} section="contact" seoPage="contact" />
       <Footer />
     </>
   )

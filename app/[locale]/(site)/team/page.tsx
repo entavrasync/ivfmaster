@@ -5,6 +5,8 @@ import { Footer } from '@/components/shared/Footer'
 import { TeamPageContent } from '@/components/team/TeamPageContent'
 import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { SectionJsonLd } from '@/components/SEO/StructuredData'
 
 export async function generateMetadata({
   params,
@@ -17,17 +19,20 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/team',
+    ...(await getSeoContext(locale, 'team')),
     title: t('metaTitle'),
     description: t('metaDescription'),
   })
 }
 
-export default function TeamPage() {
+export default async function TeamPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   return (
     <>
       <main className="min-h-screen bg-ivory">
         <TeamPageContent />
       </main>
+      <SectionJsonLd locale={locale} section="team" seoPage="team" />
       <Footer />
     </>
   )

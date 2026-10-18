@@ -138,7 +138,7 @@ test('the real Studio structure exposes all four procedures with matching stored
 
 test('all reference page models are registered without replacing established target contracts', () => {
   assert.deepEqual(schema._validation, [])
-  assert.equal(config.schema.types.filter((type) => type.type === 'document').length, 17)
+  assert.equal(config.schema.types.filter((type) => type.type === 'document').length, 18)
   for (const type of Object.keys(initialContent.singletons)) {
     const definition = config.schema.types.find((entry) => entry.name === type)
     const value = definition.initialValue()

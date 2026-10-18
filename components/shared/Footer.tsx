@@ -3,6 +3,7 @@
 import { Container } from '@/components/layout/Container'
 import { siteConfig } from '@/config/site'
 import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
+import { useClinicAvailability } from '@/components/providers/ClinicAvailabilityProvider'
 import { useSiteContent } from '@/components/providers/SiteContentContext'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
@@ -11,6 +12,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Clock, Globe, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
+import { formatAvailability } from '@/lib/clinic-availability'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -160,6 +162,8 @@ function DevCredit() {
 export function Footer() {
   const chrome = useSiteContent()
   const settings = useClinicSettings()
+  const availability = useClinicAvailability()
+  const hoursLocale = useLocale()
   const phoneHref = settings ? `tel:${settings.telephone.replace(/\s/g, '')}` : PHONE_HREF
   const waUrl = settings ? `https://wa.me/${settings.whatsappNumber}` : WA_URL
   const emailHref = `mailto:${settings?.email ?? 'ivfmaster.in@gmail.com'}`
@@ -173,7 +177,7 @@ export function Footer() {
     href?: string
   }> = [
     { Icon: MapPin, text: settings?.displayAddress ?? t('address'), href: settings?.mapUrl ?? MAPS_URL },
-    { Icon: Clock,  text: t('hours')                                                },
+    { Icon: Clock,  text: availability ? formatAvailability(availability, hoursLocale) : t('hours')                                                },
     { Icon: Phone,  text: settings?.telephone ?? t('phone'), href: phoneHref },
     { Icon: Mail,   text: settings?.email ?? t('email'), href: emailHref },
   ]

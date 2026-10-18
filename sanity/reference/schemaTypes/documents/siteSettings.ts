@@ -57,7 +57,7 @@ export const siteSettings = defineType({
       type: 'localizedText',
       group: 'identity',
       description:
-        'One or two sentences describing the clinic. Used as the JSON-LD description and as the fallback meta description for any page without its own.',
+        'One or two sentences describing the clinic. Used as the site-wide search description (including the home page) unless the SEO defaults below or a page set their own.',
       translation: 'all',
     }),
     defineField({

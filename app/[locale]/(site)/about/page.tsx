@@ -15,6 +15,8 @@ import { getAboutInformation } from '@/sanity/lib/editorial'
 import { getSiteContent } from '@/sanity/lib/site-content'
 import { mergeAboutPage, at } from '@/sanity/lib/site-content-mapping'
 import { aboutContent } from '@/lib/content/about'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { SectionJsonLd } from '@/components/SEO/StructuredData'
 
 export async function generateMetadata({
   params,
@@ -27,6 +29,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/about',
+    ...(await getSeoContext(locale, 'about')),
     title: t('metaTitle'),
     description: t('metaDescription'),
   })
@@ -48,6 +51,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <TrustInPractice content={information?.trust ?? content.trust} />
         <AboutClosing content={content.closing} />
       </main>
+      <SectionJsonLd locale={locale} section="about" seoPage="about" />
       <Footer />
     </>
   )

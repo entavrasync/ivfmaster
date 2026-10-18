@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+import { SEO_LOCALIZED_PROJECTION } from '../../lib/seo-mapping'
 
 /** Team-page presentation only. Doctor records use sanity/lib/clinic. */
 export const teamPageQuery = defineQuery(`{
@@ -62,6 +63,7 @@ export const teamPageQuery = defineQuery(`{
     seo{
       "metaTitle": select($locale == "en" => coalesce(metaTitle.en, metaTitle.mr), coalesce(metaTitle.mr, metaTitle.en)),
       "metaDescription": select($locale == "en" => coalesce(metaDescription.en, metaDescription.mr), coalesce(metaDescription.mr, metaDescription.en)),
+      ${SEO_LOCALIZED_PROJECTION},
       "ogImage": ogImage{
         "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
         crop, hotspot, "assetId": asset->_id, "url": asset->url,

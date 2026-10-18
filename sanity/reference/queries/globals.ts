@@ -45,7 +45,9 @@ export const globalsQuery = defineQuery(`{
         "lqip": asset->metadata.lqip
       },
       canonicalUrl,
-      noIndex
+      noIndex,
+      "ogTitle": select($locale == "en" => coalesce(ogTitle.en, ogTitle.mr), coalesce(ogTitle.mr, ogTitle.en)),
+      "ogDescription": select($locale == "en" => coalesce(ogDescription.en, ogDescription.mr), coalesce(ogDescription.mr, ogDescription.en))
     }
   },
   "navigation": *[_type == "navigation" && _id == "navigation" && reviewStatus == "approved"][0]{

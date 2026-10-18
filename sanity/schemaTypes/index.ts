@@ -2,6 +2,7 @@ import { defineField, type SchemaTypeDefinition, type Rule } from 'sanity'
 import { localizedString, localizedText, procedure } from './procedure'
 import { doctor } from './doctor'
 import { clinicSettings } from './clinic-settings'
+import { clinicAvailability } from './clinic-availability'
 import { article } from './article'
 import { homeFaq, aboutInformation, facilityGallery } from './editorial'
 import { schemaTypes as referenceTypes } from '../reference/schemaTypes'
@@ -12,7 +13,6 @@ import initialContent from '../reference/initial-content.json' with { type: 'jso
 // object definitions, rather than replacing procedure/doctor document contracts.
 const reusedTypes: SchemaTypeDefinition[] = referenceTypes
   .map((type) => {
-    if (type.name === 'seo' && 'fields' in type && type.fields) return { ...type, fields: type.fields.map((field) => ['canonicalUrl', 'noIndex', 'ogImage'].includes(field.name) ? { ...field, readOnly: true, description: 'Preserved for compatibility. Target canonicals, indexing and social images remain controlled by its existing SEO builders.' } : field) } as SchemaTypeDefinition
     if (type.type !== 'document' || !('fields' in type) || !type.fields) return type
     const review = { ...approvalField, ...('groups' in type && type.groups?.length ? { group: type.groups[0].name } : {}) }
     const fields = type.fields.map((field) => field.name === 'reviewStatus' ? review : field)
@@ -28,14 +28,17 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
     const initialValue = initialContent.singletons[type.name as keyof typeof initialContent.singletons]
     // Initial values only initialize new documents; they never patch saved content.
     const defaults = initialValue ? { initialValue: () => structuredClone(initialValue) } : {}
+    // Legacy clinic facts stay in the schema so stored values remain readable, but are hidden:
+    // the website reads them from Shared clinic settings and Clinic hours & availability.
     if (type.name === 'siteSettings') return { ...type, ...defaults,
-      description: 'Brand and SEO presentation. Existing Shared clinic settings remains authoritative for contacts/location. Hours and headline statistics await clinic confirmation and remain read-only.',
-      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, readOnly: true, validation: undefined, description: 'Preserved legacy field. The target reads this fact from code or Shared clinic settings; it is not duplicated into editable page content.' } : field),
+      description: 'Site description and site-wide SEO defaults. Edit contact details and address in Shared clinic settings, and opening hours in Clinic hours & availability.',
+      preview: { select: { id: '_id' }, prepare: () => ({ title: 'Site settings' }) },
+      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, hidden: true, readOnly: true, validation: undefined } : field),
     } as SchemaTypeDefinition
     return { ...type, ...defaults, fields } as SchemaTypeDefinition
   })
 
-const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, article, homeFaq, aboutInformation, facilityGallery]
+const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, clinicAvailability, article, homeFaq, aboutInformation, facilityGallery]
 export const schemaTypes: SchemaTypeDefinition[] = [...targetTypes.map((type) => {
   const value = initialContent.legacy[type.name as keyof typeof initialContent.legacy]
   return value ? { ...type, initialValue: () => structuredClone(value) } as SchemaTypeDefinition : type

@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useAnimation } from 'motion/react'
 import { MessageCircle, Phone, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
+import { useClinicAvailability } from '@/components/providers/ClinicAvailabilityProvider'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import {
   getClinicStatus,
@@ -73,6 +74,7 @@ function StatusDot({ state, size = 8 }: Readonly<{ state: ClinicStatus['state'];
 
 export function FloatingContactCTA() {
   const settings = useClinicSettings()
+  const availability = useClinicAvailability()
   const reduced  = useReducedMotion()
   const t        = useTranslations('FloatingCTA')
   const controls = useAnimation()
@@ -80,7 +82,7 @@ export function FloatingContactCTA() {
   const [expanded,  setExpanded ] = useState(false)
   const [status,    setStatus   ] = useState<ClinicStatus | null>(null)
   const [nudged,    setNudged   ] = useState(false)
-  const refresh = useCallback(() => setStatus(getClinicStatus()), [])
+  const refresh = useCallback(() => setStatus(getClinicStatus(new Date(), availability)), [availability])
 
   useEffect(() => {
     refresh()

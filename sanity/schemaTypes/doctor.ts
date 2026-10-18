@@ -2,6 +2,8 @@ import { UserRound } from 'lucide-react'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { approvalField, localizedField, stableDoctorSlug } from './editorial-fields.ts'
 import { doctorDocument } from '../lib/clinic-mapping.ts'
+import { SEO_FIELDSETS, seoAdvancedFields } from '../reference/schemaTypes/objects/seo.ts'
+import { SeoPanel } from '../studio/SeoPanel.ts'
 
 const localizedItems = (name: string, title: string, minimum = 1) => defineField({
   name, title, type: 'array', of: [defineArrayMember({ type: 'procedureLocalizedText' })],
@@ -31,6 +33,9 @@ export const doctor = defineType({
     }),
     localizedItems('credentials', 'Team/profile credentials (currently empty on the website)', 0),
     localizedField('metaDescription', 'Profile SEO description', true),
+    defineField({ name: 'seo', title: 'SEO (title, keywords, sharing, visibility)', type: 'object', fieldsets: SEO_FIELDSETS, components: { input: SeoPanel },
+      description: 'Optional. Empty fields keep the doctor name as the title and the profile SEO description above.',
+      fields: [localizedField('metaTitle', 'Search result title', false, false), ...seoAdvancedFields()] }),
     defineField({
       name: 'portrait', type: 'image', title: 'Shared portrait (optional)', options: { hotspot: true },
       description: 'Use an authorized photograph of this doctor, with the face clear and space around the head/shoulders for the existing portrait crops. Keep the high-resolution original; use hotspot/crop to set the focal point. Leave the whole field unset to retain the existing photograph. Supply English alt text; Marathi falls back to English.',
@@ -47,7 +52,7 @@ export const doctor = defineType({
       description: 'Separate story paragraphs, quotation and evidence. Existing CTA labels and URLs stay in code.',
       fields: [localizedField('role', 'About professional title'), localizedField('pullQuote', 'About quotation', true), localizedItems('paragraphs', 'Story paragraphs'), localizedField('evidence', 'Evidence statement', true)],
     }),
-  ].map((field) => ({ ...field, group: ['slug', 'reviewStatus', 'order', 'name', 'title'].includes(field.name) ? 'identity' : field.name === 'home' ? 'home' : field.name === 'about' ? 'about' : field.name === 'portrait' ? 'media' : field.name === 'metaDescription' ? 'seo' : 'profile' })),
+  ].map((field) => ({ ...field, group: ['slug', 'reviewStatus', 'order', 'name', 'title'].includes(field.name) ? 'identity' : field.name === 'home' ? 'home' : field.name === 'about' ? 'about' : field.name === 'portrait' ? 'media' : ['metaDescription', 'seo'].includes(field.name) ? 'seo' : 'profile' })),
   validation: (r) => r.custom((doc) => {
     const value = doc as { slug?: { current?: string }; home?: { credentials?: unknown[] } } | undefined
     if (!value?.home) return true

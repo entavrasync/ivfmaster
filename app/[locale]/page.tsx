@@ -18,6 +18,7 @@ import { getDoctorContent } from '@/sanity/lib/clinic';
 import { getHomeFaq } from '@/sanity/lib/editorial';
 import { getSiteContent } from '@/sanity/lib/site-content';
 import { resolveHomePageFaq } from '@/sanity/lib/site-content-mapping';
+import { getSeoContext } from '@/sanity/lib/site-content'
 
 export async function generateMetadata({
   params,
@@ -30,6 +31,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/',
+    ...(await getSeoContext(locale, 'home')),
     title: t('siteTitle'),
     description: t('siteDescription'),
   })

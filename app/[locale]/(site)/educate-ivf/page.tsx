@@ -6,6 +6,8 @@ import { EducateHub } from '@/components/sections/EducateHub'
 import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getArticles } from '@/sanity/lib/articles'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { SectionJsonLd } from '@/components/SEO/StructuredData'
 
 export async function generateMetadata({
   params,
@@ -18,6 +20,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/educate-ivf',
+    ...(await getSeoContext(locale)),
     title: t('hubMetaTitle'),
     description: t('hubMetaDesc'),
   })
@@ -31,6 +34,7 @@ export default async function EducateIVFPage({ params }: { params: Promise<{ loc
       <NextIntlClientProvider messages={messages}>
         <EducateHub articles={articles} />
       </NextIntlClientProvider>
+      <SectionJsonLd locale={locale} section="educateIVF" />
       <Footer />
     </>
   )

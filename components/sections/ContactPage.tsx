@@ -2,10 +2,12 @@
 
 import { siteConfig } from '@/config/site'
 import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
+import { useClinicAvailability } from '@/components/providers/ClinicAvailabilityProvider'
 import { buildWhatsappMessage } from '@/lib/buildWhatsappMessage'
 import { CLINIC_CONTACT, getClinicStatus, type ClinicStatus } from '@/lib/clinicHours'
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+import { formatAvailability } from '@/lib/clinic-availability'
 import { useEffect, useState } from 'react'
 
 const IG_URL = 'https://www.instagram.com/ivfmaster?utm_source=ig_web_button_share_sheet'
@@ -178,6 +180,8 @@ function InfoRow({ icon, labelText, valueText }: Readonly<{ icon: React.ReactNod
 
 export function ContactPage() {
   const settings = useClinicSettings()
+  const availability = useClinicAvailability()
+  const hoursLocale = useLocale()
   const whatsappNumber = settings?.whatsappNumber ?? CLINIC_CONTACT.whatsappNumber
   const t = useTranslations('Contact')
 
@@ -188,7 +192,12 @@ export function ContactPage() {
   const [nameError, setNameError] = useState(false)
   const [status, setStatus] = useState<ClinicStatus | null>(null)
 
-  useEffect(() => { setStatus(getClinicStatus()) }, [])
+  useEffect(() => {
+    const refresh = () => setStatus(getClinicStatus(new Date(), availability))
+    refresh()
+    const timer = setInterval(refresh, 60_000)
+    return () => clearInterval(timer)
+  }, [availability])
 
   const waHref  = `https://wa.me/${whatsappNumber}`
   const telHref = `tel:${(settings?.telephone ?? CLINIC_CONTACT.phoneNumber).replace(/\s/g, '')}`
@@ -463,7 +472,7 @@ export function ContactPage() {
                 display: 'flex', flexDirection: 'column', gap: '1rem',
               }}>
                 <InfoRow icon={<MapPin size={17} strokeWidth={1.75} />} labelText={t('panelAddressLabel')} valueText={settings?.displayAddress ?? t('panelAddress')} />
-                <InfoRow icon={<Clock size={17} strokeWidth={1.75} />} labelText={t('panelHoursLabel')} valueText={t('panelHours')} />
+                <InfoRow icon={<Clock size={17} strokeWidth={1.75} />} labelText={t('panelHoursLabel')} valueText={availability ? formatAvailability(availability, hoursLocale) : t('panelHours')} />
               </div>
 
               {/* Map placeholder */}

@@ -6,6 +6,9 @@ import { PROCEDURES } from '@/lib/procedures'
 import { routing, type Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getProcedures } from '@/sanity/lib/procedures'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { JsonLdScript, absoluteImage, breadcrumbTrail, pageLocale } from '@/components/SEO/StructuredData'
+import { buildProcedureJsonLd } from '@/lib/seo/jsonLd'
 
 // Website procedures are prebuilt; procedures added in the CMS render on demand.
 export async function generateStaticParams() {
@@ -28,6 +31,8 @@ export async function generateMetadata({
     path: '/procedures/' + slug,
     title: proc.seo?.title ?? proc.name + ' — ' + proc.fullName,
     description: proc.seo?.description ?? proc.oneLiner,
+    ...(await getSeoContext(locale)),
+    ...(proc.pageSeo ? { seo: proc.pageSeo } : {}),
   })
 }
 
@@ -40,10 +45,17 @@ export default async function ProcedureDetailPage({
   const procedures = await getProcedures(locale as Locale)
   const proc = procedures.find((p) => p.slug === slug)
   if (!proc) notFound()
+  const path = `/procedures/${proc.slug}`
+  const structuredData = proc.pageSeo?.structuredData === false ? null : buildProcedureJsonLd({
+    locale: pageLocale(locale), trail: await breadcrumbTrail(locale, 'procedures', { name: proc.name, path }),
+    name: proc.name, alternateName: proc.fullName, description: proc.pageSeo?.description ?? proc.oneLiner,
+    faqs: proc.faqs, image: absoluteImage(proc.bannerImage?.src),
+  })
 
   return (
     <>
       <ProcedureDetail proc={proc} allProcs={procedures} />
+      {structuredData && <JsonLdScript data={structuredData} />}
       <Footer />
     </>
   )

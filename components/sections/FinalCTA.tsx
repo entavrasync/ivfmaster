@@ -4,11 +4,13 @@ import { useSiteAction } from '@/components/providers/SiteContentContext'
 import type { LucideIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { MapPin, Clock, Phone, MessageCircle, ArrowRight } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+import { formatAvailability } from '@/lib/clinic-availability'
 import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { siteConfig } from '@/config/site'
 import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
+import { useClinicAvailability } from '@/components/providers/ClinicAvailabilityProvider'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
@@ -27,6 +29,8 @@ const MAPS_URL = siteConfig.maps.placeUrl
 export function FinalCTA() {
   const actionHref = useSiteAction('home.finalCta.formCta', '/contact')
   const settings = useClinicSettings()
+  const availability = useClinicAvailability()
+  const hoursLocale = useLocale()
   const mapsUrl = settings?.mapUrl ?? MAPS_URL
   const waUrl = settings ? WA_URL.replace('917559379192', settings.whatsappNumber) : WA_URL
   const reduced = useReducedMotion()
@@ -39,7 +43,7 @@ export function FinalCTA() {
     href?:  string
   }> = [
     { Icon: MapPin, label: t('clinicLabel'), detail: settings?.displayAddress ?? t('clinicAddress'), href: mapsUrl },
-    { Icon: Clock,  label: t('hoursLabel'),  detail: t('hoursDetail')                           },
+    { Icon: Clock,  label: t('hoursLabel'),  detail: availability ? formatAvailability(availability, hoursLocale) : t('hoursDetail')                           },
     { Icon: Phone,  label: t('reachLabel'),  detail: settings?.telephone ?? t('reachPhone'), href: settings ? `tel:${settings.telephone.replace(/\s/g, '')}` : 'tel:+917559379192' },
   ]
 

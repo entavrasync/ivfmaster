@@ -4,6 +4,8 @@ import { articleModels, articleSlugs, isArticleSlug, type ArticleContract, type 
 import { articleBodySchema, articleDocument } from '../lib/article-mapping.ts'
 import { apiVersion } from '../project.ts'
 import { approvalField, localizedField } from './editorial-fields.ts'
+import { SEO_FIELDSETS, seoAdvancedFields } from '../reference/schemaTypes/objects/seo.ts'
+import { SeoPanel } from '../studio/SeoPanel.ts'
 
 const required = (name: string, type = 'text') => defineField({ name, type, validation: (r) => r.required() })
 // These values reach next-intl's plain string API. Match the published reader
@@ -78,7 +80,8 @@ export const article = defineType({
     defineField({ name: 'coverImage', title: 'Optional replacement cover', type: 'image', options: { hotspot: true }, fields: [localizedField('alt', 'Alternative text')],
       description: 'Use an authorized image relevant to this article, with room around the subject for listing, related-card and detail crops. Preserve the high-resolution original and set its hotspot/crop; avoid embedded text near edges. Leave the whole field unset to retain the static cover. Supply English alt text; Marathi falls back to English.',
       validation: (r) => r.assetRequired() }),
-    defineField({ name: 'seo', type: 'object', description: 'Optional overrides; leave unset to preserve current metadata.', fields: [articleCopy('metaTitle', 'SEO title'), articleCopy('metaDescription', 'SEO description', true)] }),
+    defineField({ name: 'seo', title: 'SEO', type: 'object', description: 'Every field is optional: empty fields keep the article title and excerpt.', fieldsets: SEO_FIELDSETS, components: { input: SeoPanel },
+      fields: [articleCopy('metaTitle', 'SEO title'), articleCopy('metaDescription', 'SEO description', true), ...seoAdvancedFields()] }),
     defineField({ name: 'related', title: 'Related articles (optional override)', type: 'array',
       of: [defineArrayMember({ type: 'reference', to: [{ type: 'article' }], options: { filter: 'reviewStatus == "approved" && slug.current in $slugs', filterParams: { slugs: articleSlugs } } })],
       validation: (r) => r.max(6).unique(), description: 'Leave unset to retain existing relationships. Referenced articles must be approved and published before the override is eligible.' }),
