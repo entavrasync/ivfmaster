@@ -4,6 +4,7 @@ import { z } from 'zod'
 import type { Article } from '../../lib/articles.ts'
 import type { Locale } from '../../i18n/routing.ts'
 import { dataset, projectId } from '../project.ts'
+import { resolvePageSeo, type PageSeo } from './seo-mapping.ts'
 import { articleModels, articleSlugs, type ArticleContract, type ArticleField } from '../article-model.ts'
 
 const text = z.string().refine((s) => s.trim().length > 0)
@@ -61,7 +62,8 @@ export const articleDocument = z.object({
   category: z.enum(['Conditions', 'Understanding IVF', 'Myths']),
   date: z.iso.date(), readTime: z.number().int().positive().max(120),
   related: z.array(z.object({ _key: text, slug: text, reviewStatus: z.literal('approved') })).max(6).nullish(),
-  seo: z.object({ metaTitle: localizedText, metaDescription: localizedText }).nullish(),
+  // Either override may be set alone; keyword, social and visibility fields are read from the raw record.
+  seo: z.object({ metaTitle: localizedText.nullish(), metaDescription: localizedText.nullish() }).nullish(),
   coverImage: coverImage.nullish(),
   ...Object.fromEntries(Object.values(articleModels).map((model) => [model.field, z.unknown().optional()])),
 })
@@ -85,7 +87,7 @@ export function localizeArticleBody(contract: ArticleContract, body: Record<stri
   })) as AbstractIntlMessages
 }
 const read = (value: { en: unknown; mr?: unknown }, locale: Locale) => choose(value, locale) as string
-export type CmsArticle = Article & { seo?: { metaTitle: string; metaDescription: string } }
+export type CmsArticle = Article & { pageSeo?: PageSeo }
 
 export function mergeArticleMessages(base: AbstractIntlMessages, overrides: AbstractIntlMessages): AbstractIntlMessages {
   const out = { ...base }
@@ -95,6 +97,12 @@ export function mergeArticleMessages(base: AbstractIntlMessages, overrides: Abst
       ? mergeArticleMessages(old, value) : value
   }
   return out
+}
+
+function pageSeoFor(input: unknown, slug: string, locale: Locale): { pageSeo?: PageSeo } {
+  const raw = Array.isArray(input) ? input.find((record) => record && typeof record === 'object' && Reflect.get(record, 'slug') === slug) : undefined
+  const pageSeo = raw ? resolvePageSeo(Reflect.get(raw, 'seo'), locale) : undefined
+  return pageSeo ? { pageSeo } : {}
 }
 
 export function resolveArticles(input: unknown, fallback: readonly Article[], locale: Locale): { articles: readonly CmsArticle[]; overrides: AbstractIntlMessages; status: string } {
@@ -123,7 +131,7 @@ export function resolveArticles(input: unknown, fallback: readonly Article[], lo
       if (doc.category !== original.category) throw new Error('Unsupported category change')
       const result: CmsArticle = { ...original, title, excerpt, category: doc.category, date: doc.date, readTime: doc.readTime,
         ...(related ? { relatedSlugs: related } : {}),
-        ...(doc.seo ? { seo: { metaTitle: read(doc.seo.metaTitle, locale), metaDescription: read(doc.seo.metaDescription, locale) } } : {}),
+        ...(pageSeoFor(input, doc.slug, locale)),
       }
       if (doc.coverImage) {
         const p = doc.coverImage, c = p.crop ?? { left: 0, right: 0, top: 0, bottom: 0 }, d = p.asset.metadata.dimensions

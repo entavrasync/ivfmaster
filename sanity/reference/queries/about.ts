@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+import { SEO_LOCALIZED_PROJECTION } from '../../lib/seo-mapping'
 
 /** About-page presentation. Chapters retain their own narrative and resolve a shared doctor reference or existing profile slug. Static artwork and the target doctor reader preserve the existing portraits and identities. */
 export const aboutPageQuery = defineQuery(`*[_type == "aboutPage" && _id == "aboutPage" && reviewStatus == "approved"][0]{
@@ -70,6 +71,7 @@ export const aboutPageQuery = defineQuery(`*[_type == "aboutPage" && _id == "abo
   seo{
     "metaTitle": select($locale == "en" => coalesce(metaTitle.en, metaTitle.mr), coalesce(metaTitle.mr, metaTitle.en)),
     "metaDescription": select($locale == "en" => coalesce(metaDescription.en, metaDescription.mr), coalesce(metaDescription.mr, metaDescription.en)),
+    ${SEO_LOCALIZED_PROJECTION},
     "ogImage": ogImage{
       "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
       "url": asset->url,

@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+import { SEO_LOCALIZED_PROJECTION } from '../../lib/seo-mapping'
 
 /** Listing-page presentation only. Treatment records use sanity/lib/procedures. */
 export const proceduresHubQuery = defineQuery(`{
@@ -27,6 +28,7 @@ export const proceduresHubQuery = defineQuery(`{
     seo{
       "metaTitle": select($locale == "en" => coalesce(metaTitle.en, metaTitle.mr), coalesce(metaTitle.mr, metaTitle.en)),
       "metaDescription": select($locale == "en" => coalesce(metaDescription.en, metaDescription.mr), coalesce(metaDescription.mr, metaDescription.en)),
+      ${SEO_LOCALIZED_PROJECTION},
       "ogImage": ogImage{
         "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
         "url": asset->url,

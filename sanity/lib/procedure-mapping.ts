@@ -2,6 +2,7 @@ import { z } from 'zod'
 import type { Locale } from '../../i18n/routing.ts'
 import { PROCEDURES, type Procedure, type ProcedureImage } from '../../lib/procedures.ts'
 import { resolveSiteImage } from './site-content-mapping.ts'
+import { resolvePageSeo, type PageSeo } from './seo-mapping.ts'
 
 const text = z.string().refine((value) => value.trim().length > 0)
 const localized = z.object({ en: text, mr: z.string().nullish() })
@@ -34,6 +35,7 @@ const supportedProcedureDocument = procedureDocument.extend({
 })
 export type CmsProcedure = Procedure & {
   readonly seo?: { readonly title?: string; readonly description?: string }
+  readonly pageSeo?: PageSeo
 }
 
 function localize(value: z.infer<typeof localized>, locale: Locale): string {
@@ -61,6 +63,7 @@ export function mapProcedureDocument(input: unknown, original: Procedure, locale
   if (!parsed.success || parsed.data.slug !== original.slug) return null
   const doc = parsed.data
   const read = (value: z.infer<typeof localized>) => localize(value, locale)
+  const pageSeo = resolvePageSeo(input && typeof input === 'object' ? Reflect.get(input, 'seo') : undefined, locale)
   // Either image fills in for the other, so one upload serves both screens.
   const card = procedureImage(doc.cardImage, locale), banner = procedureImage(doc.bannerImage, locale)
   return {
@@ -80,6 +83,8 @@ export function mapProcedureDocument(input: unknown, original: Procedure, locale
       title: doc.seo?.metaTitle ? read(doc.seo.metaTitle) : undefined,
       description: doc.seo?.metaDescription ? read(doc.seo.metaDescription) : undefined,
     },
+    // The parsed document keeps only the validated title/description; read the rest from the raw record.
+    ...(pageSeo ? { pageSeo } : {}),
   }
 }
 
@@ -97,7 +102,7 @@ export function resolveProcedures(input: unknown, originals: ReadonlyArray<Proce
     const doc = parsed.data
     if (mapped.has(doc.slug) || ids.has(doc._id)) return { procedures: originals, status: 'ambiguous' }
     const original = originals.find((procedure) => procedure.slug === doc.slug) ?? newProcedureBase(doc.slug, mapped.size)
-    const procedure = mapProcedureDocument(doc, original, locale)
+    const procedure = mapProcedureDocument(value, original, locale)
     if (!procedure) return { procedures: originals, status: 'invalid' }
     mapped.set(doc.slug, procedure); ids.add(doc._id)
   }

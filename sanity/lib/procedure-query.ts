@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+import { SEO_RAW_PROJECTION } from './seo-mapping'
 
 // Every approved, published procedure: existing routes are overlaid, new slugs are added
 // to the listing, detail route and navigation. Ordered so new entries appear stably.
@@ -10,7 +11,7 @@ export const allProceduresQuery = defineQuery(`
     quickFacts[]{_key, label{en, mr}, value{en, mr}},
     whoItsFor[]{_key, en, mr}, process[]{_key, title{en, mr}, detail{en, mr}},
     whatToExpect{en, mr}, faqs[]{_key, q{en, mr}, a{en, mr}},
-    seo{metaTitle{en, mr}, metaDescription{en, mr}},
+    ${SEO_RAW_PROJECTION},
     cardImage{alt{en, mr}, crop, hotspot, "assetId": asset->_id, "url": asset->url, "dimensions": asset->metadata.dimensions, "lqip": asset->metadata.lqip},
     bannerImage{alt{en, mr}, crop, hotspot, "assetId": asset->_id, "url": asset->url, "dimensions": asset->metadata.dimensions, "lqip": asset->metadata.lqip}
   }

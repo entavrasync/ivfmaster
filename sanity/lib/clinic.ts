@@ -32,6 +32,7 @@ export async function getTeamDoctors(locale: Locale) {
       metaDescription: cms?.metaDescription ?? t(`${prefix}.metaDescription`),
       image: cms?.portrait ? { ...doctor.image, src: cms.portrait.photo.src, position: cms.portrait.position ?? doctor.image.position } : doctor.image,
       imageAlt: cms?.portrait?.alt ?? t(`${prefix}.imageAlt`),
+      pageSeo: cms?.pageSeo,
     }
   }).sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug))
 }

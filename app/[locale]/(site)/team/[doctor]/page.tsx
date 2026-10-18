@@ -14,6 +14,9 @@ import { buildPageMetadata } from '@/lib/seo/metadata'
 import { doctors, getDoctorBySlug } from '@/lib/team'
 import { getTeamDoctors } from '@/sanity/lib/clinic'
 import { createTranslator } from 'next-intl'
+import { getSeoContext } from '@/sanity/lib/site-content'
+import { JsonLdScript, absoluteImage, breadcrumbTrail, pageLocale } from '@/components/SEO/StructuredData'
+import { buildPhysicianJsonLd } from '@/lib/seo/jsonLd'
 
 export async function generateMetadata({
   params,
@@ -29,6 +32,8 @@ export async function generateMetadata({
     path: `/team/${slug}`,
     title: doctor.name,
     description: doctor.metaDescription,
+    ...(await getSeoContext(locale)),
+    ...(doctor.pageSeo ? { seo: doctor.pageSeo } : {}),
   })
 }
 
@@ -52,6 +57,11 @@ export default async function DoctorDetailPage({
   const name = doctor.name
   const credentials = doctor.credentials
   const biography = createTranslator({ locale, messages: { biography: doctor.biography } })
+  const structuredData = doctor.pageSeo?.structuredData === false ? null : buildPhysicianJsonLd({
+    locale: pageLocale(locale), trail: await breadcrumbTrail(locale, 'team', { name: doctor.name, path: `/team/${slug}` }),
+    slug, name: doctor.name, jobTitle: doctor.title, description: doctor.pageSeo?.description ?? doctor.metaDescription,
+    image: absoluteImage(doctor.image.src),
+  })
 
   return (
     <>
@@ -140,6 +150,7 @@ export default async function DoctorDetailPage({
           </div>
         </Container>
       </main>
+      {structuredData && <JsonLdScript data={structuredData} />}
       <Footer />
     </>
   )

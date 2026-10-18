@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+import { SEO_LOCALIZED_PROJECTION } from '../../lib/seo-mapping'
 
 /** Homepage presentation and selected FAQ references. Keep this literal projection aligned with site-content-mapping and the existing section components. Shared doctor identities and profile narratives remain owned by the target clinic reader. */
 export const homePageQuery = defineQuery(`*[_type == "homePage" && _id == "homePage" && reviewStatus == "approved"][0]{
@@ -215,6 +216,7 @@ export const homePageQuery = defineQuery(`*[_type == "homePage" && _id == "homeP
   seo{
     "metaTitle": select($locale == "en" => coalesce(metaTitle.en, metaTitle.mr), coalesce(metaTitle.mr, metaTitle.en)),
     "metaDescription": select($locale == "en" => coalesce(metaDescription.en, metaDescription.mr), coalesce(metaDescription.mr, metaDescription.en)),
+    ${SEO_LOCALIZED_PROJECTION},
     "ogImage": ogImage{
       "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
       crop, hotspot, "assetId": asset->_id, "url": asset->url,

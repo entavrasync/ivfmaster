@@ -4,6 +4,7 @@ import { createTranslator } from 'next-intl'
 import { z } from 'zod'
 import type { Locale } from '../../i18n/routing.ts'
 import { dataset, projectId } from '../project.ts'
+import { resolvePageSeo } from './seo-mapping.ts'
 
 const text = z.string().refine((s) => s.trim().length > 0)
 const localized = z.object({ en: text, mr: z.string().nullish() })
@@ -48,7 +49,7 @@ export function localize(value: z.infer<typeof localized>, locale: Locale): stri
   return locale === 'mr' && value.mr?.trim() ? value.mr : value.en
 }
 
-function mapDoctor(doc: z.infer<typeof doctorDocument>, locale: Locale) {
+function mapDoctor(doc: z.infer<typeof doctorDocument>, locale: Locale, rawSeo?: unknown) {
   const read = (value: z.infer<typeof localized>) => localize(value, locale)
   let portrait: { photo: StaticImageData; alt: string; position?: string } | undefined
   if (doc.portrait) {
@@ -67,6 +68,7 @@ function mapDoctor(doc: z.infer<typeof doctorDocument>, locale: Locale) {
   return {
     slug: doc.slug, order: doc.order, name: read(doc.name), title: read(doc.title), essence: read(doc.essence),
     intro: read(doc.intro), biography: read(doc.biography), credentials: doc.credentials.map(read), metaDescription: read(doc.metaDescription), portrait,
+    pageSeo: resolvePageSeo(rawSeo, locale),
     home: doc.home ? { essence: read(doc.home.essence), intro: read(doc.home.intro), credentials: doc.home.credentials.map(read) } : undefined,
     about: doc.about ? { role: read(doc.about.role), pullQuote: read(doc.about.pullQuote), paragraphs: doc.about.paragraphs.map(read), evidence: read(doc.about.evidence) } : undefined,
   }
@@ -78,7 +80,7 @@ export function resolveDoctors(input: unknown, locale: Locale): { doctors: Docto
   if (!parsed.success) return { doctors: [], status: 'invalid' }
   if (new Set(parsed.data.map((d) => d.slug)).size !== parsed.data.length || new Set(parsed.data.map((d) => d.order)).size !== parsed.data.length) return { doctors: [], status: 'ambiguous' }
   try {
-    return { doctors: parsed.data.map((doc) => mapDoctor(doc, locale)).sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug)), status: parsed.data.length ? 'sanity' : 'missing' }
+    return { doctors: parsed.data.map((doc, index) => mapDoctor(doc, locale, Array.isArray(input) ? Reflect.get(Object(input[index]), 'seo') : undefined)).sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug)), status: parsed.data.length ? 'sanity' : 'missing' }
   } catch { return { doctors: [], status: 'invalid' } }
 }
 
