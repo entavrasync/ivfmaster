@@ -19,7 +19,8 @@ test('team data defines the two real doctors and editable supporting-team slots'
   assert(doctors[0]?.credentials.some((credential) => credential.includes('FOGSI')))
   assert(doctors[1]?.credentials.some((credential) => credential.includes('2,000+ couples')))
 
-  assert.equal(careTeam.length, 2)
+  // The existing nurse placeholder is commented out; it is not a displayed staff record.
+  assert.deepEqual(careTeam.map((member) => member.id), ['embryologist'])
   assert(careTeam.some((member) => member.credentials?.some((c) => c.includes('CHARUSAT'))))
   assert.equal(facilityPhotos.length, 4)
 
