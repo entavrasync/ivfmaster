@@ -2,6 +2,8 @@
 
 import { Container } from '@/components/layout/Container'
 import { siteConfig } from '@/config/site'
+import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
+import { useSiteContent } from '@/components/providers/SiteContentContext'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import { type Locale } from '@/i18n/routing'
@@ -156,6 +158,12 @@ function DevCredit() {
 /* ─── Footer ─────────────────────────────────────────────────────────────── */
 
 export function Footer() {
+  const chrome = useSiteContent()
+  const settings = useClinicSettings()
+  const phoneHref = settings ? `tel:${settings.telephone.replace(/\s/g, '')}` : PHONE_HREF
+  const waUrl = settings ? `https://wa.me/${settings.whatsappNumber}` : WA_URL
+  const emailHref = `mailto:${settings?.email ?? 'ivfmaster.in@gmail.com'}`
+  const social = SOCIAL.map((item) => ({ ...item, href: item.label === 'WhatsApp' ? waUrl : item.label === 'Call' ? phoneHref : item.label === 'Email' ? emailHref : item.href }))
   const reduced = useReducedMotion()
   const t       = useTranslations('Footer')
 
@@ -164,10 +172,10 @@ export function Footer() {
     text:  string
     href?: string
   }> = [
-    { Icon: MapPin, text: t('address'), href: MAPS_URL                              },
+    { Icon: MapPin, text: settings?.displayAddress ?? t('address'), href: settings?.mapUrl ?? MAPS_URL },
     { Icon: Clock,  text: t('hours')                                                },
-    { Icon: Phone,  text: t('phone'), href: PHONE_HREF                              },
-    { Icon: Mail,   text: t('email'), href: 'mailto:ivfmaster.in@gmail.com'              },
+    { Icon: Phone,  text: settings?.telephone ?? t('phone'), href: phoneHref },
+    { Icon: Mail,   text: settings?.email ?? t('email'), href: emailHref },
   ]
 
   return (
@@ -263,7 +271,7 @@ export function Footer() {
 
             {/* Social icon buttons */}
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {SOCIAL.map(({ Icon, label, href }) => (
+              {social.map(({ Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
@@ -292,7 +300,7 @@ export function Footer() {
 
           {/* ── Explore ─────────────────────────────────────────────── */}
           <div>
-            <ColTitle>{t('colExplore')}</ColTitle>
+            <ColTitle>{chrome.footer?.[0].heading ?? t('colExplore')}</ColTitle>
             <ul
               style={{
                 listStyle:     'none',
@@ -303,9 +311,9 @@ export function Footer() {
                 gap:           '0.625rem',
               }}
             >
-              {NAV_EXPLORE.map(({ key, href }) => (
+              {(chrome.footer?.[0].items ?? NAV_EXPLORE.map((item) => ({ ...item, label: t(item.key) }))).map(({ key, href, label }) => (
                 <li key={key}>
-                  <Link href={href} style={LINK_STYLE}>{t(key)}</Link>
+                  <Link href={href} style={LINK_STYLE}>{label}</Link>
                 </li>
               ))}
             </ul>
@@ -313,7 +321,7 @@ export function Footer() {
 
           {/* ── Clinic ──────────────────────────────────────────────── */}
           <div>
-            <ColTitle>{t('colClinic')}</ColTitle>
+            <ColTitle>{chrome.footer?.[1].heading ?? t('colClinic')}</ColTitle>
             <ul
               style={{
                 listStyle:     'none',
@@ -325,9 +333,9 @@ export function Footer() {
                 marginBottom:  '2rem',
               }}
             >
-              {NAV_CLINIC.map(({ key, href }) => (
+              {(chrome.footer?.[1].items ?? NAV_CLINIC.map((item) => ({ ...item, label: t(item.key) }))).map(({ key, href, label }) => (
                 <li key={key}>
-                  <Link href={href} style={LINK_STYLE}>{t(key)}</Link>
+                  <Link href={href} style={LINK_STYLE}>{label}</Link>
                 </li>
               ))}
             </ul>

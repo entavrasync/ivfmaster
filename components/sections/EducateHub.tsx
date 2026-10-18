@@ -61,12 +61,12 @@ function CoverPlaceholder({
       {article.coverImage ? (
         <Image
           src={article.coverImage}
-          alt={article.title}
+          alt={article.coverImageAlt ?? article.title}
           fill
           sizes={featured
             ? '(max-width: 1024px) 100vw, 480px'
             : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px'}
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', objectPosition: article.coverPosition }}
         />
       ) : (
         <>
@@ -444,7 +444,7 @@ function CategoryFilter({
 
 /* ─── Hub ────────────────────────────────────────────────────────────────── */
 
-export function EducateHub() {
+export function EducateHub({ articles = ARTICLES }: { articles?: readonly Article[] }) {
   const reduced                 = useReducedMotion()
   const t                       = useTranslations('EducateIVF')
   const [activeFilter, setActiveFilter] = useState<string>('All')
@@ -452,8 +452,8 @@ export function EducateHub() {
   const readArticle = t('readArticle')
   const readMore    = t('readMore')
 
-  const featured = ARTICLES.find((a) => a.slug === FEATURED_SLUG)!
-  const rest      = ARTICLES.filter((a) => a.slug !== FEATURED_SLUG)
+  const featured = articles.find((a) => a.slug === FEATURED_SLUG)!
+  const rest      = articles.filter((a) => a.slug !== FEATURED_SLUG)
 
   const showFeatured  = activeFilter === 'All' || activeFilter === featured.category
   const visibleRest   = rest.filter((a) => activeFilter === 'All' || a.category === activeFilter)

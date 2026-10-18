@@ -189,9 +189,6 @@ export function PcosArticle({
     return () => disableProgress()
   }, [enableProgress, disableProgress])
 
-  const d         = new Date(article.date)
-  const formatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-
   const signs         = t.raw('signs')         as string[]
   const diagnosisList = t.raw('diagnosisList') as string[]
   const lifestyleList = t.raw('lifestyleList') as string[]

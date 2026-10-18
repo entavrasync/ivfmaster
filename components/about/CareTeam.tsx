@@ -5,8 +5,8 @@ import { aboutContent } from '@/lib/content/about'
 
 import { EditorialPicture } from './EditorialPicture'
 
-export function CareTeam() {
-  const { team } = aboutContent
+export function CareTeam({ content }: { content?: typeof aboutContent.team }) {
+  const team = content ?? aboutContent.team
 
   return (
     <section className="overflow-hidden bg-ivory py-20 sm:py-28 lg:py-36">

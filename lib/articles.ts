@@ -26,6 +26,8 @@ export type Article = {
   readonly date:          string     // ISO "YYYY-MM-DD"
   readonly readTime:      number     // minutes
   readonly coverImage?:   StaticImageData
+  readonly coverImageAlt?: string
+  readonly coverPosition?: string
   readonly intro:         string
   readonly sections:      readonly ArticleSection[]
   readonly keyTakeaways?: readonly string[]

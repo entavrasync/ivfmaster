@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
@@ -7,6 +8,7 @@ import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
+import type { HomeFaqContent } from '@/sanity/lib/editorial-mapping'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -141,12 +143,13 @@ function FaqRow({
 
 /* ─── Section ──────────────────────────────────────────────────────────── */
 
-export function MythsFacts() {
+export function MythsFacts({ content }: { content?: HomeFaqContent }) {
+  const actionHref = useSiteAction('home.mythsFacts.closing.primary', '/contact')
   const reduced             = useReducedMotion()
   const [openId, setOpenId] = useState<string | null>(null)
   const t                   = useTranslations('MythsFacts')
 
-  const faqs: Faq[] = (['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7'] as const).map((k) => ({
+  const faqs: Faq[] = content?.faqs ?? (['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7'] as const).map((k) => ({
     id: k,
     q:  t(`faqs.${k}.q`),
     a:  t(`faqs.${k}.a`),
@@ -192,7 +195,7 @@ export function MythsFacts() {
               marginBottom:  '1.25rem',
             }}
           >
-            {t('eyebrow')}
+            {content?.eyebrow ?? t('eyebrow')}
           </motion.p>
 
           <motion.h2
@@ -209,7 +212,7 @@ export function MythsFacts() {
               marginBottom:          '1.25rem',
             }}
           >
-            {t('heading')}
+            {content?.heading ?? t('heading')}
           </motion.h2>
 
           <motion.p
@@ -222,7 +225,7 @@ export function MythsFacts() {
               maxWidth:   '54ch',
             }}
           >
-            {t('body')}
+            {content?.body ?? t('body')}
           </motion.p>
         </motion.div>
 
@@ -269,12 +272,12 @@ export function MythsFacts() {
               color:      '#5A6173',
             }}
           >
-            {t('closeBody')}
+            {content?.closeBody ?? t('closeBody')}
           </p>
 
           <Pressable>
             <Link
-              href="/contact"
+              href={actionHref}
               style={{
                 display:        'inline-block',
                 fontFamily:     'var(--font-body)',

@@ -1,9 +1,10 @@
 import { Container } from '@/components/layout/Container'
 import { Reveal } from '@/components/motion/Reveal'
 import { aboutContent } from '@/lib/content/about'
+import type { AboutInformation } from '@/sanity/lib/editorial-mapping'
 
-export function TrustInPractice() {
-  const { trust } = aboutContent
+export function TrustInPractice({ content }: { content?: AboutInformation['trust'] }) {
+  const trust = content ?? aboutContent.trust
 
   return (
     <section className="border-y border-taupe/70 bg-lavender py-20 sm:py-28 lg:py-36">

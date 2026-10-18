@@ -1,6 +1,6 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 import { Container } from '@/components/layout/Container'
 import { FacilityCarousel } from '@/components/team/FacilityCarousel'
@@ -8,43 +8,52 @@ import { Pressable } from '@/components/motion/Pressable'
 import { Reveal } from '@/components/motion/Reveal'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
 import { Link } from '@/i18n/navigation'
-import { careTeam, doctors, facilityPhotos } from '@/lib/team'
+import { careTeam, facilityPhotos } from '@/lib/team'
+import { getTeamDoctors } from '@/sanity/lib/clinic'
+import { getFacilityGallery } from '@/sanity/lib/editorial'
+import type { FacilityImage } from '@/sanity/lib/editorial-mapping'
+import type { Locale } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
+import { getSiteContent } from '@/sanity/lib/site-content'
+import { at, plain, resolveSiteImage, resolveSiteChrome } from '@/sanity/lib/site-content-mapping'
 
 export async function TeamPageContent() {
   const t = await getTranslations('Team')
-  const localizedDoctors = doctors.map((doctor) => {
-    const prefix = `doctors.${doctor.messageKey}` as const
-
-    return {
-      ...doctor,
-      name: t(`${prefix}.name`),
-      title: t(`${prefix}.title`),
-      essence: t(`${prefix}.essence`),
-      intro: t(`${prefix}.intro`),
-      credentials: t.raw(`${prefix}.credentials`) as string[],
-      imageAlt: t(`${prefix}.imageAlt`),
-    }
-  })
-  const localizedCareTeam = careTeam.map((member) => {
+  const locale = await getLocale() as Locale
+  const [localizedDoctors, gallery, siteContent] = await Promise.all([getTeamDoctors(locale), getFacilityGallery(locale), getSiteContent(locale)])
+  const closingHref = resolveSiteChrome(null, null, siteContent).actions?.['team.closing'] ?? '/contact'
+  const careMembers = at(siteContent.team, 'careTeamSection.members')
+  const localizedCareTeam = careTeam.map((member, index) => {
     const prefix = `careTeam.${member.messageKey}` as const
+    const cms = Array.isArray(careMembers) && careMembers.length === careTeam.length ? careMembers[index] : null
+    const portrait = resolveSiteImage(at(cms, 'portrait'))
+    const credentials = at(cms, 'credentials')
+    const lines = Array.isArray(credentials) && credentials.length <= 6 ? credentials.map((entry) => plain(at(entry, 'text'))) : null
 
     return {
       ...member,
-      name: t(`${prefix}.name`),
-      role: t(`${prefix}.role`),
-      blurb: t(`${prefix}.blurb`),
-      credentials: member.credentials ? (t.raw(`${prefix}.credentials`) as string[]) : undefined,
-      imageAlt: t(`${prefix}.imageAlt`),
+      name: plain(at(cms, 'name')) ?? t(`${prefix}.name`),
+      role: plain(at(cms, 'role')) ?? t(`${prefix}.role`),
+      blurb: plain(at(cms, 'blurb')) ?? t(`${prefix}.blurb`),
+      credentials: lines?.every((line): line is string => !!line) ? lines : member.credentials ? (t.raw(`${prefix}.credentials`) as string[]) : undefined,
+      image: portrait ? { ...member.image, src: portrait.image.src, position: portrait.position } : member.image,
+      imageAlt: portrait?.alt ?? t(`${prefix}.imageAlt`),
     }
   })
-  const localizedFacilityPhotos = facilityPhotos.map((photo) => {
+  const referenceAreas = at(siteContent.team, 'facilitySection.areas')
+  const localizedFacilityPhotos: { id: string; caption: string; imageAlt: string; images: readonly FacilityImage[] }[] = facilityPhotos.map((photo, index) => {
     const prefix = `facilityPhotos.${photo.messageKey}` as const
+    const cms = gallery?.areas.find((area) => area.area === photo.messageKey)
+    const area = Array.isArray(referenceAreas) && referenceAreas.length === 4 ? referenceAreas[index] : null
+    const native = at(area, 'images')
+    const replacements = Array.isArray(native) && native.length > 0 && native.length <= 10 ? native.map(resolveSiteImage) : []
+    const images = replacements.length && replacements.every(Boolean) ? replacements.map((item) => ({ ...item!.image, position: item!.position })) : undefined
 
     return {
       ...photo,
-      caption: t(`${prefix}.caption`),
-      imageAlt: t(`${prefix}.imageAlt`),
+      caption: cms?.caption ?? plain(at(area, 'caption')) ?? t(`${prefix}.caption`),
+      imageAlt: cms?.imageAlt ?? replacements[0]?.alt ?? t(`${prefix}.imageAlt`),
+      images: cms?.images ?? images ?? photo.images,
     }
   })
 
@@ -237,9 +246,9 @@ export async function TeamPageContent() {
         <Container>
           <Reveal>
             <div className="mb-12 max-w-[46rem] sm:mb-16">
-              <p className="eyebrow mb-4 normal-case text-navy">{t('facilityEyebrow')}</p>
-              <h2 id="facility-heading" className="display-lg text-ink">{t('facilityHeading')}</h2>
-              <p className="mt-5 text-lg leading-8 text-slate">{t('facilityLead')}</p>
+              <p className="eyebrow mb-4 normal-case text-navy">{gallery?.eyebrow ?? t('facilityEyebrow')}</p>
+              <h2 id="facility-heading" className="display-lg text-ink">{gallery?.heading ?? t('facilityHeading')}</h2>
+              <p className="mt-5 text-lg leading-8 text-slate">{gallery?.lead ?? t('facilityLead')}</p>
             </div>
           </Reveal>
 
@@ -267,6 +276,7 @@ export async function TeamPageContent() {
                   >
                     {photo.images.length > 1 ? (
                       <FacilityCarousel
+                        key={photo.images.map((image) => image.src).join('|')}
                         images={photo.images}
                         alt={photo.imageAlt}
                         sizes="(max-width: 767px) 84vw, 58vw"
@@ -283,6 +293,7 @@ export async function TeamPageContent() {
                         fill
                         sizes="(max-width: 767px) 84vw, 58vw"
                         placeholder="blur"
+                        style={{ objectPosition: photo.images[0].position }}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
                       />
                     )}
@@ -308,7 +319,7 @@ export async function TeamPageContent() {
               <div className="mx-auto mt-8 max-w-sm sm:max-w-none">
                 <Pressable className="w-full sm:w-auto sm:inline-block" haptic>
                   <Link
-                    href="/contact"
+                    href={closingHref}
                     className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-blush px-8 py-3.5 text-base font-semibold text-ink shadow-[0_14px_32px_rgba(226,132,156,0.28)] outline-none transition-colors hover:bg-[#d97792] focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-4 sm:w-auto"
                   >
                     {t('closingCta')}

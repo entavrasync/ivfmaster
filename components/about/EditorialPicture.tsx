@@ -27,6 +27,7 @@ export function EditorialPicture({
         className={cn('h-full w-full object-cover', imageClassName)}
         sizes={sizes}
         priority={priority}
+        style={image.position ? { objectPosition: image.position } : undefined}
       />
     </picture>
   )

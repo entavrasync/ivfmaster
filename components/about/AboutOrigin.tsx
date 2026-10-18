@@ -1,9 +1,10 @@
 import { Container } from '@/components/layout/Container'
 import { Reveal } from '@/components/motion/Reveal'
 import { aboutContent } from '@/lib/content/about'
+import type { AboutInformation } from '@/sanity/lib/editorial-mapping'
 
-export function AboutOrigin() {
-  const { origin } = aboutContent
+export function AboutOrigin({ content }: { content?: AboutInformation['origin'] | typeof aboutContent.origin }) {
+  const origin = content ?? aboutContent.origin
 
   return (
     <section id="our-story" className="scroll-mt-24 border-y border-taupe/70 bg-lavender py-20 sm:py-28 lg:py-36">

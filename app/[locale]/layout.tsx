@@ -11,7 +11,14 @@ import { FloatingContactCTA } from '@/components/shared/FloatingContactCTA'
 import { ReadingProgressProvider } from '@/components/providers/ReadingProgressContext'
 import { StructuredData } from '@/components/SEO/StructuredData'
 import { siteConfig } from '@/config/site'
-import { routing } from '@/i18n/routing'
+import { getClinicSettings } from '@/sanity/lib/clinic'
+import { ClinicSettingsProvider } from '@/components/providers/ClinicSettingsContext'
+import { SiteContentProvider } from '@/components/providers/SiteContentContext'
+import { getSiteContent } from '@/sanity/lib/site-content'
+import { resolveSiteChrome } from '@/sanity/lib/site-content-mapping'
+import { getProcedures } from '@/sanity/lib/procedures'
+import { PROCEDURES as NAV_PROCEDURES } from '@/components/nav/procedures-data'
+import { routing, type Locale } from '@/i18n/routing'
 import '@/app/globals.css'
 
 const figtree = Figtree({
@@ -114,7 +121,10 @@ export default async function LocaleLayout({
   // Load the full message map for this locale.
   // NextIntlClientProvider makes it available to all client components
   // via useTranslations() without any extra prop drilling.
-  const messages = await getMessages()
+  const [messages, settings, siteContent, procedures] = await Promise.all([getMessages(), getClinicSettings(locale as 'mr' | 'en'), getSiteContent(locale), getProcedures(locale as Locale)])
+  // Every published procedure appears in the menu; website ones keep their menu copy.
+  const navProcedures = procedures.map((procedure) => ({ id: procedure.slug, label: procedure.name, href: `/procedures/${procedure.slug}`,
+    description: NAV_PROCEDURES.find((item) => item.id === procedure.slug)?.description ?? procedure.oneLiner }))
 
   return (
     <html
@@ -125,13 +135,17 @@ export default async function LocaleLayout({
       <GoogleTagManager />
       <GoogleAnalytics />
       <body suppressHydrationWarning className={figtree.className}>
-        <StructuredData />
+        <StructuredData settings={settings} />
         <NextIntlClientProvider messages={messages}>
+          <SiteContentProvider content={{ ...resolveSiteChrome(siteContent.globals, siteContent.home, siteContent), procedures: navProcedures }}>
+          <ClinicSettingsProvider settings={settings}>
           <ReadingProgressProvider>
             <Navbar />
             {children}
           </ReadingProgressProvider>
           <FloatingContactCTA />
+          </ClinicSettingsProvider>
+          </SiteContentProvider>
         </NextIntlClientProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

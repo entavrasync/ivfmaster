@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence, useAnimation } from 'motion/react'
 import { MessageCircle, Phone, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import {
   getClinicStatus,
@@ -71,6 +72,7 @@ function StatusDot({ state, size = 8 }: Readonly<{ state: ClinicStatus['state'];
 /* ─── Floating CTA ───────────────────────────────────────────────── */
 
 export function FloatingContactCTA() {
+  const settings = useClinicSettings()
   const reduced  = useReducedMotion()
   const t        = useTranslations('FloatingCTA')
   const controls = useAnimation()
@@ -103,8 +105,8 @@ export function FloatingContactCTA() {
 
   if (!status) return null
 
-  const waHref  = `https://wa.me/${CLINIC_CONTACT.whatsappNumber}`
-  const telHref = `tel:${CLINIC_CONTACT.phoneNumber.replace(/\s/g, '')}`
+  const waHref  = `https://wa.me/${settings?.whatsappNumber ?? CLINIC_CONTACT.whatsappNumber}`
+  const telHref = `tel:${(settings?.telephone ?? CLINIC_CONTACT.phoneNumber).replace(/\s/g, '')}`
 
   const statusLabel: string = (() => {
     switch (status.state) {
@@ -139,7 +141,7 @@ export function FloatingContactCTA() {
       {/* ── Quiet secondary action; no competing hover label ─────────── */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <motion.a
-          href={IG_URL}
+          href={settings?.instagram ?? IG_URL}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('instagramTooltip')}

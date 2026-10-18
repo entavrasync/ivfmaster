@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
@@ -12,6 +13,7 @@ import { MobileNav } from './MobileNav'
 import { ProceduresDropdown } from './ProceduresDropdown'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
+import { useSiteContent } from '@/components/providers/SiteContentContext'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const SCROLL_THRESHOLD = 80
@@ -141,6 +143,8 @@ function LogoLockup() {
 
 /* ─── Main Navbar ──────────────────────────────────────────────────────── */
 export function Navbar() {
+  const actionHref = useSiteAction('nav.primary', '/contact')
+  const { navigation } = useSiteContent()
   const pathname   = usePathname()
   const reduced    = useReducedMotion()
   const t          = useTranslations('Nav')
@@ -235,11 +239,12 @@ export function Navbar() {
                 aria-label="Main navigation"
                 onMouseLeave={() => setHoveredHref(null)}
               >
-                {NAV_LINKS.map(({ key, href }) => {
+                {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key) }))).map(({ href, label }) => {
                   const active = pathname === href || (href !== '/' && pathname.startsWith(href))
                   if (href === '/procedures') {
                     return (
                       <ProceduresDropdown
+                        label={navigation ? label : undefined}
                         key={href}
                         active={active}
                         isHovered={hoveredHref === href}
@@ -251,7 +256,7 @@ export function Navbar() {
                     <DesktopNavLink
                       key={href}
                       href={href}
-                      label={t(key)}
+                      label={label}
                       active={active}
                       isHovered={hoveredHref === href}
                       onMouseEnter={() => setHoveredHref(href)}
@@ -266,7 +271,7 @@ export function Navbar() {
 
                 <Pressable haptic>
                   <Link
-                    href="/contact"
+                    href={actionHref}
                     className="inline-flex items-center rounded-full"
                     style={{
                       background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)',

@@ -3,6 +3,8 @@
 export type QuickFact   = { readonly label: string; readonly value: string }
 export type ProcessStep = { readonly title: string; readonly detail: string; readonly image?: string }
 export type FAQ         = { readonly q: string; readonly a: string }
+/** A CMS photograph; `position` carries the editor's hotspot as CSS object-position. */
+export type ProcedureImage = { readonly src: string; readonly alt: string; readonly position?: string }
 
 export type Procedure = {
   readonly slug:            string
@@ -11,6 +13,8 @@ export type Procedure = {
   readonly oneLiner:        string
   readonly heroDescription: string
   readonly heroImage?:      string
+  readonly cardImage?:      ProcedureImage
+  readonly bannerImage?:    ProcedureImage
   readonly accentEdge:      string
   readonly accentBg:        string
   readonly quickFacts:      readonly QuickFact[]

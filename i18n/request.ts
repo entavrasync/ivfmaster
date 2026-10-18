@@ -1,5 +1,9 @@
 import { getRequestConfig } from 'next-intl/server'
 import { routing } from './routing'
+import { CLINIC_TIMEZONE } from '../lib/clinicHours'
+import { getSiteContent } from '../sanity/lib/site-content'
+import { mergeSiteMessages } from '../sanity/lib/site-content-mapping'
+import type { AbstractIntlMessages } from 'next-intl'
 
 // Recursively merge two objects — base first, override on top.
 // This lets hi.json / mr.json only carry the keys that have been
@@ -51,8 +55,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    messages,
-    timeZone: 'Asia/Kolkata',
+    messages: mergeSiteMessages(messages as AbstractIntlMessages, await getSiteContent(locale), locale),
+    timeZone: CLINIC_TIMEZONE,
     formats: {
       dateTime: {
         short: {

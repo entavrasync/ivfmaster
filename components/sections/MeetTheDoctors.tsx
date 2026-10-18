@@ -9,6 +9,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
 import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
 import saiePhoto from '@/assets/doctor/saie.jpeg'
+import type { DoctorContent } from '@/sanity/lib/clinic-mapping'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -295,11 +296,11 @@ function CoupleMoment({ reduced, note, className }: Readonly<{ reduced: boolean;
 
 /* ─── Section ──────────────────────────────────────────────────────────── */
 
-export function MeetTheDoctors() {
+export function MeetTheDoctors({ profiles = [] }: { profiles?: readonly DoctorContent[] }) {
   const reduced = useReducedMotion()
   const t       = useTranslations('MeetTheDoctors')
 
-  const doctors: Doctor[] = [
+  const originalDoctors: Doctor[] = [
     {
       id:             'gorakh',
       photo:          gorakhPhoto,
@@ -336,6 +337,20 @@ export function MeetTheDoctors() {
       storyHref:  '/team/saie-mandrupkar',
     },
   ]
+
+  const doctors = originalDoctors.map((doctor) => {
+    const profile = profiles.find((item) => item.slug === `${doctor.id}-mandrupkar`)
+    return profile ? {
+      ...doctor, photo: profile.portrait?.photo ?? doctor.photo,
+      objectPosition: profile.portrait?.position ?? doctor.objectPosition,
+      name: profile.name, essence: profile.home?.essence ?? doctor.essence,
+      intro: profile.home?.intro ?? doctor.intro,
+      credentials: profile.home?.credentials.map((text, index) => ({ text, accent: doctor.credentials[index].accent })) ?? doctor.credentials,
+    } : doctor
+  }).sort((a, b) => {
+    const order = (id: string) => profiles.find((p) => p.slug === `${id}-mandrupkar`)?.order ?? originalDoctors.findIndex((d) => d.id === id)
+    return order(a.id) - order(b.id) || a.id.localeCompare(b.id)
+  })
 
   const introV = {
     hidden:  {},

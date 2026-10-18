@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
@@ -8,8 +9,9 @@ import { X, ChevronRight, ChevronDown } from 'lucide-react'
 import { Stagger, StaggerItem, Pressable } from '@/components/motion'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { PROCEDURES, ProcedureMark } from './procedures-data'
+import { useNavProcedures } from './procedures-data'
 import { cn } from '@/lib/utils'
+import { useSiteContent } from '@/components/providers/SiteContentContext'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -28,10 +30,12 @@ const NAV_LINKS: { key: NavKey; href: string }[] = [
 
 interface ProceduresMobileItemProps {
   onClose: () => void
+  label?: string
 }
 
-function ProceduresMobileItem({ onClose }: Readonly<ProceduresMobileItemProps>) {
+function ProceduresMobileItem({ onClose, label }: Readonly<ProceduresMobileItemProps>) {
   const pathname = usePathname()
+  const procedures = useNavProcedures()
   const reduced  = useReducedMotion()
   const t        = useTranslations('Nav')
   const [open, setOpen] = useState(false)
@@ -63,7 +67,7 @@ function ProceduresMobileItem({ onClose }: Readonly<ProceduresMobileItemProps>) 
             letterSpacing: '-0.01em',
           }}
         >
-          {t('procedures')}
+          {label ?? t('procedures')}
         </span>
         <motion.span
           animate={reduced ? {} : { rotate: open ? 180 : 0 }}
@@ -86,7 +90,7 @@ function ProceduresMobileItem({ onClose }: Readonly<ProceduresMobileItemProps>) 
             transition={{ duration: reduced ? 0 : 0.30, ease: EASE }}
             style={{ overflow: 'hidden' }}
           >
-            {PROCEDURES.map((proc) => {
+            {procedures.map((proc) => {
               const procActive = pathname === proc.href || pathname.startsWith(proc.href + '/')
               return (
                 <Link
@@ -103,7 +107,6 @@ function ProceduresMobileItem({ onClose }: Readonly<ProceduresMobileItemProps>) 
                     textDecoration:  'none',
                   }}
                 >
-                  <ProcedureMark proc={proc} size={32} />
                   <div style={{ minWidth: 0 }}>
                     <span
                       style={{
@@ -149,6 +152,8 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
+  const actionHref = useSiteAction('nav.primary', '/contact')
+  const { navigation } = useSiteContent()
   const pathname = usePathname()
   const t        = useTranslations('Nav')
 
@@ -221,12 +226,12 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
               {/* Nav links */}
               <nav style={{ padding: '8px 0' }}>
                 <Stagger stagger={0.055} delay={0.04}>
-                  {NAV_LINKS.map(({ key, href }) => {
+                  {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key) }))).map(({ href, label }) => {
                     /* Procedures gets its own expandable accordion */
                     if (href === '/procedures') {
                       return (
                         <StaggerItem key={href}>
-                          <ProceduresMobileItem onClose={onClose} />
+                          <ProceduresMobileItem onClose={onClose} label={label} />
                         </StaggerItem>
                       )
                     }
@@ -253,7 +258,7 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
                                 letterSpacing: '-0.01em',
                               }}
                             >
-                              {t(key)}
+                              {label}
                             </span>
                             <ChevronRight
                               size={15}
@@ -276,7 +281,7 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
             >
               <Pressable haptic onClick={onClose}>
                 <Link
-                  href="/contact"
+                  href={actionHref}
                   className="flex items-center justify-center w-full"
                   style={{
                     background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)',

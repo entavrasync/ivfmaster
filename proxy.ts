@@ -7,10 +7,10 @@ import { routing } from './i18n/routing';
 // Locale auto-detection is disabled in routing, so the root always serves Marathi.
 export default createMiddleware(routing);
 
-// Match application routes while leaving Next.js internals and every public
+// Match application routes while leaving Studio, Next.js internals and every public
 // file (including Search Console verification HTML) untouched.
 export const config = {
   matcher: [
-    '/((?!_next/|favicon\\.ico|.*\\..*).*)',
+    '/((?!_next/|ivfmaster-studio(?:/|$)|favicon\\.ico|.*\\..*).*)',
   ],
 };

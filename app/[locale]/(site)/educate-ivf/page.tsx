@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+import { NextIntlClientProvider } from 'next-intl'
 import { Footer } from '@/components/shared/Footer'
 import { EducateHub } from '@/components/sections/EducateHub'
 import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
+import { getArticles } from '@/sanity/lib/articles'
 
 export async function generateMetadata({
   params,
@@ -21,10 +23,14 @@ export async function generateMetadata({
   })
 }
 
-export default async function EducateIVFPage() {
+export default async function EducateIVFPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const { articles, messages } = await getArticles(locale as Locale)
   return (
     <>
-      <EducateHub />
+      <NextIntlClientProvider messages={messages}>
+        <EducateHub articles={articles} />
+      </NextIntlClientProvider>
       <Footer />
     </>
   )

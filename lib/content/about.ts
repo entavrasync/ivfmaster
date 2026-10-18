@@ -14,6 +14,7 @@ export interface CareStep {
 }
 
 export interface EditorialImage {
+  position?: string
   desktop: StaticImageData
   mobile: StaticImageData
   alt: string

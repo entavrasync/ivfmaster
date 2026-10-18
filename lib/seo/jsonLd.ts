@@ -1,4 +1,5 @@
 import { siteConfig } from '../../config/site.ts'
+import type { ClinicSettings } from '../../sanity/lib/clinic-mapping.ts'
 
 type JsonLdValue =
   | string
@@ -12,7 +13,7 @@ export function serializeJsonLd(data: JsonLdValue): string {
   return JSON.stringify(data).replace(/</g, '\\u003c')
 }
 
-export function buildRootJsonLd() {
+export function buildRootJsonLd(settings: ClinicSettings | null = null) {
   const clinicId = `${siteConfig.url}/#medical-clinic`
   const websiteId = `${siteConfig.url}/#website`
 
@@ -36,8 +37,8 @@ export function buildRootJsonLd() {
         alternateName: siteConfig.name,
         description: siteConfig.description,
         url: siteConfig.url,
-        email: siteConfig.contact.email,
-        telephone: siteConfig.contact.telephone,
+        email: settings?.email ?? siteConfig.contact.email,
+        telephone: settings?.telephone ?? siteConfig.contact.telephone,
         medicalSpecialty: [
           'ReproductiveMedicine',
           'Obstetrics',
@@ -45,17 +46,17 @@ export function buildRootJsonLd() {
         ],
         address: {
           '@type': 'PostalAddress',
-          streetAddress: siteConfig.address.streetAddress,
-          addressLocality: siteConfig.address.addressLocality,
-          addressRegion: siteConfig.address.addressRegion,
-          postalCode: siteConfig.address.postalCode,
-          addressCountry: siteConfig.address.addressCountry,
+          streetAddress: settings?.address.streetAddress ?? siteConfig.address.streetAddress,
+          addressLocality: settings?.address.addressLocality ?? siteConfig.address.addressLocality,
+          addressRegion: settings?.address.addressRegion ?? siteConfig.address.addressRegion,
+          postalCode: settings?.address.postalCode ?? siteConfig.address.postalCode,
+          addressCountry: settings?.address.addressCountry ?? siteConfig.address.addressCountry,
         },
-        hasMap: siteConfig.maps.placeUrl,
+        hasMap: settings?.mapUrl ?? siteConfig.maps.placeUrl,
         geo: {
           '@type': 'GeoCoordinates',
-          latitude: siteConfig.maps.latitude,
-          longitude: siteConfig.maps.longitude,
+          latitude: settings?.latitude ?? siteConfig.maps.latitude,
+          longitude: settings?.longitude ?? siteConfig.maps.longitude,
         },
         openingHoursSpecification: [
           {
@@ -72,7 +73,7 @@ export function buildRootJsonLd() {
             closes: '20:00',
           },
         ],
-        sameAs: [siteConfig.social.instagram],
+        sameAs: [settings?.instagram ?? siteConfig.social.instagram],
       },
       {
         '@type': 'Physician',

@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction, useSiteContent } from '@/components/providers/SiteContentContext'
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
@@ -98,7 +99,11 @@ function StatBar() {
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
 export function Hero() {
+  const secondaryHref = useSiteAction('home.hero.secondaryCta', '/educate-ivf')
+  const primaryHref = useSiteAction('home.hero.primaryCta', '/contact')
   const t = useTranslations('Hero')
+  // CMS banner images replace the shipped artwork per breakpoint; either may be absent.
+  const { hero: banner } = useSiteContent()
   const reduced = useReducedMotion()
 
   const sectionRef  = useRef<HTMLElement>(null)
@@ -164,7 +169,8 @@ export function Hero() {
       <div ref={bgRef} className="absolute inset-0 will-change-transform" aria-hidden="true">
         {/* Mobile image */}
         <Image
-          src="/hero-bg-mobile.png"
+          src={banner?.mobile?.image.src ?? '/hero-bg-mobile.png'}
+          style={banner?.mobile?.position ? { objectPosition: banner.mobile.position } : undefined}
           alt=""
           fill
           priority
@@ -173,7 +179,8 @@ export function Hero() {
         />
         {/* Desktop image */}
         <Image
-          src="/hero-bg-desktop.png"
+          src={banner?.desktop?.image.src ?? '/hero-bg-desktop.png'}
+          style={banner?.desktop?.position ? { objectPosition: banner.desktop.position } : undefined}
           alt=""
           fill
           priority
@@ -217,7 +224,7 @@ export function Hero() {
                 <div className="flex flex-wrap items-center" style={{ gap: '1.5rem' }}>
                   <Pressable haptic>
                     <Link
-                      href="/contact"
+                      href={primaryHref}
                       className="inline-flex items-center rounded-full transition-all duration-200 hover:-translate-y-px"
                       style={{
                         background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)',
@@ -236,7 +243,7 @@ export function Hero() {
 
                   {/* Secondary — text link only, no button chrome */}
                   <Link
-                    href="/educate-ivf"
+                    href={secondaryHref}
                     className="group inline-flex items-center gap-1"
                     style={{ fontFamily: 'var(--font-body)', fontSize: '0.9375rem', fontWeight: 500, color: '#2E4F8E', letterSpacing: '-0.01em', textDecoration: 'none' }}
                   >
@@ -278,7 +285,7 @@ export function Hero() {
             <div className="flex flex-col" style={{ gap: '1rem', marginTop: '0.125rem' }}>
               <Pressable haptic>
                 <Link
-                  href="/contact"
+                  href={primaryHref}
                   className="flex items-center justify-center w-full rounded-full"
                   style={{ background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)', color: '#ffffff', fontFamily: 'var(--font-body)', fontSize: '1.0625rem', fontWeight: 600, letterSpacing: '-0.01em', padding: '1.0625rem 1.5rem', boxShadow: '0 8px 28px -5px rgba(194,78,106,0.52)' }}
                 >
@@ -287,7 +294,7 @@ export function Hero() {
               </Pressable>
 
               <Link
-                href="/educate-ivf"
+                href={secondaryHref}
                 className="group flex items-center justify-center gap-1"
                 style={{ fontFamily: 'var(--font-body)', fontSize: '1rem', fontWeight: 500, color: '#2E4F8E', textDecoration: 'none' }}
               >

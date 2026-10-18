@@ -1,4 +1,6 @@
 'use client'
+import { useSiteContent } from '@/components/providers/SiteContentContext'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
@@ -70,6 +72,7 @@ function CtaBlock({ dark, closeBody, ctaButton, ctaSub }: {
   readonly ctaButton:  string
   readonly ctaSub:     string
 }) {
+  const actionHref = useSiteAction('home.costOfWaiting.closing.primary', '/contact')
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%' }}>
       <p style={{
@@ -87,7 +90,7 @@ function CtaBlock({ dark, closeBody, ctaButton, ctaSub }: {
 
       <Pressable className="w-full sm:w-fit">
         <Link
-          href="/contact"
+          href={actionHref}
           className="group relative block overflow-hidden text-center sm:inline-block"
           style={{
             fontFamily:     'var(--font-body)',
@@ -132,6 +135,7 @@ function CtaBlock({ dark, closeBody, ctaButton, ctaSub }: {
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
 export function CostOfWaiting() {
+  const { frames } = useSiteContent()
   const reduced = useReducedMotion()
   const t       = useTranslations('CostOfWaiting')
 
@@ -488,7 +492,7 @@ export function CostOfWaiting() {
       />
 
       {/* ── Responsive artwork — all seven stages stay mounted ─────────── */}
-      {ARTWORK.map((artwork, i) => (
+      {(frames ?? ARTWORK).map((artwork, i) => (
         <div
           key={artwork.desktop.src}
           ref={(el) => { artworkRefs.current[i] = el }}
@@ -511,6 +515,11 @@ export function CostOfWaiting() {
             <source media="(max-width: 767px)" srcSet={artwork.mobile.src} />
             <img
               src={artwork.desktop.src}
+              onError={(event) => {
+                const source = event.currentTarget.parentElement?.querySelector('source')
+                if (source) source.srcset = ARTWORK[i].mobile.src
+                if (event.currentTarget.src !== new URL(ARTWORK[i].desktop.src, window.location.origin).href) event.currentTarget.src = ARTWORK[i].desktop.src
+              }}
               alt=""
               loading="eager"
               decoding="async"

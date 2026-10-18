@@ -1,4 +1,5 @@
 'use client'
+import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
@@ -8,8 +9,15 @@ import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { Link } from '@/i18n/navigation'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { type Procedure, PROCEDURES } from '@/lib/procedures'
+import { type Procedure } from '@/lib/procedures'
+import Image from 'next/image'
 import { ProcVisual } from './ProcedureVisuals'
+
+/** The CMS card photograph, filling its positioned parent. */
+function CardPhoto({ proc, sizes }: Readonly<{ proc: Procedure; sizes: string }>) {
+  if (!proc.cardImage) return null
+  return <Image src={proc.cardImage.src} alt={proc.cardImage.alt} fill sizes={sizes} style={{ objectFit: 'cover', objectPosition: proc.cardImage.position }} />
+}
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -150,9 +158,10 @@ function FeaturedCard({ proc, reduced }: Readonly<{ proc: Procedure; reduced: bo
               justifyContent: 'center',
               position:       'relative',
               zIndex:         1,
+              overflow:       'hidden',
             }}
           >
-            <ProcVisual id={proc.slug} featured />
+            {proc.cardImage ? <CardPhoto proc={proc} sizes="(min-width: 768px) 300px, 100vw" /> : <ProcVisual id={proc.slug} featured />}
           </div>
         </div>
       </motion.div>
@@ -207,24 +216,30 @@ function RegularCard({ proc, reduced }: Readonly<{ proc: Procedure; reduced: boo
           }}
         />
 
-        {/* Visual mark */}
-        <div
-          style={{
-            width:          '66px',
-            height:         '66px',
-            borderRadius:   '14px',
-            background:     proc.accentBg,
-            display:        'flex',
-            alignItems:     'center',
-            justifyContent: 'center',
-            marginBottom:   '1.375rem',
-            flexShrink:     0,
-            position:       'relative',
-            zIndex:         1,
-          }}
-        >
-          <ProcVisual id={proc.slug} />
-        </div>
+        {/* Visual: CMS card photo, or the built-in mark */}
+        {proc.cardImage ? (
+          <div style={{ position: 'relative', width: '100%', aspectRatio: '3 / 2', borderRadius: '14px', overflow: 'hidden', marginBottom: '1.375rem', zIndex: 1 }}>
+            <CardPhoto proc={proc} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" />
+          </div>
+        ) : (
+          <div
+            style={{
+              width:          '66px',
+              height:         '66px',
+              borderRadius:   '14px',
+              background:     proc.accentBg,
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              marginBottom:   '1.375rem',
+              flexShrink:     0,
+              position:       'relative',
+              zIndex:         1,
+            }}
+          >
+            <ProcVisual id={proc.slug} />
+          </div>
+        )}
 
         {/* Text */}
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1 }}>
@@ -299,7 +314,8 @@ function RegularCard({ proc, reduced }: Readonly<{ proc: Procedure; reduced: boo
 
 /* ─── Hub ───────────────────────────────────────────────────────── */
 
-export function ProceduresHub() {
+export function ProceduresHub({ procedures }: { procedures: ReadonlyArray<Procedure> }) {
+  const actionHref = useSiteAction('procedures.closing', '/contact')
   const reduced = useReducedMotion()
   const t       = useTranslations('Procedures')
 
@@ -317,7 +333,7 @@ export function ProceduresHub() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.68, ease: EASE } },
   }
 
-  const [featured, ...rest] = PROCEDURES
+  const [featured, ...rest] = procedures
 
   return (
     <div style={{ background: '#FBF7F1', minHeight: '100vh' }}>
@@ -448,7 +464,7 @@ export function ProceduresHub() {
 
             <Pressable haptic>
               <Link
-                href="/contact"
+                href={actionHref}
                 style={{
                   display:        'inline-flex',
                   alignItems:     'center',

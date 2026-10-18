@@ -4,6 +4,7 @@ import { Footer } from '@/components/shared/Footer'
 import { ProceduresHub } from '@/components/sections/ProceduresHub'
 import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
+import { getProcedures } from '@/sanity/lib/procedures'
 
 export async function generateMetadata({
   params,
@@ -25,10 +26,11 @@ export default async function ProceduresPage({
 }: {
   params: Promise<{ locale: string }>
 }) {
-  await params
+  const { locale } = await params
+  const procedures = await getProcedures(locale as Locale)
   return (
     <>
-      <ProceduresHub />
+      <ProceduresHub procedures={procedures} />
       <Footer />
     </>
   )

@@ -12,6 +12,8 @@ import { Link } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 import { doctors, getDoctorBySlug } from '@/lib/team'
+import { getTeamDoctors } from '@/sanity/lib/clinic'
+import { createTranslator } from 'next-intl'
 
 export async function generateMetadata({
   params,
@@ -19,17 +21,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string; doctor: string }>
 }): Promise<Metadata> {
   const { locale, doctor: slug } = await params
-  const doctor = getDoctorBySlug(slug)
+  const doctor = (await getTeamDoctors(locale as Locale)).find((record) => record.slug === slug)
   if (!doctor) return {}
-
-  const t = await getTranslations({ locale, namespace: 'Team' })
-  const prefix = `doctors.${doctor.messageKey}` as const
 
   return buildPageMetadata({
     locale: locale as Locale,
     path: `/team/${slug}`,
-    title: t(`${prefix}.name`),
-    description: t(`${prefix}.metaDescription`),
+    title: doctor.name,
+    description: doctor.metaDescription,
   })
 }
 
@@ -44,14 +43,15 @@ export default async function DoctorDetailPage({
 }: {
   params: Promise<{ locale: string; doctor: string }>
 }) {
-  const { doctor: slug } = await params
-  const doctor = getDoctorBySlug(slug)
+  const { locale, doctor: slug } = await params
+  if (!getDoctorBySlug(slug)) notFound()
+  const doctor = (await getTeamDoctors(locale as Locale)).find((record) => record.slug === slug)
   if (!doctor) notFound()
 
   const t = await getTranslations('Team')
-  const prefix = `doctors.${doctor.messageKey}` as const
-  const name = t(`${prefix}.name`)
-  const credentials = t.raw(`${prefix}.credentials`) as string[]
+  const name = doctor.name
+  const credentials = doctor.credentials
+  const biography = createTranslator({ locale, messages: { biography: doctor.biography } })
 
   return (
     <>
@@ -72,7 +72,7 @@ export default async function DoctorDetailPage({
               <Reveal className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5" y={16}>
                 <Image
                   src={doctor.image.src}
-                  alt={t(`${prefix}.imageAlt`)}
+                  alt={doctor.imageAlt}
                   fill
                   sizes="(max-width: 1023px) 100vw, 30vw"
                   className="object-contain"
@@ -84,14 +84,14 @@ export default async function DoctorDetailPage({
             <div className="flex w-full flex-col justify-center p-7 sm:p-10 lg:w-[70%] lg:p-16">
               <Reveal>
                 <p className="font-display text-xl italic leading-8 text-[#8a5d3a] sm:text-2xl">
-                  “{t(`${prefix}.essence`)}”
+                  “{doctor.essence}”
                 </p>
                 <h1 className="mt-5 font-display text-[2.75rem] leading-[1.06] tracking-[-0.025em] text-ink sm:text-6xl">
                   {name}
                 </h1>
-                <p className="mt-3 text-lg font-semibold leading-8 text-navy">{t(`${prefix}.title`)}</p>
+                <p className="mt-3 text-lg font-semibold leading-8 text-navy">{doctor.title}</p>
                 <div className="mt-7 text-lg leading-8 text-slate">
-                  {t.rich(`${prefix}.biography`, {
+                  {biography.rich('biography', {
                     br: () => <br />,
                     b: (chunks) => (
                       <strong className="mt-6 mb-2 block font-display text-2xl text-ink">

@@ -1,9 +1,10 @@
 import { Container } from '@/components/layout/Container'
 import { Reveal } from '@/components/motion/Reveal'
 import { aboutContent } from '@/lib/content/about'
+import type { AboutInformation } from '@/sanity/lib/editorial-mapping'
 
-export function CareJourney() {
-  const { care } = aboutContent
+export function CareJourney({ content }: { content?: AboutInformation['care'] }) {
+  const care = content ?? aboutContent.care
 
   return (
     <section className="bg-ivory py-20 sm:py-28 lg:py-36">

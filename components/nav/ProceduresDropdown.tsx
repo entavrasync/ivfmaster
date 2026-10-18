@@ -5,22 +5,25 @@ import { AnimatePresence, motion } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { PROCEDURES, ProcedureMark } from './procedures-data'
+import { useNavProcedures } from './procedures-data'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
 interface ProceduresDropdownProps {
+  readonly label?: string
   readonly active:       boolean
   readonly isHovered:    boolean
   readonly onHoverEnter: () => void
 }
 
 export function ProceduresDropdown({
+  label,
   active,
   isHovered,
   onHoverEnter,
 }: ProceduresDropdownProps) {
   const reduced      = useReducedMotion()
+  const procedures   = useNavProcedures()
   const pathname     = usePathname()
   const [open, setOpen] = useState(false)
   const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -125,7 +128,7 @@ export function ProceduresDropdown({
             color:         active ? '#1C2A48' : 'rgba(28,42,72,0.60)',
           }}
         >
-          Procedures
+          {label ?? 'Procedures'}
         </span>
 
         <motion.span
@@ -181,7 +184,7 @@ export function ProceduresDropdown({
             <motion.div
               id="procedures-panel"
               role="menu"
-              aria-label="Procedures"
+              aria-label={label ?? 'Procedures'}
               key="procedures-panel"
               variants={panelV}
               initial="hidden"
@@ -198,7 +201,7 @@ export function ProceduresDropdown({
                 WebkitBackdropFilter: 'blur(18px)',
               }}
             >
-              {PROCEDURES.map((proc) => {
+              {procedures.map((proc) => {
                 const procActive = pathname === proc.href || pathname.startsWith(proc.href + '/')
                 return (
                   <motion.div
@@ -223,8 +226,6 @@ export function ProceduresDropdown({
                         textDecoration: 'none',
                       }}
                     >
-                      <ProcedureMark proc={proc} size={38} />
-
                       <div style={{ minWidth: 0 }}>
                         <p
                           style={{
