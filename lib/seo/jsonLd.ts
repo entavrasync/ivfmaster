@@ -1,4 +1,5 @@
 import { siteConfig } from '../../config/site.ts'
+import { availabilityJsonLd, availabilityClosuresJsonLd, type ClinicAvailability } from '../clinic-availability.ts'
 import type { ClinicSettings } from '../../sanity/lib/clinic-mapping.ts'
 
 type JsonLdValue =
@@ -13,7 +14,7 @@ export function serializeJsonLd(data: JsonLdValue): string {
   return JSON.stringify(data).replace(/</g, '\\u003c')
 }
 
-export function buildRootJsonLd(settings: ClinicSettings | null = null) {
+export function buildRootJsonLd(settings: ClinicSettings | null = null, availability: ClinicAvailability | null = null) {
   const clinicId = `${siteConfig.url}/#medical-clinic`
   const websiteId = `${siteConfig.url}/#website`
 
@@ -58,7 +59,7 @@ export function buildRootJsonLd(settings: ClinicSettings | null = null) {
           latitude: settings?.latitude ?? siteConfig.maps.latitude,
           longitude: settings?.longitude ?? siteConfig.maps.longitude,
         },
-        openingHoursSpecification: [
+        openingHoursSpecification: availability ? availabilityJsonLd(availability) : [
           {
             '@type': 'OpeningHoursSpecification',
             dayOfWeek: [
@@ -70,9 +71,10 @@ export function buildRootJsonLd(settings: ClinicSettings | null = null) {
               'Saturday',
             ],
             opens: '10:00',
-            closes: '20:00',
+            closes: '18:00',
           },
         ],
+        ...(availability ? { specialOpeningHoursSpecification: availabilityClosuresJsonLd(availability) } : {}),
         sameAs: [settings?.instagram ?? siteConfig.social.instagram],
       },
       {

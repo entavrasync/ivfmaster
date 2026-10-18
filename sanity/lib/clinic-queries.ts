@@ -1,5 +1,7 @@
 import { defineQuery } from 'next-sanity'
 
+export const availabilityQuery = defineQuery(`*[_type == "clinicAvailability" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0...2]{_id,reviewStatus,timezone,weeklyHours[]{day,closed,open,close},closures[]{date,reason},confirmationNote,confirmedAt,confirmedSnapshot}`)
+
 export const doctorsQuery = defineQuery(`
   *[_type == "doctor" && slug.current in $slugs && reviewStatus == "approved"
     && !(_id in path("drafts.**")) && !(_id in path("versions.**"))]

@@ -6,7 +6,11 @@ import { createSchema } from 'sanity'
 import { siteConfig } from '../config/site.ts'
 import { buildRootJsonLd } from '../lib/seo/jsonLd.ts'
 import { resolveDoctors, resolveClinicSettings } from '../sanity/lib/clinic-mapping.ts'
-import { doctorsQuery, clinicSettingsQuery } from '../sanity/lib/clinic-queries.ts'
+import { doctorsQuery, clinicSettingsQuery, availabilityQuery } from '../sanity/lib/clinic-queries.ts'
+import { clinicAvailability } from '../sanity/schemaTypes/clinic-availability.ts'
+import { availabilityContent, availabilitySnapshot, resolveAvailability } from '../sanity/lib/availability-mapping.ts'
+import { availabilityClosuresJsonLd, formatAvailability, getAvailabilityStatus } from '../lib/clinic-availability.ts'
+import { getClinicStatus } from '../lib/clinicHours.ts'
 import { localizedString, localizedText } from '../sanity/schemaTypes/procedure.ts'
 import { doctor } from '../sanity/schemaTypes/doctor.ts'
 import { clinicSettings } from '../sanity/schemaTypes/clinic-settings.ts'
@@ -149,7 +153,7 @@ test('real settings query detects approved duplicates without selecting an arbit
   assert.equal(resolveClinicSettings(duplicate, 'en').status, 'ambiguous')
 })
 
-const schema = createSchema({ name: 'phase-three-test', types: [localizedString, localizedText, doctor, clinicSettings] })
+const schema = createSchema({ name: 'phase-three-test', types: [localizedString, localizedText, doctor, clinicSettings, clinicAvailability] })
 test('doctor and settings schemas compile without schema problems', () => assert.deepEqual(schema._validation, []))
 
 async function validate(type, value, document) {
@@ -192,4 +196,82 @@ test('optional doctor portrait can be omitted, but an image with only alt text c
   assert.deepEqual(await errors(undefined), [])
   assert.ok((await errors({ _type: 'image', alt: { en: 'Existing portrait' } })).length > 0)
   assert.deepEqual(await errors({ _type: 'image', asset: { _type: 'reference', _ref: 'image-testasset-1200x800-jpg' }, alt: { en: 'Existing portrait' } }), [])
+})
+
+function hoursFixture() {
+  const doc = { ...clinicAvailability.initialValue(), _id: 'clinicAvailability', _type: 'clinicAvailability', reviewStatus: 'approved', confirmationNote: 'Test-only clinic confirmation fixture', confirmedAt: '2026-10-18T06:00:00.000Z' }
+  doc.confirmedSnapshot = availabilitySnapshot(doc)
+  return doc
+}
+
+test('hours form prefills all seven current website days without approval or invented confirmation', () => {
+  const initial = clinicAvailability.initialValue()
+  assert.equal(initial.weeklyHours.length, 7)
+  assert.ok(initial.weeklyHours.every(row => row._type === 'clinicAvailabilityDay' && row._key === row.day), 'native Sanity array members carry their declared type and stable keys')
+  assert.equal(initial.weeklyHours.find(row => row.day === 'mon').close, '18:00')
+  assert.equal(initial.weeklyHours.find(row => row.day === 'sun').closed, true)
+  assert.equal(initial.confirmedAt, undefined)
+  assert.equal(initial.confirmedSnapshot, undefined)
+  assert.equal(availabilitySnapshot(initial), null)
+})
+
+test('availability validates clock ranges, dates, weekday identity and renewed confirmation', () => {
+  const doc = hoursFixture()
+  assert.equal(resolveAvailability([doc], true).status, 'sanity')
+  for (const input of [null, [], [doc, doc], [{ ...doc, _id: 'drafts.clinicAvailability' }], [{ ...doc, _id: 'versions.release.clinicAvailability' }], [{ ...doc, timezone: 'UTC' }], [{ ...doc, confirmedAt: null }], [{ ...doc, confirmedSnapshot: 'stale' }]]) assert.equal(resolveAvailability(input, true).value, null)
+  for (const mutate of [
+    value => { value.weeklyHours[0].open = '24:00' },
+    value => { value.weeklyHours[0].close = value.weeklyHours[0].open },
+    value => { value.weeklyHours[0].close = '09:00' },
+    value => { value.weeklyHours[1].day = value.weeklyHours[0].day },
+    value => { value.weeklyHours.pop() },
+    value => { value.weeklyHours.forEach(row => row.closed = true) },
+    value => { value.closures = [{ date: '2026-02-30', reason: 'Invalid date fixture' }] },
+    value => { value.closures = [{ date: '2026-10-20', reason: 'One' }, { date: '2026-10-20', reason: 'Duplicate' }] },
+  ]) {
+    const invalid = structuredClone(doc); mutate(invalid)
+    assert.equal(availabilityContent.safeParse(invalid).success, false)
+    assert.equal(resolveAvailability([invalid], true).value, null)
+  }
+  const changed = structuredClone(doc); changed.weeklyHours[0].close = '17:00'
+  assert.equal(resolveAvailability([changed], true).value, null, 'old confirmation never approves edited hours')
+  changed.confirmedSnapshot = availabilitySnapshot(changed)
+  assert.equal(resolveAvailability([changed], true).status, 'sanity')
+})
+
+test('open indicator uses IST boundaries, weekly closures and extended holidays from the same schedule', () => {
+  const doc = hoursFixture(), schedule = resolveAvailability([doc], true).value
+  assert.equal(getAvailabilityStatus(new Date('2026-10-19T04:29:59Z'), schedule).state, 'closed_today')
+  assert.equal(getAvailabilityStatus(new Date('2026-10-19T04:30:00Z'), schedule).state, 'open')
+  assert.equal(getAvailabilityStatus(new Date('2026-10-19T12:30:00Z'), schedule).state, 'closed_today')
+  assert.equal(getAvailabilityStatus(new Date('2026-10-18T06:00:00Z'), schedule).state, 'closed_weekly')
+  schedule.holidays = Array.from({ length: 14 }, (_, i) => ({ date: new Date(Date.UTC(2026, 9, 19 + i)).toISOString().slice(0, 10), name: 'Test closure' }))
+  const holiday = getAvailabilityStatus(new Date('2026-10-19T06:00:00Z'), schedule)
+  assert.equal(holiday.state, 'holiday')
+  assert.equal(holiday.nextOpenDisplay, 'Monday at 10:00 AM')
+  assert.equal(availabilityClosuresJsonLd(schedule).length, 14)
+  assert.notEqual(formatAvailability(schedule, 'mr'), formatAvailability(schedule, 'en'))
+  const previous = process.env.TZ
+  try {
+    for (const zone of ['UTC', 'America/New_York', 'Pacific/Honolulu']) {
+      process.env.TZ = zone
+      assert.equal(getAvailabilityStatus(new Date('2026-10-19T06:00:00Z'), { ...schedule, holidays: [] }).state, 'open')
+    }
+  } finally { if (previous === undefined) delete process.env.TZ; else process.env.TZ = previous }
+})
+
+test('published hours query excludes drafts/releases/unapproved records and structured data shares the confirmed schedule', async () => {
+  const doc = hoursFixture()
+  const rows = await query(availabilityQuery, [doc, { ...doc, _id: 'drafts.clinicAvailability' }, { ...doc, _id: 'versions.release.clinicAvailability' }, { ...doc, _id: 'pending', reviewStatus: 'pendingReview' }])
+  assert.equal(rows.length, 1)
+  const schedule = resolveAvailability(rows, true).value
+  assert.ok(schedule)
+  assert.equal(buildRootJsonLd(null, schedule)['@graph'][1].openingHoursSpecification[0].closes, '18:00')
+  assert.equal(buildRootJsonLd()['@graph'][1].openingHoursSpecification[0].closes, '18:00', 'clinic-confirmed 6 PM also corrects the previous 8 PM fallback')
+  assert.equal(getClinicStatus(new Date('2026-10-19T12:30:00Z'), schedule).state, 'closed_today')
+  assert.equal(resolveAvailability(await query(availabilityQuery, [doc, { ...doc, _id: 'duplicate' }]), true).value, null)
+  const type = schema.get('clinicAvailability')
+  assert.deepEqual(await validate(type, doc, doc), [])
+  const changed = structuredClone(doc); changed.weeklyHours[0].close = '17:00'
+  assert.ok((await validate(type, changed, changed)).length > 0, 'Studio blocks stale confirmation')
 })

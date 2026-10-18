@@ -2,6 +2,7 @@ import { defineField, type SchemaTypeDefinition, type Rule } from 'sanity'
 import { localizedString, localizedText, procedure } from './procedure'
 import { doctor } from './doctor'
 import { clinicSettings } from './clinic-settings'
+import { clinicAvailability } from './clinic-availability'
 import { article } from './article'
 import { homeFaq, aboutInformation, facilityGallery } from './editorial'
 import { schemaTypes as referenceTypes } from '../reference/schemaTypes'
@@ -29,13 +30,13 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
     // Initial values only initialize new documents; they never patch saved content.
     const defaults = initialValue ? { initialValue: () => structuredClone(initialValue) } : {}
     if (type.name === 'siteSettings') return { ...type, ...defaults,
-      description: 'Brand and SEO presentation. Existing Shared clinic settings remains authoritative for contacts/location. Hours and headline statistics await clinic confirmation and remain read-only.',
-      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, readOnly: true, validation: undefined, description: 'Preserved legacy field. The target reads this fact from code or Shared clinic settings; it is not duplicated into editable page content.' } : field),
+      description: 'Brand and SEO presentation. Shared clinic settings owns contact/location; Clinic hours & availability owns the operational schedule. Legacy fields and headline statistics remain read-only.',
+      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, readOnly: true, validation: undefined, description: ['hours', 'hoursSummary', 'holidays', 'timezone'].includes(field.name) ? 'Preserved legacy value. Edit the authoritative schedule in Clinic hours & availability instead.' : 'Preserved legacy field. The target reads this fact from code or Shared clinic settings; it is not duplicated into editable page content.' } : field),
     } as SchemaTypeDefinition
     return { ...type, ...defaults, fields } as SchemaTypeDefinition
   })
 
-const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, article, homeFaq, aboutInformation, facilityGallery]
+const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, clinicAvailability, article, homeFaq, aboutInformation, facilityGallery]
 export const schemaTypes: SchemaTypeDefinition[] = [...targetTypes.map((type) => {
   const value = initialContent.legacy[type.name as keyof typeof initialContent.legacy]
   return value ? { ...type, initialValue: () => structuredClone(value) } as SchemaTypeDefinition : type
