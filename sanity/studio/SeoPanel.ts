@@ -37,7 +37,7 @@ function fallbacks(doc: DocumentValue, locale: 'en' | 'mr') {
   const name = pick(doc.name, locale), fullName = pick(doc.fullName, locale)
   return {
     title: doc._type === 'procedure' && name ? `${name} — ${fullName}` : pick(doc.title, locale) || name,
-    description: pick(doc.oneLiner, locale) || pick(doc.excerpt, locale) || pick(doc.metaDescription, locale),
+    description: pick(doc.oneLiner, locale) || pick(doc.excerpt, locale) || pick(doc.metaDescription, locale) || pick(doc.description, locale),
     body: pick(doc.heroDescription, locale) || pick(doc.excerpt, locale) || pick(doc.intro, locale),
   }
 }
@@ -86,11 +86,14 @@ export function SeoPanel(props: ObjectInputProps) {
     h('section', { style: box, 'aria-label': 'Search preview and checks' },
       h('p', { style: { ...text, fontWeight: 600 } }, route === null ? 'Preview of the site-wide default listing' : 'Google preview'),
       ...previews.map((item) => preview(item.locale, item.locale === 'mr' ? 'Marathi (मराठी)' : 'English', item.url, item.title, item.description)),
-      h('p', { style: { ...text, fontWeight: 600 } }, `Checks${seo.focusKeyword ? ` for “${seo.focusKeyword}”` : ''} (English)`),
-      h('ul', { style: { listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 6 } }, ...checks.map((check) =>
-        h('li', { key: check.id, style: { ...text, display: 'flex', gap: 8, alignItems: 'baseline' } },
-          h('span', { style: { fontSize: 11, fontWeight: 600, padding: '1px 6px', borderRadius: 4, whiteSpace: 'nowrap', background: check.status === 'good' ? 'rgba(61,170,107,0.18)' : 'rgba(230,160,40,0.22)' } }, check.status === 'good' ? 'Good' : 'Improve'),
-          h('span', null, check.message)))),
+      // Site-wide defaults have no page, so keyword and visibility checks do not apply.
+      ...(route === null ? [] : [
+        h('p', { style: { ...text, fontWeight: 600 } }, `Checks${seo.focusKeyword ? ` for “${seo.focusKeyword}”` : ''} (English)`),
+        h('ul', { style: { listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 6 } }, ...checks.map((check) =>
+          h('li', { key: check.id, style: { ...text, display: 'flex', gap: 8, alignItems: 'baseline' } },
+            h('span', { style: { fontSize: 11, fontWeight: 600, padding: '1px 6px', borderRadius: 4, whiteSpace: 'nowrap', background: check.status === 'good' ? 'rgba(61,170,107,0.18)' : 'rgba(230,160,40,0.22)' } }, check.status === 'good' ? 'Good' : 'Improve'),
+            h('span', null, check.message)))),
+      ]),
       visibility),
     props.renderDefault(props))
 }

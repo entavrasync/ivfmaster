@@ -32,6 +32,8 @@ export const SEO_FIELDSETS = [
 ]
 
 type SeoParent = { noIndex?: boolean; noFollow?: boolean; canonicalUrl?: string }
+/** Site-wide defaults only apply a title, description and share image; per-page controls are hidden there. */
+const pageOnly = ({ document }: { document?: { _type?: string } }) => document?._type === 'siteSettings'
 const changesVisibility = (seo: SeoParent | undefined) => Boolean(seo?.noIndex || seo?.noFollow || seo?.canonicalUrl)
 
 /**
@@ -43,6 +45,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
   return [
     defineField({
       name: 'focusKeyword',
+      hidden: pageOnly,
       title: 'Focus keyword',
       type: 'string',
       fieldset: 'keywords',
@@ -51,6 +54,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
     }),
     defineField({
       name: 'secondaryKeywords',
+      hidden: pageOnly,
       title: 'Related keywords',
       type: 'array',
       fieldset: 'keywords',
@@ -60,12 +64,14 @@ export function seoAdvancedFields(): FieldDefinition[] {
       validation: (rule) => rule.max(8).unique(),
     }),
     localized('ogTitle', {
+      hidden: pageOnly,
       title: 'Social title',
       fieldset: 'social',
       description: 'Headline shown when the page is shared. Leave empty to use the search result title.',
       translation: 'optional',
     }),
     localized('ogDescription', {
+      hidden: pageOnly,
       title: 'Social description',
       type: 'localizedText',
       fieldset: 'social',
@@ -78,6 +84,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
     },
     defineField({
       name: 'noIndex',
+      hidden: pageOnly,
       title: 'Hide from search engines',
       type: 'boolean',
       fieldset: 'visibility',
@@ -86,6 +93,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
     }),
     defineField({
       name: 'noFollow',
+      hidden: pageOnly,
       title: 'Ask search engines not to follow links on this page',
       type: 'boolean',
       fieldset: 'visibility',
@@ -94,6 +102,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
     }),
     defineField({
       name: 'canonicalUrl',
+      hidden: pageOnly,
       title: 'Canonical page',
       type: 'url',
       fieldset: 'visibility',
@@ -103,6 +112,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
     }),
     defineField({
       name: 'visibilityReason',
+      hidden: pageOnly,
       title: 'Reason for the visibility change',
       type: 'text',
       rows: 2,
@@ -113,6 +123,7 @@ export function seoAdvancedFields(): FieldDefinition[] {
     }),
     defineField({
       name: 'structuredData',
+      hidden: pageOnly,
       title: 'Include structured data (schema markup)',
       type: 'boolean',
       fieldset: 'visibility',
@@ -125,7 +136,7 @@ export const seo = defineType({
   name: 'seo',
   title: 'Search engine listing',
   type: 'object',
-  options: { collapsible: true, collapsed: true },
+  options: { collapsible: true, collapsed: false },
   fieldsets: SEO_FIELDSETS,
   components: { input: SeoPanel },
   fields: [

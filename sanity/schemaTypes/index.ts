@@ -28,9 +28,12 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
     const initialValue = initialContent.singletons[type.name as keyof typeof initialContent.singletons]
     // Initial values only initialize new documents; they never patch saved content.
     const defaults = initialValue ? { initialValue: () => structuredClone(initialValue) } : {}
+    // Legacy clinic facts stay in the schema so stored values remain readable, but are hidden:
+    // the website reads them from Shared clinic settings and Clinic hours & availability.
     if (type.name === 'siteSettings') return { ...type, ...defaults,
-      description: 'Brand and SEO presentation. Shared clinic settings owns contact/location; Clinic hours & availability owns the operational schedule. Legacy fields and headline statistics remain read-only.',
-      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, readOnly: true, validation: undefined, description: ['hours', 'hoursSummary', 'holidays', 'timezone'].includes(field.name) ? 'Preserved legacy value. Edit the authoritative schedule in Clinic hours & availability instead.' : 'Preserved legacy field. The target reads this fact from code or Shared clinic settings; it is not duplicated into editable page content.' } : field),
+      description: 'Site description and site-wide SEO defaults. Edit contact details and address in Shared clinic settings, and opening hours in Clinic hours & availability.',
+      preview: { select: { id: '_id' }, prepare: () => ({ title: 'Site settings' }) },
+      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, hidden: true, readOnly: true, validation: undefined } : field),
     } as SchemaTypeDefinition
     return { ...type, ...defaults, fields } as SchemaTypeDefinition
   })
