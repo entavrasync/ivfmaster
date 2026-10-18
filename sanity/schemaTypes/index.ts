@@ -13,7 +13,6 @@ import initialContent from '../reference/initial-content.json' with { type: 'jso
 // object definitions, rather than replacing procedure/doctor document contracts.
 const reusedTypes: SchemaTypeDefinition[] = referenceTypes
   .map((type) => {
-    if (type.name === 'seo' && 'fields' in type && type.fields) return { ...type, fields: type.fields.map((field) => ['canonicalUrl', 'noIndex', 'ogImage'].includes(field.name) ? { ...field, readOnly: true, description: 'Preserved for compatibility. Target canonicals, indexing and social images remain controlled by its existing SEO builders.' } : field) } as SchemaTypeDefinition
     if (type.type !== 'document' || !('fields' in type) || !type.fields) return type
     const review = { ...approvalField, ...('groups' in type && type.groups?.length ? { group: type.groups[0].name } : {}) }
     const fields = type.fields.map((field) => field.name === 'reviewStatus' ? review : field)
