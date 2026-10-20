@@ -58,7 +58,7 @@ export const homePage = defineType({
       type: 'object',
       group: 'hero',
       description:
-        'The first screen. Upload optional banner images below; leave them empty to keep the artwork that ships with the site. The parallax and text scrims stay in code.',
+        'The first screen. Both banner images are managed here and required for publishing. The parallax and text scrims stay in code.',
       options: { collapsible: true, collapsed: false },
       fields: [
         localized('eyebrow', { title: 'Eyebrow', translation: 'all' }),
@@ -93,11 +93,13 @@ export const homePage = defineType({
           translation: 'any',
         }),
         {
-          ...defineImageField({ name: 'desktopImage', title: 'Desktop banner image' }),
+          ...defineImageField({ name: 'desktopImage', title: 'Desktop banner image', required: true }),
+          options: { hotspot: true, accept: 'image/jpeg,image/png,image/webp,image/avif' },
           description: 'Wide landscape image, at least 2400×1350 (16:9). Keep the left half calm and light because the headline sits there, and set the hotspot on the main subject.',
         },
         {
-          ...defineImageField({ name: 'mobileImage', title: 'Mobile banner image' }),
+          ...defineImageField({ name: 'mobileImage', title: 'Mobile banner image', required: true }),
+          options: { hotspot: true, accept: 'image/jpeg,image/png,image/webp,image/avif' },
           description: 'Tall portrait image, at least 1080×1920 (9:16). Keep the top half calm and light for the text, and place the main subject in the lower half.',
         },
       ],
@@ -231,7 +233,7 @@ export const homePage = defineType({
           type: 'array',
           of: [{ type: 'editorialImage' }],
           description:
-            'Optional — leave empty to keep the artwork that ships with the site. If you upload frames you must upload exactly seven, because the seven images cross-fade against the seven lines above. A partial set would leave the section blank partway through the scroll.',
+            'Optional — leave empty for the section’s background colour without artwork. Upload exactly seven desktop/mobile pairs to match the seven scroll beats; no local images are substituted.',
           validation: (rule) => rule.length(7),
         }),
         defineField({

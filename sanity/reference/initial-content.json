@@ -1,6 +1,36 @@
 {
   "singletons": {
     "siteSettings": {
+      "stats": [
+        {
+          "_type": "statistic",
+          "_key": "couples-guided",
+          "value": 2000,
+          "suffix": "+",
+          "label": { "_type": "localizedString", "en": "Couples guided", "mr": "दाम्पत्यांचे मार्गदर्शन" }
+        },
+        {
+          "_type": "statistic",
+          "_key": "success-rate",
+          "value": 67,
+          "suffix": "%",
+          "label": { "_type": "localizedString", "en": "Clinical success rate", "mr": "क्लिनिकल यश दर" }
+        },
+        {
+          "_type": "statistic",
+          "_key": "years-expertise",
+          "value": 20,
+          "suffix": "+",
+          "label": { "_type": "localizedString", "en": "Years of expertise", "mr": "वर्षांचा अनुभव" }
+        },
+        {
+          "_type": "statistic",
+          "_key": "cycles-completed",
+          "value": 3000,
+          "suffix": "+",
+          "label": { "_type": "localizedString", "en": "ART cycles completed", "mr": "ART सायकल पूर्ण" }
+        }
+      ],
       "description": {
         "_type": "localizedText",
         "mr": "IVF Master मध्ये वैयक्तिकृत IVF आणि प्रजनन उपचार. महाराष्ट्रातील सांगलीमध्ये तज्ञ डॉक्टरांकडून सहानुभूतीपूर्ण अनुभवा.",

@@ -13,14 +13,6 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-/* ─── Stats config ───────────────────────────────────────────────────────── */
-const STATS_CONFIG = [
-  { value: 2000, suffix: '+', labelKey: 'couplesGuided'   as const },
-  { value: 67,   suffix: '%', labelKey: 'successRate'     as const },
-  { value: 20,   suffix: '+', labelKey: 'yearsExpertise'  as const },
-  { value: 3000, suffix: '+', labelKey: 'cyclesCompleted' as const },
-]
-
 /* ─── Count-up hook (GSAP-triggered) ─────────────────────────────────────── */
 function useCountUp(target: number, duration: number, active: boolean): number {
   const reduced = useReducedMotion()
@@ -61,7 +53,7 @@ function StatCard({ value, suffix, label, active }: Readonly<{ value: number; su
 
 /* ─── Stats bar ──────────────────────────────────────────────────────────── */
 function StatBar() {
-  const t = useTranslations('Stats')
+  const { stats = [] } = useSiteContent()
   const [active, setActive] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
@@ -86,9 +78,9 @@ function StatBar() {
     >
       <Container>
         <div className="grid grid-cols-2 lg:grid-cols-4">
-          {STATS_CONFIG.map((s, i) => (
-            <div key={s.labelKey} style={i < STATS_CONFIG.length - 1 ? { borderRight: '1px solid rgba(216,204,190,0.40)' } : {}}>
-              <StatCard value={s.value} suffix={s.suffix} label={t(s.labelKey)} active={active} />
+          {stats.map((s, i) => (
+            <div key={i} style={i < stats.length - 1 ? { borderRight: '1px solid rgba(216,204,190,0.40)' } : {}}>
+              <StatCard value={s.value} suffix={s.suffix} label={s.label} active={active} />
             </div>
           ))}
         </div>
@@ -102,7 +94,7 @@ export function Hero() {
   const secondaryHref = useSiteAction('home.hero.secondaryCta', '/educate-ivf')
   const primaryHref = useSiteAction('home.hero.primaryCta', '/contact')
   const t = useTranslations('Hero')
-  // CMS banner images replace the shipped artwork per breakpoint; either may be absent.
+  // Only published CMS assets may supply banner artwork.
   const { hero: banner } = useSiteContent()
   const reduced = useReducedMotion()
 
@@ -168,25 +160,25 @@ export function Hero() {
       {/* ── Background images ── */}
       <div ref={bgRef} className="absolute inset-0 will-change-transform" aria-hidden="true">
         {/* Mobile image */}
-        <Image
-          src={banner?.mobile?.image.src ?? '/hero-bg-mobile.png'}
-          style={banner?.mobile?.position ? { objectPosition: banner.mobile.position } : undefined}
+        {banner?.mobile && <Image
+          src={banner.mobile.image.src}
+          style={banner.mobile.position ? { objectPosition: banner.mobile.position } : undefined}
           alt=""
           fill
           priority
           className="object-cover object-right-top lg:hidden"
           sizes="100vw"
-        />
+        />}
         {/* Desktop image */}
-        <Image
-          src={banner?.desktop?.image.src ?? '/hero-bg-desktop.png'}
-          style={banner?.desktop?.position ? { objectPosition: banner.desktop.position } : undefined}
+        {banner?.desktop && <Image
+          src={banner.desktop.image.src}
+          style={banner.desktop.position ? { objectPosition: banner.desktop.position } : undefined}
           alt=""
           fill
           priority
           className="object-cover object-right hidden lg:block"
           sizes="100vw"
-        />
+        />}
         {/* Subtle left-side scrim so text stays readable */}
         <div
           className="absolute inset-0"

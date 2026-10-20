@@ -22,13 +22,6 @@ type PageMetadataOptions = {
   readonly fallbackSeo?: PageSeo
 }
 
-const socialImage = {
-  url: buildAbsoluteUrl('/hero-bg-desktop.png'),
-  width: 1672,
-  height: 941,
-  alt: siteConfig.name,
-}
-
 function ensureBrandedTitle(title: string): string {
   return title.includes(siteConfig.name) ? title : title + ' | ' + siteConfig.name
 }
@@ -48,7 +41,7 @@ export function buildPageMetadata({
   const pageDescription = seo?.description ?? description
   const shareTitle = seo?.ogTitle ? ensureBrandedTitle(seo.ogTitle) : brandedTitle
   const shareDescription = seo?.ogDescription ?? pageDescription
-  const shareImage = seo?.ogImage ?? fallbackSeo?.ogImage ?? socialImage
+  const shareImage = seo?.ogImage ?? fallbackSeo?.ogImage
   const languages = {
     ...getLocalizedAlternates(path),
     'x-default': buildAbsoluteUrl(path),
@@ -62,7 +55,7 @@ export function buildPageMetadata({
     alternateLocale: routing.locales
       .filter((alternateLocale) => alternateLocale !== locale)
       .map((alternateLocale) => alternateLocale + '_IN'),
-    images: [shareImage],
+    images: shareImage ? [shareImage] : [],
   }
   const keywords = seo?.keywords?.length ? { keywords: [...seo.keywords] } : {}
   const robots = seo?.noIndex || seo?.noFollow ? { robots: { index: !seo.noIndex, follow: !seo.noFollow } } : {}
@@ -88,10 +81,10 @@ export function buildPageMetadata({
             type: 'website',
           },
     twitter: {
-      card: 'summary_large_image',
+      card: shareImage ? 'summary_large_image' : 'summary',
       title: shareTitle,
       description: shareDescription,
-      images: [shareImage],
+      images: shareImage ? [shareImage] : [],
     },
   }
 }

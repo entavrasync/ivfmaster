@@ -20,7 +20,7 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
       const index = fields.findIndex((field) => field.name === 'mythsFacts')
       const myths = fields[index]
       if (myths && 'fields' in myths && myths.fields) fields[index] = { ...myths, fields: [
-        defineField({ name: 'faqReferences', title: 'Shared questions (optional)', type: 'array', of: [{ type: 'reference', to: [{ type: 'faq' }], options: { filter: 'reviewStatus == "approved" && isPublished == true' } }], validation: (rule) => rule.max(20).unique(), description: 'Select approved, published Question records instead of duplicating answers. Leave unset to use this page’s inline items. Existing Homepage questions documents take precedence.' }),
+        defineField({ name: 'faqReferences', title: 'Shared questions (optional)', type: 'array', of: [{ type: 'reference', to: [{ type: 'faq' }], options: { filter: 'reviewStatus == "approved" && isPublished == true' } }], validation: (rule) => rule.max(20).unique(), description: 'Select approved, published Question records instead of duplicating answers. Leave unset to use this page’s inline items.' }),
         ...myths.fields.map((field) => field.name === 'items' ? { ...field, validation: (rule: Rule) => rule.custom((value, context) => Array.isArray((context.parent as { faqReferences?: unknown[] } | undefined)?.faqReferences) && ((context.parent as { faqReferences: unknown[] }).faqReferences.length > 0) || Array.isArray(value) && value.length > 0 && value.length <= 20 || 'Provide inline questions or select approved shared questions.') } : field),
       ] }
     }
@@ -31,9 +31,9 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
     // Legacy clinic facts stay in the schema so stored values remain readable, but are hidden:
     // the website reads them from Shared clinic settings and Clinic hours & availability.
     if (type.name === 'siteSettings') return { ...type, ...defaults,
-      description: 'Site description and site-wide SEO defaults. Edit contact details and address in Shared clinic settings, and opening hours in Clinic hours & availability.',
+      description: 'Site description, Home headline numbers and site-wide SEO defaults. Edit contact details and address in Shared clinic settings, and opening hours in Clinic hours & availability.',
       preview: { select: { id: '_id' }, prepare: () => ({ title: 'Site settings' }) },
-      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'stats', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, hidden: true, readOnly: true, validation: undefined } : field),
+      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, hidden: true, readOnly: true, validation: undefined } : field),
     } as SchemaTypeDefinition
     return { ...type, ...defaults, fields } as SchemaTypeDefinition
   })

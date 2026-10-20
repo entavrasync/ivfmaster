@@ -44,11 +44,11 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <>
       <main className="min-h-screen bg-ivory">
         <AboutHero content={content.hero} />
-        <AboutOrigin content={information?.origin ?? content.origin} />
-        <CareJourney content={information?.care ?? content.care} />
+        <AboutOrigin content={page.about ? content.origin : information?.origin ?? content.origin} />
+        <CareJourney content={page.about ? content.care : information?.care ?? content.care} />
         <DoctorStories content={content.doctors} />
         <CareTeam content={content.team} />
-        <TrustInPractice content={information?.trust ?? content.trust} />
+        <TrustInPractice content={page.about ? content.trust : information?.trust ?? content.trust} />
         <AboutClosing content={content.closing} />
       </main>
       <SectionJsonLd locale={locale} section="about" seoPage="about" />

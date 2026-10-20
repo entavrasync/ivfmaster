@@ -22,7 +22,7 @@ export function plain(value: unknown): string | undefined {
 const allowedRoutes = new Set(['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map((item) => '/procedures/' + item.slug), ...articleSlugs.map((slug) => '/educate-ivf/' + slug)])
 export type SiteMenuItem = { key: string; href: string; label: string }
 export type SiteImage = { image: StaticImageData; alt: string; position?: string }
-export type SiteChrome = { navigation: SiteMenuItem[] | null; footer: { heading: string; items: SiteMenuItem[] }[] | null; actions?: Record<string, string>; frames?: { desktop: StaticImageData; mobile: StaticImageData; alt: string }[]; hero?: { desktop: SiteImage | null; mobile: SiteImage | null }; procedures?: { id: string; label: string; description: string; href: string }[] }
+export type SiteChrome = { navigation: SiteMenuItem[] | null; footer: { heading: string; items: SiteMenuItem[] }[] | null; actions?: Record<string, string>; frames?: { desktop: StaticImageData; mobile: StaticImageData; alt: string }[]; hero?: { desktop: SiteImage | null; mobile: SiteImage | null }; stats?: { value: number; suffix: string; label: string }[]; homeDoctors?: Record<string, { intro: string; credentials: { text: string; accent: boolean }[] }>; procedures?: { id: string; label: string; description: string; href: string }[] }
 
 const fraction = z.number().min(0).max(1)
 const nativeImage = z.object({ assetId: z.string().regex(/^image-[A-Za-z0-9]+-\d+x\d+-(jpg|png|webp|avif)$/),
@@ -63,13 +63,21 @@ export function resolveSiteChrome(globals: unknown, home?: unknown, pages?: { pr
   const sourceFrames = at(home, 'costOfWaiting.frames')
   const frames = Array.isArray(sourceFrames) && sourceFrames.length === 7 ? sourceFrames.map((frame) => ({ desktop: resolveSiteImage(at(frame, 'desktop')), mobile: resolveSiteImage(at(frame, 'mobile')) })) : []
   const hero = { desktop: resolveSiteImage(at(home, 'hero.desktopImage')), mobile: resolveSiteImage(at(home, 'hero.mobileImage')) }
+  const stats = z.array(z.object({ value: z.number().finite().nonnegative(), suffix: z.string().max(3).nullish().transform((value) => value ?? ''), label: z.string().trim().min(1) })).length(4).safeParse(at(globals, 'settings.stats'))
+  const homeDoctors: NonNullable<SiteChrome['homeDoctors']> = {}
+  const introductions = at(home, 'meetTheDoctors.doctors')
+  if (Array.isArray(introductions)) for (const introduction of introductions) {
+    const parsed = z.object({ slug: z.enum(['gorakh-mandrupkar', 'saie-mandrupkar']), intro: z.string().trim().min(1), credentials: z.array(z.object({ text: z.string().trim().min(1), accent: z.boolean().nullish().transform(Boolean) })).min(1).max(6) }).safeParse(introduction)
+    if (parsed.success) homeDoctors[parsed.data.slug] = parsed.data
+  }
   const actions: Record<string, string> = {}
   const action = (slot: string, value: unknown) => { const path = at(value, 'link.internalPath'); if (at(value, 'link.kind') === 'internal' && typeof path === 'string' && allowedRoutes.has(path)) actions[slot] = path }
   for (const slot of ['hero.primaryCta', 'hero.secondaryCta', 'painCta.primary', 'whyTrust.closing.primary', 'costOfWaiting.closing.primary', 'understandingIvf.closing.primary', 'mythsFacts.closing.primary', 'finalCta.formCta']) action('home.' + slot, at(home, slot))
   action('nav.primary', at(globals, 'navigation.primaryCta'))
   action('procedures.closing', at(pages?.procedures, 'closing.primary'))
   action('team.closing', at(pages?.team, 'closing.primary'))
-  return { navigation, footer: footer?.every((group) => group.heading && group.items) ? footer as NonNullable<SiteChrome['footer']> : null, actions,
+  return { navigation, footer: footer?.every((group) => group.heading && group.items) ? footer as NonNullable<SiteChrome['footer']> : null, actions, homeDoctors,
+    ...(stats.success ? { stats: stats.data } : {}),
     ...(frames.length === 7 && frames.every((frame) => frame.desktop && frame.mobile) ? { frames: frames.map((frame) => ({ desktop: frame.desktop!.image, mobile: frame.mobile!.image, alt: frame.desktop!.alt })) } : {}),
     ...(hero.desktop || hero.mobile ? { hero } : {}),
   }
@@ -81,7 +89,7 @@ export function mergeSiteMessages(base: AbstractIntlMessages, source: Sources, l
   const result = structuredClone(base)
   function assign(path: string, value: unknown) {
     const existing = at(base, path)
-    if (typeof existing !== 'string' || typeof value !== 'string' || !value.trim()) return
+    if (typeof existing !== 'string' || typeof value !== 'string') return
     try {
       const tags = [...existing.matchAll(/<([A-Za-z][A-Za-z0-9]*)>/g)].map((match) => match[1])
       const variables = [...existing.matchAll(/\{([A-Za-z][A-Za-z0-9_]*)\}/g)].map((match) => match[1])
@@ -121,6 +129,8 @@ export function mergeSiteMessages(base: AbstractIntlMessages, source: Sources, l
   if (Array.isArray(homeDoctors)) for (const doctor of homeDoctors) {
     const slug = at(doctor, 'slug'), id = slug === 'gorakh-mandrupkar' ? 'gorakh' : slug === 'saie-mandrupkar' ? 'saie' : null
     if (!id) continue
+    assign(`MeetTheDoctors.${id}Name`, at(doctor, 'name'))
+    assign(`MeetTheDoctors.${id}Essence`, at(doctor, 'essence'))
     assign(`MeetTheDoctors.${id}Intro`, at(doctor, 'intro'))
     assign(`MeetTheDoctors.${id}Cta`, at(doctor, 'ctaLabel'))
     assign(`MeetTheDoctors.${id}Story`, at(doctor, 'storyLabel'))
@@ -144,7 +154,7 @@ export function mergeSiteMessages(base: AbstractIntlMessages, source: Sources, l
 /** Merge the reference's About layout data into existing target props, preserving images, IDs and destinations. */
 export function mergeAboutPage<T extends object>(base: T, input: unknown): T {
   function merge(original: unknown, incoming: unknown, key = ''): unknown {
-    if (typeof original === 'string') return ['src', 'ctaHref', 'id', 'name', 'role', 'number'].includes(key) ? original : plain(incoming) ?? original
+    if (typeof original === 'string') return ['src', 'ctaHref', 'id', 'number'].includes(key) ? original : incoming === '' ? '' : plain(incoming) ?? original
     if (Array.isArray(original)) {
       if (key === 'paragraphs' && Array.isArray(incoming) && incoming.length > 0 && incoming.length <= 10) {
         const rows = incoming.map((item) => plain(at(item, 'text') ?? item))

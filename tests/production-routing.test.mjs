@@ -57,6 +57,10 @@ test('actual production start preserves Marathi rewrites, English routes, redire
       assert.equal(row.location, null)
       assert.match(html, route === '/en' || route.startsWith('/en/') ? /<html[^>]*lang="en"/ : /<html[^>]*lang="mr"/)
       assert.match(html, /rel="canonical"/)
+      if (route === '/' || route === '/en') {
+        assert.doesNotMatch(html, /hero-bg-(?:desktop|mobile)\.png/, 'Home must never request the retired local banners')
+        assert.match(html, /min-height:100svh/, 'The full-height hero layout must be preserved')
+      }
       if (file) assert.equal(row.baselineEqual, true, `${route} changed from saved HTML/metadata/JSON-LD baseline`)
       for (const match of html.matchAll(/<img\b[^>]*src="([^"]+)"/g)) if (match[1].startsWith('/')) images.add(match[1].replaceAll('&amp;', '&'))
     }

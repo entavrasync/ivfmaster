@@ -129,7 +129,7 @@ export function resolveArticles(input: unknown, fallback: readonly Article[], lo
       overrides = mergeArticleMessages(overrides, messageUpdate)
       // Existing bespoke renderers own their category styling and translated labels.
       if (doc.category !== original.category) throw new Error('Unsupported category change')
-      const result: CmsArticle = { ...original, title, excerpt, category: doc.category, date: doc.date, readTime: doc.readTime,
+      const result: CmsArticle = { ...original, coverImage: undefined, coverImageAlt: undefined, coverPosition: undefined, title, excerpt, category: doc.category, date: doc.date, readTime: doc.readTime,
         ...(related ? { relatedSlugs: related } : {}),
         ...(pageSeoFor(input, doc.slug, locale)),
       }

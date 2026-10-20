@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { createRequire, registerHooks } from 'node:module'
 import test from 'node:test'
-import { createSchema, defaultTemplatesForSchema, getTemplatePermissions } from 'sanity'
+import { createSchema, defaultTemplatesForSchema, getTemplatePermissions, validateDocument } from 'sanity'
 import { createStructureBuilder } from 'sanity/structure'
 import initialContent from '../sanity/reference/initial-content.json' with { type: 'json' }
-import { mergeSiteMessages, resolveSiteChrome, resolveHomePageFaq, resolveSiteImage } from '../sanity/lib/site-content-mapping.ts'
+import { mergeSiteMessages, resolveSiteChrome, resolveHomePageFaq, resolveSiteImage, mergeAboutPage } from '../sanity/lib/site-content-mapping.ts'
 import { homePageQuery } from '../sanity/reference/queries/home.ts'
 import { aboutPageQuery } from '../sanity/reference/queries/about.ts'
 import { teamPageQuery } from '../sanity/reference/queries/team.ts'
@@ -37,6 +37,34 @@ const templates = config.schema.templates?.(defaults, { schema }) ?? defaults
 const require = createRequire(import.meta.url)
 const { firstValueFrom, of } = createRequire(require.resolve('sanity'))('rxjs')
 const groq = createRequire(require.resolve('sanity'))('groq-js')
+
+test('hidden legacy Site Settings addresses do not block publication; active address and approval rules still apply', async () => {
+  const validate = (document, workspaceSchema = schema) => validateDocument({
+    document, workspace: { schema: workspaceSchema },
+    getClient: () => { throw new Error('This validation must not make remote requests') },
+    getDocumentExists: async () => false,
+  })
+  const emptyAddress = { _type: 'postalAddress', streetAddress: '', addressLocality: '', addressRegion: '', postalCode: '', addressCountry: 'IN' }
+  const approved = { ...structuredClone(initialContent.singletons.siteSettings), _id: 'drafts.siteSettings', reviewStatus: 'approved', address: emptyAddress }
+  assert.deepEqual(await validate(approved), [])
+  const pending = await validate({ ...approved, reviewStatus: 'pendingReview' })
+  assert(pending.some((marker) => marker.path[0] === 'reviewStatus' && marker.level === 'error'))
+  const invalidStats = await validate({ ...approved, stats: approved.stats.slice(0, 3) })
+  assert(invalidStats.some((marker) => marker.path[0] === 'stats' && marker.level === 'error'))
+  const clinic = await validate({ ...structuredClone(initialContent.legacy.clinicSettings), _id: 'drafts.clinicSettings', reviewStatus: 'approved', address: emptyAddress })
+  assert(clinic.some((marker) => marker.path.join('.') === 'address.streetAddress' && marker.level === 'error'))
+  // The reusable postalAddress contract must also stay strict outside its retired Site Settings field.
+  const addressSchema = createSchema({ name: 'active-address', types: [
+    ...config.schema.types,
+    { name: 'activeAddress', type: 'document', fields: [{ name: 'address', type: 'postalAddress' }] },
+  ] })
+  const active = await validate({ _id: 'test-address', _type: 'activeAddress', address: emptyAddress }, addressSchema)
+  assert(active.some((marker) => marker.path.join('.') === 'address.postalCode' && marker.message.includes('six-digit')))
+  const visibleSchema = createSchema({ name: 'editable-site-address', types: config.schema.types.map((type) =>
+    type.name === 'siteSettings' ? { ...type, fields: type.fields.map((field) => field.name === 'address' ? { ...field, hidden: false } : field) } : type) })
+  const visible = await validate(approved, visibleSchema)
+  assert(visible.some((marker) => marker.path.join('.') === 'address.streetAddress' && marker.level === 'error'))
+})
 
 test('the actual Studio template pipeline initializes a pending-review canonical singleton', async (t) => {
   // Studio's initial-value scheduler uses a browser host even for synchronous values.
@@ -178,6 +206,8 @@ test('actual reference projections preserve target source copy and per-language 
     assert(chrome.navigation.length > 0)
     assert.equal(chrome.footer.length, 2)
     assert.equal(chrome.actions['nav.primary'], '/contact')
+    assert.deepEqual(chrome.stats.map((stat) => stat.value), [2000, 67, 20, 3000])
+    assert.deepEqual(chrome.stats.map((stat) => stat.label), Object.values(original.Stats))
     const pending = await projected(locale, false)
     assert.deepEqual(mergeSiteMessages(original, pending, locale), original)
     assert.equal(pending.home, null)
@@ -194,4 +224,98 @@ test('malformed menu, rich copy, shared FAQ and foreign image data preserve safe
   source.home.mythsFacts.referencedItems = [{ _id: 'drafts.question', question: 'hidden', answer: 'hidden' }]
   assert.equal(resolveHomePageFaq(source.home), null)
   assert.equal(resolveSiteImage({ assetId: 'image-abc-100x100-jpg', url: 'https://cdn.sanity.io/images/kj9188w7/production/abc-100x100.jpg', dimensions: { width: 100, height: 100 }, alt: 'Foreign image' }), null)
+})
+
+test('Studio hero fields require a native asset before publishing', () => {
+  const hero = schema.get('homePage').fields.find((field) => field.name === 'hero').type
+  for (const name of ['desktopImage', 'mobileImage']) {
+    const field = hero.fields.find((entry) => entry.name === name).type
+    assert.equal(field.options.hotspot, true)
+    const rules = field.validation.flatMap((rule) => rule._rules)
+    assert(rules.some((rule) => rule.flag === 'presence' && rule.constraint === 'required'))
+    assert(rules.some((rule) => rule.flag === 'assetRequired'))
+  }
+})
+
+test('actual published GROQ resolves both hero assets, crops, locale alt and replacements', async () => {
+  const asset = (name) => ({ _id: `image-${name}-2400x1350-png`, _type: 'sanity.imageAsset', url: `https://cdn.sanity.io/images/4k9zwr7s/production/${name}-2400x1350.png`, metadata: { dimensions: { width: 2400, height: 1350 } } })
+  const image = (name) => ({ _type: 'image', asset: { _type: 'reference', _ref: asset(name)._id }, alt: { en: `${name} banner`, mr: `${name} मराठी` }, crop: { left: 0.1, right: 0, top: 0, bottom: 0 }, hotspot: { x: 0.7, y: 0.5, width: 0.2, height: 0.4 } })
+  const doc = { _id: 'homePage', _type: 'homePage', reviewStatus: 'approved', hero: { desktopImage: image('desktop'), mobileImage: image('mobile') } }
+  const dataset = [doc, asset('desktop'), asset('mobile'), asset('replacement'), { ...doc, _id: 'drafts.homePage', hero: { desktopImage: image('replacement') } }]
+  const query = async (locale) => (await groq.evaluate(groq.parse(homePageQuery), { dataset, params: { locale } })).get()
+  for (const locale of ['en', 'mr']) {
+    const projected = await query(locale)
+    const banner = resolveSiteChrome(null, projected).hero
+    assert.match(banner.desktop.image.src, /\/desktop-2400x1350.png\?/)
+    assert.match(banner.mobile.image.src, /\/mobile-2400x1350.png\?/)
+    assert.equal(banner.desktop.image.width, 2160)
+    assert.equal(banner.desktop.alt, locale === 'mr' ? 'desktop मराठी' : 'desktop banner')
+    assert(banner.desktop.position)
+    assert(!JSON.stringify(banner).includes('replacement'))
+  }
+  doc.hero.desktopImage = image('replacement')
+  assert.match(resolveSiteChrome(null, await query('en')).hero.desktop.image.src, /replacement-2400x1350/)
+  doc.reviewStatus = 'pendingReview'
+  assert.equal(await query('en'), null)
+  assert.equal(resolveSiteChrome(null, null).hero, undefined)
+})
+
+test('CMS blanks, headline numbers and variable-length Home credentials beat code defaults', () => {
+  const source = { home: { hero: { body: '' }, meetTheDoctors: { doctors: [{ slug: 'gorakh-mandrupkar', intro: 'CMS introduction', credentials: Array.from({ length: 6 }, (_, i) => ({ text: `CMS credential ${i}`, accent: i === 5 })) }] } }, globals: { settings: { stats: Array.from({ length: 4 }, (_, i) => ({ value: i, suffix: '+', label: `CMS stat ${i}` })) } } }
+  const messages = mergeSiteMessages(en, source, 'en')
+  assert.equal(messages.Hero.body, '')
+  const chrome = resolveSiteChrome(source.globals, source.home)
+  assert.equal(chrome.stats[2].value, 2)
+  assert.equal(chrome.homeDoctors['gorakh-mandrupkar'].credentials.length, 6)
+  assert.equal(mergeAboutPage({ name: 'Old name', role: 'Old role', title: 'Old title' }, { name: 'CMS name', role: 'CMS role', title: '' }).title, '')
+  assert.equal(mergeAboutPage({ name: 'Old name' }, { name: 'CMS name' }).name, 'CMS name')
+})
+
+test('the actual Hero renderer uses CMS URLs and never emits local banner assets', async (t) => {
+  // Compile TSX at Node's existing bundler boundary; render the real components.
+  const ts = require('typescript')
+  const appRoot = new URL('../', import.meta.url)
+  const jsx = registerHooks({
+    resolve(specifier, context, nextResolve) {
+      if (/^next\/(image|navigation|link|headers|server)$/.test(specifier)) return nextResolve(specifier + '.js', context)
+      if (context.parentURL?.startsWith(appRoot.href) && !context.parentURL.includes('/node_modules/') && (specifier.startsWith('@/') || specifier.startsWith('.'))) {
+        for (const suffix of ['', '.ts', '.tsx', '/index.ts', '/index.tsx']) {
+          const url = specifier.startsWith('@/') ? new URL(specifier.slice(2) + suffix, appRoot) : new URL(specifier + suffix, context.parentURL)
+          if (/\.(tsx?|m?js)$/.test(url.pathname) && existsSync(url)) return { url: url.href, shortCircuit: true }
+        }
+      }
+      try { return nextResolve(specifier, context) }
+      catch (error) {
+        if (!context.parentURL?.startsWith(appRoot.href) || context.parentURL.includes('/node_modules/')) throw error
+        for (const suffix of ['.tsx', '/index.tsx']) {
+          const url = specifier.startsWith('@/') ? new URL(specifier.slice(2) + suffix, appRoot) : specifier.startsWith('.') ? new URL(specifier + suffix, context.parentURL) : null
+          if (url && existsSync(url)) return nextResolve(url.href, context)
+        }
+        throw error
+      }
+    },
+    load(url, context, nextLoad) {
+      if (url.startsWith(appRoot.href) && url.endsWith('.tsx')) return { format: 'commonjs', shortCircuit: true, source: ts.transpileModule(readFileSync(new URL(url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText }
+      return nextLoad(url, context)
+    },
+  })
+  t.after(() => jsx.deregister())
+  const { createElement } = require('react')
+  const { renderToStaticMarkup } = require('react-dom/server')
+  const { NextIntlClientProvider } = require('next-intl')
+  const { SiteContentProvider } = require('../components/providers/SiteContentContext.tsx')
+  const { Hero } = require('../components/sections/Hero.tsx')
+  const { ImageConfigContext } = require('next/dist/shared/lib/image-config-context.shared-runtime.js')
+  const { imageConfigDefault } = require('next/dist/shared/lib/image-config.js')
+  const { default: nextConfig } = await import('../next.config.mjs')
+  const img = (name) => resolveSiteImage({ assetId: `image-${name}-2400x1350-png`, url: `https://cdn.sanity.io/images/4k9zwr7s/production/${name}-2400x1350.png`, dimensions: { width: 2400, height: 1350 }, alt: name })
+  const render = (hero) => renderToStaticMarkup(createElement(ImageConfigContext.Provider, { value: { ...imageConfigDefault, ...nextConfig.images } }, createElement(NextIntlClientProvider, { locale: 'en', timeZone: 'Asia/Kolkata', messages: en }, createElement(SiteContentProvider, { content: { navigation: null, footer: null, hero } }, createElement(Hero)))))
+  const html = render({ desktop: img('desktop'), mobile: img('mobile') })
+  assert.match(html, /cdn.sanity.io\/images\/4k9zwr7s\/production\/desktop-/)
+  assert.match(html, /cdn.sanity.io\/images\/4k9zwr7s\/production\/mobile-/)
+  assert(!html.includes('hero-bg-'))
+  const missing = render(undefined)
+  assert(!missing.includes('hero-bg-'))
+  assert(!missing.includes('<img'))
+  assert.match(missing, /100svh/)
 })

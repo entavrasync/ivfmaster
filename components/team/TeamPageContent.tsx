@@ -51,9 +51,9 @@ export async function TeamPageContent() {
 
     return {
       ...photo,
-      caption: cms?.caption ?? plain(at(area, 'caption')) ?? t(`${prefix}.caption`),
-      imageAlt: cms?.imageAlt ?? replacements[0]?.alt ?? t(`${prefix}.imageAlt`),
-      images: cms?.images ?? images ?? photo.images,
+      caption: plain(at(area, 'caption')) ?? cms?.caption ?? t(`${prefix}.caption`),
+      imageAlt: replacements[0]?.alt ?? cms?.imageAlt ?? t(`${prefix}.imageAlt`),
+      images: images ?? cms?.images ?? photo.images,
     }
   })
 
