@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire, registerHooks } from 'node:module'
 import test from 'node:test'
-import { createSchema, defaultTemplatesForSchema, getTemplatePermissions } from 'sanity'
+import { createSchema, defaultTemplatesForSchema, getTemplatePermissions, validateDocument } from 'sanity'
 import { createStructureBuilder } from 'sanity/structure'
 import initialContent from '../sanity/reference/initial-content.json' with { type: 'json' }
 import { mergeSiteMessages, resolveSiteChrome, resolveHomePageFaq, resolveSiteImage, mergeAboutPage } from '../sanity/lib/site-content-mapping.ts'
@@ -37,6 +37,34 @@ const templates = config.schema.templates?.(defaults, { schema }) ?? defaults
 const require = createRequire(import.meta.url)
 const { firstValueFrom, of } = createRequire(require.resolve('sanity'))('rxjs')
 const groq = createRequire(require.resolve('sanity'))('groq-js')
+
+test('hidden legacy Site Settings addresses do not block publication; active address and approval rules still apply', async () => {
+  const validate = (document, workspaceSchema = schema) => validateDocument({
+    document, workspace: { schema: workspaceSchema },
+    getClient: () => { throw new Error('This validation must not make remote requests') },
+    getDocumentExists: async () => false,
+  })
+  const emptyAddress = { _type: 'postalAddress', streetAddress: '', addressLocality: '', addressRegion: '', postalCode: '', addressCountry: 'IN' }
+  const approved = { ...structuredClone(initialContent.singletons.siteSettings), _id: 'drafts.siteSettings', reviewStatus: 'approved', address: emptyAddress }
+  assert.deepEqual(await validate(approved), [])
+  const pending = await validate({ ...approved, reviewStatus: 'pendingReview' })
+  assert(pending.some((marker) => marker.path[0] === 'reviewStatus' && marker.level === 'error'))
+  const invalidStats = await validate({ ...approved, stats: approved.stats.slice(0, 3) })
+  assert(invalidStats.some((marker) => marker.path[0] === 'stats' && marker.level === 'error'))
+  const clinic = await validate({ ...structuredClone(initialContent.legacy.clinicSettings), _id: 'drafts.clinicSettings', reviewStatus: 'approved', address: emptyAddress })
+  assert(clinic.some((marker) => marker.path.join('.') === 'address.streetAddress' && marker.level === 'error'))
+  // The reusable postalAddress contract must also stay strict outside its retired Site Settings field.
+  const addressSchema = createSchema({ name: 'active-address', types: [
+    ...config.schema.types,
+    { name: 'activeAddress', type: 'document', fields: [{ name: 'address', type: 'postalAddress' }] },
+  ] })
+  const active = await validate({ _id: 'test-address', _type: 'activeAddress', address: emptyAddress }, addressSchema)
+  assert(active.some((marker) => marker.path.join('.') === 'address.postalCode' && marker.message.includes('six-digit')))
+  const visibleSchema = createSchema({ name: 'editable-site-address', types: config.schema.types.map((type) =>
+    type.name === 'siteSettings' ? { ...type, fields: type.fields.map((field) => field.name === 'address' ? { ...field, hidden: false } : field) } : type) })
+  const visible = await validate(approved, visibleSchema)
+  assert(visible.some((marker) => marker.path.join('.') === 'address.streetAddress' && marker.level === 'error'))
+})
 
 test('the actual Studio template pipeline initializes a pending-review canonical singleton', async (t) => {
   // Studio's initial-value scheduler uses a browser host even for synchronous values.

@@ -1,6 +1,11 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType, type ValidationContext } from 'sanity'
 
 import { localized } from '../shared/fields'
+
+// Site Settings retains this hidden object only for stored-data compatibility.
+// Shared clinic settings owns the website address and validates it independently.
+const retiredSiteAddress = (context: ValidationContext | undefined) =>
+  context?.document?._type === 'siteSettings' && context.path?.[0] === 'address' && context.hidden === true
 
 /**
  * Business-information objects for `siteSettings`.
@@ -28,25 +33,25 @@ export const postalAddress = defineType({
       name: 'streetAddress',
       title: 'Street address',
       type: 'string',
-      validation: (rule) => rule.required(),
+      validation: (rule, context) => retiredSiteAddress(context) ? rule : rule.required(),
     }),
     defineField({
       name: 'addressLocality',
       title: 'Town / city',
       type: 'string',
-      validation: (rule) => rule.required(),
+      validation: (rule, context) => retiredSiteAddress(context) ? rule : rule.required(),
     }),
     defineField({
       name: 'addressRegion',
       title: 'State',
       type: 'string',
-      validation: (rule) => rule.required(),
+      validation: (rule, context) => retiredSiteAddress(context) ? rule : rule.required(),
     }),
     defineField({
       name: 'postalCode',
       title: 'PIN code',
       type: 'string',
-      validation: (rule) =>
+      validation: (rule, context) => retiredSiteAddress(context) ? rule :
         rule.required().regex(/^\d{6}$/, { name: 'six-digit Indian PIN code' }),
     }),
     defineField({
@@ -55,7 +60,7 @@ export const postalAddress = defineType({
       type: 'string',
       description: 'Two-letter ISO country code, e.g. IN.',
       initialValue: 'IN',
-      validation: (rule) =>
+      validation: (rule, context) => retiredSiteAddress(context) ? rule :
         rule.required().regex(/^[A-Z]{2}$/, { name: 'two-letter ISO country code' }),
     }),
   ],
