@@ -10,20 +10,6 @@ import { useTranslations } from 'next-intl'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
-import costDesktop1 from '@/assets/cost/cost-desktop-1.png'
-import costDesktop2 from '@/assets/cost/cost-desktop-2.png'
-import costDesktop3 from '@/assets/cost/cost-desktop-3.png'
-import costDesktop4 from '@/assets/cost/cost-desktop-4.png'
-import costDesktop5 from '@/assets/cost/cost-desktop-5.png'
-import costDesktop6 from '@/assets/cost/cost-desktop-6.png'
-import costDesktop7 from '@/assets/cost/cost-desktop-7.png'
-import costMobile1 from '@/assets/cost/cost-mobile-1.png'
-import costMobile2 from '@/assets/cost/cost-mobile-2.png'
-import costMobile3 from '@/assets/cost/cost-mobile-3.png'
-import costMobile4 from '@/assets/cost/cost-mobile-4.png'
-import costMobile5 from '@/assets/cost/cost-mobile-5.png'
-import costMobile6 from '@/assets/cost/cost-mobile-6.png'
-import costMobile7 from '@/assets/cost/cost-mobile-7.png'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -54,15 +40,7 @@ const ARTWORK_FADE = 1
 const FACTOR_DESKTOP = 3.2
 const FACTOR_MOBILE  = 3.9
 
-const ARTWORK = [
-  { desktop: costDesktop1, mobile: costMobile1 },
-  { desktop: costDesktop2, mobile: costMobile2 },
-  { desktop: costDesktop3, mobile: costMobile3 },
-  { desktop: costDesktop4, mobile: costMobile4 },
-  { desktop: costDesktop5, mobile: costMobile5 },
-  { desktop: costDesktop6, mobile: costMobile6 },
-  { desktop: costDesktop7, mobile: costMobile7 },
-] as const
+const ARTWORK_COUNT = 7
 
 /* ─── CTA block (shared between both render paths) ───────────────────────── */
 
@@ -160,7 +138,7 @@ export function CostOfWaiting() {
   const darkOverlayRef  = useRef<HTMLDivElement>(null)
   const lightOverlayRef = useRef<HTMLDivElement>(null)
   const ctaRef          = useRef<HTMLDivElement>(null)
-  const artworkRefs     = useRef<(HTMLDivElement | null)[]>(new Array(ARTWORK.length).fill(null))
+  const artworkRefs     = useRef<(HTMLDivElement | null)[]>(new Array(ARTWORK_COUNT).fill(null))
   /* lineRefs[0-4] → l1-l5 (dark lines), [5-6] → l6-l7 (hope/light lines) */
   const lineRefs        = useRef<(HTMLElement | null)[]>(new Array(LINES.length).fill(null))
 
@@ -171,7 +149,7 @@ export function CostOfWaiting() {
       /* ── Initial state: everything invisible ──────────────────────── */
       gsap.set(eyebrowRef.current,      { opacity: 0 })
       gsap.set(artworkRefs.current.filter(Boolean), { opacity: 0 })
-      gsap.set(artworkRefs.current[0],  { opacity: 1 })
+      if (artworkRefs.current[0]) gsap.set(artworkRefs.current[0], { opacity: 1 })
       gsap.set(darkOverlayRef.current,  { opacity: 1 })
       gsap.set(lightOverlayRef.current, { opacity: 0 })
       gsap.set(ctaRef.current,          { opacity: 0 })
@@ -492,7 +470,7 @@ export function CostOfWaiting() {
       />
 
       {/* ── Responsive artwork — all seven stages stay mounted ─────────── */}
-      {(frames ?? ARTWORK).map((artwork, i) => (
+      {(frames ?? []).map((artwork, i) => (
         <div
           key={artwork.desktop.src}
           ref={(el) => { artworkRefs.current[i] = el }}
@@ -515,11 +493,6 @@ export function CostOfWaiting() {
             <source media="(max-width: 767px)" srcSet={artwork.mobile.src} />
             <img
               src={artwork.desktop.src}
-              onError={(event) => {
-                const source = event.currentTarget.parentElement?.querySelector('source')
-                if (source) source.srcset = ARTWORK[i].mobile.src
-                if (event.currentTarget.src !== new URL(ARTWORK[i].desktop.src, window.location.origin).href) event.currentTarget.src = ARTWORK[i].desktop.src
-              }}
               alt=""
               loading="eager"
               decoding="async"

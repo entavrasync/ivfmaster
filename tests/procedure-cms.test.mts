@@ -115,7 +115,7 @@ test('SEO overrides preserve canonical, hreflang and social image architecture',
     mr: 'https://www.ivfmaster.in/procedures/ivf', en: 'https://www.ivfmaster.in/en/procedures/ivf', 'x-default': 'https://www.ivfmaster.in/procedures/ivf',
   })
   assert.equal(metadata.description, 'English SEO description')
-  assert.deepEqual(metadata.openGraph?.images, [{ url: 'https://www.ivfmaster.in/hero-bg-desktop.png', width: 1672, height: 941, alt: 'IVF Master' }])
+  assert.deepEqual(metadata.openGraph?.images, [])
 })
 
 test('the live collection projection selects approved procedures and retains array keys/locales', async () => {

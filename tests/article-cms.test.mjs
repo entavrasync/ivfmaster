@@ -95,14 +95,14 @@ test('missing, invalid, unapproved, duplicate or unsupported documents preserve 
   }
 })
 
-test('partial valid CMS coverage preserves other articles, routes, aliases and fallback images', () => {
+test('partial CMS coverage preserves routes and aliases while a cleared cover stays cleared', () => {
   const doc = document('pcos')
   const result = resolveArticles([doc], fallback, 'mr')
   assert.equal(result.status, 'sanity')
   assert.equal(result.articles[0], fallback[0])
   const pcos = result.articles.find((a) => a.slug === 'pcos')
   assert.deepEqual(pcos.legacySlugs, ['understanding-pcos'])
-  assert.equal(pcos.coverImage, fallback.find((a) => a.slug === 'pcos').coverImage)
+  assert.equal(pcos.coverImage, undefined)
   assert.deepEqual(pcos.relatedSlugs, fallback.find((a) => a.slug === 'pcos').relatedSlugs)
   assert.equal(pcos.seo, undefined)
 })

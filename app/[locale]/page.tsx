@@ -82,7 +82,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </RevealSection>
 
         <RevealSection y={48}>
-          <MythsFacts content={homeFaq ?? resolveHomePageFaq(siteContent.home) ?? undefined} />
+          <MythsFacts content={resolveHomePageFaq(siteContent.home) ?? homeFaq ?? undefined} />
         </RevealSection>
 
         {/* Dark closing block — FinalCTA flows directly into Footer (shared navy bg) */}

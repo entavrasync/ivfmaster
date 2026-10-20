@@ -91,3 +91,34 @@ test('real server readers forward published-cache policy and retain fallback on 
   assert(diagnostics.some((line) => line.includes('CMS read failed')))
   assert(diagnostics.every((line) => !line.includes('PRIVATE_UPSTREAM_BODY')))
 })
+
+test('the actual page reader keeps published 60-second revalidation and forwards replacement banners', async (t) => {
+  const hook = registerHooks({ resolve(specifier, context, nextResolve) {
+    if (specifier === 'server-only') return { url: 'data:text/javascript,export {}', shortCircuit: true }
+    return nextResolve(specifier, context)
+  } })
+  t.after(() => hook.deregister())
+  const { client } = await import('../sanity/lib/client.ts')
+  const { getSiteContent } = await import('../sanity/lib/site-content.ts')
+  const { resolveSiteChrome } = await import('../sanity/lib/site-content-mapping.ts')
+  const originalFetch = client.fetch
+  t.after(() => { client.fetch = originalFetch })
+  let replacement = 'first'
+  const image = () => ({ assetId: `image-${replacement}-100x100-png`, url: `https://cdn.sanity.io/images/4k9zwr7s/production/${replacement}-100x100.png`, dimensions: { width: 100, height: 100 }, alt: 'CMS banner' })
+  const tags = []
+  client.fetch = async (_query, params, options) => {
+    assert(['en', 'mr'].includes(params.locale))
+    assert.equal(options.cache, 'force-cache')
+    assert.equal(options.next.revalidate, 60)
+    tags.push(options.next.tags[0])
+    return options.next.tags[0] === 'homePage' ? { hero: { desktopImage: image(), mobileImage: image() } } : null
+  }
+  for (const locale of ['en', 'mr']) {
+    const first = await getSiteContent(locale)
+    assert.match(resolveSiteChrome(null, first.home).hero.desktop.image.src, new RegExp(replacement + '-100x100'))
+    replacement = 'replacement'
+    const updated = await getSiteContent(locale)
+    assert.match(resolveSiteChrome(null, updated.home).hero.desktop.image.src, /replacement-100x100/)
+  }
+  assert.deepEqual([...new Set(tags)].sort(), ['homePage', 'aboutPage', 'teamPage', 'proceduresPage', 'siteGlobals', 'contactPage'].sort())
+})

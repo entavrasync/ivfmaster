@@ -19,7 +19,6 @@ import { SiteContentProvider } from '@/components/providers/SiteContentContext'
 import { getSiteContent } from '@/sanity/lib/site-content'
 import { resolveSiteChrome } from '@/sanity/lib/site-content-mapping'
 import { getProcedures } from '@/sanity/lib/procedures'
-import { PROCEDURES as NAV_PROCEDURES } from '@/components/nav/procedures-data'
 import { routing, type Locale } from '@/i18n/routing'
 import '@/app/globals.css'
 
@@ -124,9 +123,9 @@ export default async function LocaleLayout({
   // NextIntlClientProvider makes it available to all client components
   // via useTranslations() without any extra prop drilling.
   const [messages, settings, siteContent, procedures, availability] = await Promise.all([getMessages(), getClinicSettings(locale as 'mr' | 'en'), getSiteContent(locale), getProcedures(locale as Locale), getClinicAvailability()])
-  // Every published procedure appears in the menu; website ones keep their menu copy.
+  // The menu and treatment page share the same published description.
   const navProcedures = procedures.map((procedure) => ({ id: procedure.slug, label: procedure.name, href: `/procedures/${procedure.slug}`,
-    description: NAV_PROCEDURES.find((item) => item.id === procedure.slug)?.description ?? procedure.oneLiner }))
+    description: procedure.oneLiner }))
 
   return (
     <html
