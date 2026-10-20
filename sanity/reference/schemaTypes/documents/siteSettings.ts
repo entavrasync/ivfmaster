@@ -167,7 +167,7 @@ export const siteSettings = defineType({
       group: 'stats',
       of: [{ type: 'statistic' }],
       description:
-        'The four numbers in the hero stat bar. Exactly four: the bar is a 2×2 grid on mobile and a single row of four on desktop, and the dividers are drawn between them. A fifth would wrap into a broken half-row.',
+        'The four numbers below the Home banner. Use “Fill empty fields from website” in the document actions to restore the previous four entries, review them with the clinic, then approve and publish Site settings. Keep exactly four for the existing mobile and desktop grid.',
       validation: (rule) => rule.required().length(4),
     }),
 

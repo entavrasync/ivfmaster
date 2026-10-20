@@ -178,6 +178,8 @@ test('actual reference projections preserve target source copy and per-language 
     assert(chrome.navigation.length > 0)
     assert.equal(chrome.footer.length, 2)
     assert.equal(chrome.actions['nav.primary'], '/contact')
+    assert.deepEqual(chrome.stats.map((stat) => stat.value), [2000, 67, 20, 3000])
+    assert.deepEqual(chrome.stats.map((stat) => stat.label), Object.values(original.Stats))
     const pending = await projected(locale, false)
     assert.deepEqual(mergeSiteMessages(original, pending, locale), original)
     assert.equal(pending.home, null)
