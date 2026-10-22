@@ -2,6 +2,7 @@
 
 import { defineConfig, useDocumentOperation, type DocumentActionComponent } from 'sanity'
 import { structureTool } from 'sanity/structure'
+import { Plus } from 'lucide-react'
 import { schemaTypes } from './sanity/schemaTypes'
 import { projectId, dataset, apiVersion } from './sanity/project'
 import { SINGLETONS, SINGLETON_TYPES } from './sanity/reference/schemaTypes/shared/singletons'
@@ -72,7 +73,9 @@ export default defineConfig({
     ...SINGLETONS.map((singleton) => S.listItem().id(singleton.id).title(singleton.title).child(S.document().schemaType(singleton.type).documentId(singleton.id).title(singleton.title))),
     S.divider(),
     S.listItem().id('procedure').title('Procedures — treatment details').schemaType('procedure').child(
-      S.list().title('Procedures — treatment details').items([
+      S.list().title('Procedures — treatment details')
+        .menuItems([S.menuItem().title('Add new procedure').icon(Plus).intent({ type: 'create', params: { type: 'procedure', template: 'procedure' } }).showAsAction(true)])
+        .items([
         S.documentTypeListItem('procedure').id('all-procedures').title('All saved procedures'),
         ...initialContent.procedures.map((entry) => S.listItem().id(entry.slug).title(`${entry.value.name.en} — ${entry.title}`).schemaType('procedure').child(
           S.documentTypeList('procedure').id(entry.slug).title(entry.title).apiVersion(apiVersion)

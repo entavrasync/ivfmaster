@@ -61,6 +61,8 @@ test('actual quick-fact rules enforce one to four entries', async () => {
 })
 
 test('actual slug rule preserves the published URL and fails closed on lookup errors', async () => {
+  assert.equal(field('slug').type.options.source, 'name.en')
+  assert.deepEqual(await validateField(field('slug'), { current: 'fertility-preservation' }), [])
   assert.deepEqual(await validateField(field('slug'), { current: 'ivf' }, { publishedSlug: 'ivf' }), [])
   const renamed = await validateField(field('slug'), { current: 'new-ivf' }, { publishedSlug: 'ivf' })
   assert.ok(renamed.some((marker) => marker.message.includes('Keep the published slug')))
