@@ -45,9 +45,10 @@ export const procedure = defineType({
   fields: [
     defineField({
       name: 'slug',
-      title: 'Stable URL slug',
+      title: 'Procedure web address',
       type: 'slug',
-      description: 'Use the existing route slug (ivf for this workflow). Never generate this from a translated title. A published slug cannot be renamed here.',
+      options: { source: 'name.en' },
+      description: 'For a new procedure, enter its English Short title below, then click Generate here. Example: fertility-preservation becomes /procedures/fertility-preservation. Keep the address of an already published procedure unchanged.',
       validation: (rule) => rule.required().custom(async (value, context) => {
         if (!value?.current) return true
         if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.current)) return 'Use lowercase letters, numbers and single hyphens.'

@@ -147,6 +147,11 @@ test('the real Studio structure exposes all four procedures with matching stored
   const S = createStructureBuilder({ source, perspectiveStack: ['drafts'] })
   const root = config.plugins[0].tools[0].options.structure(S, {})
   const procedures = root.getItems().find((item) => item.getId?.() === 'procedure').getChild()
+  const addProcedure = procedures.serialize().menuItems.find((item) => item.title === 'Add new procedure')
+  assert.equal(addProcedure.showAsAction, true, 'Add new procedure must be visible in the Procedures folder header')
+  assert.ok(addProcedure.icon)
+  assert.deepEqual(addProcedure.intent, { type: 'create', params: { type: 'procedure', template: 'procedure' } })
+  assert.equal(templates.find((item) => item.id === addProcedure.intent.params.template).schemaType, 'procedure')
   const items = procedures.getItems()
   assert.equal(items[0].getId(), 'all-procedures')
   assert.deepEqual(items.slice(1).map((item) => item.getId()), initialContent.procedures.map((entry) => entry.slug))
@@ -318,4 +323,28 @@ test('the actual Hero renderer uses CMS URLs and never emits local banner assets
   assert(!missing.includes('hero-bg-'))
   assert(!missing.includes('<img'))
   assert.match(missing, /100svh/)
+  // Exercise the same menu hook used by the desktop dropdown and mobile accordion.
+  // Fixtures stay local: no invented procedure is saved or published to Sanity.
+  const { useNavProcedures } = require('../components/nav/procedures-data.tsx')
+  const { resolveProcedures } = await import('../sanity/lib/procedure-mapping.ts')
+  const { allProceduresQuery } = await import('../sanity/lib/procedure-query.ts')
+  const { PROCEDURES } = await import('../lib/procedures.ts')
+  const fresh = { ...structuredClone(initialContent.procedures[0].value), _type: 'procedure', _id: 'local-fixture-only', reviewStatus: 'approved', slug: { current: 'new-cms-procedure' }, name: { en: 'CMS new procedure', mr: 'नवीन प्रक्रिया' }, oneLiner: { en: 'CMS menu description', mr: 'नवीन प्रक्रियेची माहिती' } }
+  const stored = [fresh, { ...fresh, _id: 'drafts.hidden', slug: { current: 'draft-procedure' } }, { ...fresh, _id: 'pending', reviewStatus: 'pendingReview', slug: { current: 'pending-procedure' } }]
+  const data = await (await groq.evaluate(groq.parse(allProceduresQuery), { dataset: stored })).get()
+  function MenuData() {
+    return createElement('nav', {}, useNavProcedures().map((item) => createElement('a', { key: item.id, href: item.href }, item.label, item.description)))
+  }
+  for (const locale of ['en', 'mr']) {
+    const mapped = resolveProcedures(data, PROCEDURES, locale)
+    assert.equal(mapped.status, 'sanity')
+    const procedures = mapped.procedures.map((item) => ({ id: item.slug, label: item.name, description: item.oneLiner, href: `/procedures/${item.slug}` }))
+    const menu = renderToStaticMarkup(createElement(SiteContentProvider, { content: { navigation: null, footer: null, procedures } }, createElement(MenuData)))
+    assert(menu.includes('href="/procedures/new-cms-procedure"'))
+    assert(menu.includes(fresh.name[locale]))
+    assert(menu.includes(fresh.oneLiner[locale]))
+    assert(!menu.includes('draft-procedure'))
+    assert(!menu.includes('pending-procedure'))
+    assert.equal(mapped.procedures.at(-1).slug, 'new-cms-procedure')
+  }
 })
