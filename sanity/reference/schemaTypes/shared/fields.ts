@@ -1,11 +1,25 @@
 import {
   defineField,
+  PatchEvent,
+  unset,
+  type ObjectInputProps,
+  type ImageValue,
   type FieldDefinition,
   type ImageRule,
   type Rule,
 } from 'sanity'
 
+/** Native Remove keeps custom metadata; clear the whole optional image instead. */
+export function OptionalImageInput(props: ObjectInputProps<ImageValue>) {
+  return props.renderDefault({ ...props, onChange: event => {
+    if (props.readOnly) return
+    const removingAsset = PatchEvent.from(event).patches.some(patch => patch.type === 'unset' && patch.path.length === 1 && patch.path[0] === 'asset')
+    props.onChange(removingAsset ? unset() : event)
+  } })
+}
+
 import { SUPPORTED_LOCALES } from '../../lib/locales'
+import { validateWebsiteImage } from '../../../lib/image-validation'
 import {
   requireAllLocales,
   requireAnyLocale,
@@ -79,7 +93,18 @@ export function localized(
       ? {
           validation: (rule: Rule) => {
             const rules = []
-            if (policy) rules.push(rule.custom(policy))
+            if (policy) rules.push(rule.custom((value, context) => {
+              // Footer explicitly requires both languages; other document policies stay unchanged.
+              if (translation !== 'all' || context.document?._type !== 'footer') return policy(value) === true ? true : {
+                message: `Enter ${title.toLowerCase()} in English. Marathi is optional and uses English when empty.`, paths: [['en']],
+              }
+              const text = value as Record<string, unknown> | undefined
+              const missing = SUPPORTED_LOCALES.filter(locale => typeof text?.[locale] !== 'string' || !(text[locale] as string).trim())
+              return missing.length ? {
+                message: `Enter ${title.toLowerCase()} in ${missing.map(locale => locale === 'en' ? 'English' : 'Marathi').join(' and ')}.`,
+                paths: missing.map(locale => [locale]),
+              } : true
+            }))
             if (warn) rules.push(rule.custom(warn).warning())
             return rules
           },
@@ -157,7 +182,8 @@ export function defineImageField(
     title,
     description: `${description ?? 'Use an approved photograph or artwork matching this section.'} Keep the high-resolution original. Portraits should leave space around the head and shoulders (4:5 crop, recommended 1200×1500 or larger); gallery photographs should allow a landscape crop (3:2, recommended 1800×1200 or larger); artwork pairs need landscape desktop and portrait mobile compositions. These are recommendations, not upload limits. Use crop/hotspot to preserve the subject; leave unset to keep the website asset.`,
     type: 'image',
-    options: { hotspot: true },
+    options: { hotspot: true, accept: 'image/jpeg,image/png,image/webp,image/avif' },
+    components: { input: OptionalImageInput },
     fields: [
       localized('alt', {
         title: 'Alternative text',
@@ -172,7 +198,7 @@ export function defineImageField(
         translation: 'optional',
       }),
     ],
-    validation: (rule: ImageRule) => required ? rule.required().assetRequired() : rule.assetRequired(),
+    validation: (rule: ImageRule) => [required ? rule.required().assetRequired() : rule.assetRequired(), rule.custom(validateWebsiteImage)],
     ...rest,
   }) as FieldDefinition
 }

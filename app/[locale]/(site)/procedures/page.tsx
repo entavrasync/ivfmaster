@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Footer } from '@/components/shared/Footer'
@@ -35,6 +36,7 @@ export default async function ProceduresPage({
     <>
       <ProceduresHub procedures={procedures} />
       <SectionJsonLd locale={locale} section="procedures" seoPage="procedures" />
+      <BacklinkReferences entries={(await getSeoContext(locale, 'procedures')).seo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

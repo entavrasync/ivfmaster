@@ -1,3 +1,4 @@
+import { localizedValue } from '../../lib/localized-query'
 import { defineQuery } from 'next-sanity'
 import { SEO_LOCALIZED_PROJECTION } from '../../lib/seo-mapping'
 
@@ -5,30 +6,30 @@ import { SEO_LOCALIZED_PROJECTION } from '../../lib/seo-mapping'
 export const teamPageQuery = defineQuery(`{
   "page": *[_type == "teamPage" && _id == "teamPage" && reviewStatus == "approved"][0]{
     hero{
-      "eyebrow": select($locale == "en" => coalesce(eyebrow.en, eyebrow.mr), coalesce(eyebrow.mr, eyebrow.en)),
-      "headline": select($locale == "en" => coalesce(headline.en, headline.mr), coalesce(headline.mr, headline.en)),
-      "lead": select($locale == "en" => coalesce(lead.en, lead.mr), coalesce(lead.mr, lead.en))
+      "eyebrow": ${localizedValue('eyebrow')},
+      "headline": ${localizedValue('headline')},
+      "lead": ${localizedValue('lead')}
     },
     doctorsSection{
-      "eyebrow": select($locale == "en" => coalesce(eyebrow.en, eyebrow.mr), coalesce(eyebrow.mr, eyebrow.en)),
-      "heading": select($locale == "en" => coalesce(heading.en, heading.mr), coalesce(heading.mr, heading.en)),
-      "lead": select($locale == "en" => coalesce(lead.en, lead.mr), coalesce(lead.mr, lead.en)),
-      "coupleNote": select($locale == "en" => coalesce(coupleNote.en, coupleNote.mr), coalesce(coupleNote.mr, coupleNote.en))
+      "eyebrow": ${localizedValue('eyebrow')},
+      "heading": ${localizedValue('heading')},
+      "lead": ${localizedValue('lead')},
+      "coupleNote": ${localizedValue('coupleNote')}
     },
     careTeamSection{
-      "eyebrow": select($locale == "en" => coalesce(eyebrow.en, eyebrow.mr), coalesce(eyebrow.mr, eyebrow.en)),
-      "heading": select($locale == "en" => coalesce(heading.en, heading.mr), coalesce(heading.mr, heading.en)),
-      "lead": select($locale == "en" => coalesce(lead.en, lead.mr), coalesce(lead.mr, lead.en)),
+      "eyebrow": ${localizedValue('eyebrow')},
+      "heading": ${localizedValue('heading')},
+      "lead": ${localizedValue('lead')},
       members[]{
-        "name": select($locale == "en" => coalesce(name.en, name.mr), coalesce(name.mr, name.en)),
-        "role": select($locale == "en" => coalesce(role.en, role.mr), coalesce(role.mr, role.en)),
-        "blurb": select($locale == "en" => coalesce(blurb.en, blurb.mr), coalesce(blurb.mr, blurb.en)),
+        "name": ${localizedValue('name')},
+        "role": ${localizedValue('role')},
+        "blurb": ${localizedValue('blurb')},
         credentials[]{
-          "text": select($locale == "en" => coalesce(text.en, text.mr), coalesce(text.mr, text.en)),
+          "text": ${localizedValue('text')},
           accent
         },
         "portrait": portrait{
-          "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
+          "alt": ${localizedValue('alt')},
           crop, hotspot, "assetId": asset->_id, "url": asset->url,
           "dimensions": asset->metadata.dimensions,
           "lqip": asset->metadata.lqip
@@ -36,13 +37,13 @@ export const teamPageQuery = defineQuery(`{
       }
     },
     facilitySection{
-      "eyebrow": select($locale == "en" => coalesce(eyebrow.en, eyebrow.mr), coalesce(eyebrow.mr, eyebrow.en)),
-      "heading": select($locale == "en" => coalesce(heading.en, heading.mr), coalesce(heading.mr, heading.en)),
-      "lead": select($locale == "en" => coalesce(lead.en, lead.mr), coalesce(lead.mr, lead.en)),
+      "eyebrow": ${localizedValue('eyebrow')},
+      "heading": ${localizedValue('heading')},
+      "lead": ${localizedValue('lead')},
       areas[]{
-        "caption": select($locale == "en" => coalesce(caption.en, caption.mr), coalesce(caption.mr, caption.en)),
+        "caption": ${localizedValue('caption')},
         images[]{
-          "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
+          "alt": ${localizedValue('alt')},
           crop, hotspot, "assetId": asset->_id, "url": asset->url,
           "dimensions": asset->metadata.dimensions,
           "lqip": asset->metadata.lqip
@@ -50,22 +51,22 @@ export const teamPageQuery = defineQuery(`{
       }
     },
     closing{
-      "eyebrow": select($locale == "en" => coalesce(eyebrow.en, eyebrow.mr), coalesce(eyebrow.mr, eyebrow.en)),
-      "heading": select($locale == "en" => coalesce(heading.en, heading.mr), coalesce(heading.mr, heading.en)),
-      "body": select($locale == "en" => coalesce(body.en, body.mr), coalesce(body.mr, body.en)),
-      "microCopy": select($locale == "en" => coalesce(microCopy.en, microCopy.mr), coalesce(microCopy.mr, microCopy.en)),
+      "eyebrow": ${localizedValue('eyebrow')},
+      "heading": ${localizedValue('heading')},
+      "body": ${localizedValue('body')},
+      "microCopy": ${localizedValue('microCopy')},
       primary{
-        "label": select($locale == "en" => coalesce(label.en, label.mr), coalesce(label.mr, label.en)),
+        "label": ${localizedValue('label')},
         emphasis,
         link{kind, internalPath, externalUrl, anchor, opensInNewTab}
       }
     },
     seo{
-      "metaTitle": select($locale == "en" => coalesce(metaTitle.en, metaTitle.mr), coalesce(metaTitle.mr, metaTitle.en)),
-      "metaDescription": select($locale == "en" => coalesce(metaDescription.en, metaDescription.mr), coalesce(metaDescription.mr, metaDescription.en)),
+      "metaTitle": ${localizedValue('metaTitle')},
+      "metaDescription": ${localizedValue('metaDescription')},
       ${SEO_LOCALIZED_PROJECTION},
       "ogImage": ogImage{
-        "alt": select($locale == "en" => coalesce(alt.en, alt.mr), coalesce(alt.mr, alt.en)),
+        "alt": ${localizedValue('alt')},
         crop, hotspot, "assetId": asset->_id, "url": asset->url,
         "dimensions": asset->metadata.dimensions,
         "lqip": asset->metadata.lqip

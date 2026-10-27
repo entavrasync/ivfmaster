@@ -33,3 +33,7 @@ export const articleModels = {
 export type ArticleSlug = keyof typeof articleModels
 export const articleSlugs = Object.keys(articleModels) as ArticleSlug[]
 export const isArticleSlug = (value: string): value is ArticleSlug => Object.hasOwn(articleModels, value)
+// Historical addresses must keep redirecting to their original article.
+export const reservedArticleSlugs = ['understanding-pcos', 'male-fertility-explained'] as const
+export const articleSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+export const maxArticles = 1000

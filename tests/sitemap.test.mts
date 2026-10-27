@@ -29,6 +29,13 @@ const STATIC_INDEXABLE_PATHS = [
 
 const SITE_CONTENT_REVIEWED_AT = '2026-07-02T00:00:00.000Z'
 
+test('new CMS article addresses appear in both locales without duplicates and respect exclusions', async () => {
+  const entries = await getLocalizedSitemapEntries({ extraArticleSlugs: ['new-article', 'new-article', 'pcos', 'hidden-article'], excludedPaths: new Set(['/educate-ivf/hidden-article']) })
+  for (const locale of routing.locales) assert.equal(entries.filter((entry) => entry.url === localizedUrl(locale, '/educate-ivf/new-article')).length, 1)
+  assert.equal(entries.some((entry) => entry.url.includes('hidden-article')), false)
+  assert.equal(new Set(entries.map((entry) => entry.url)).size, entries.length)
+})
+
 async function getSitemapEntries() {
   return getLocalizedSitemapEntries()
 }

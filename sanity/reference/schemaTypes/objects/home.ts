@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 import { DEFAULT_LOCALE } from '../../lib/locales'
 import { defineImageField, localized } from '../shared/fields'
+import { localizedString } from '../locale/localizedString'
 
 /**
  * Objects used only by the Home page.
@@ -156,9 +157,10 @@ export const credential = defineType({
     localized('text', { title: 'Text', translation: 'all' }),
     defineField({
       name: 'accent',
+      readOnly: true,
       title: 'Highlight this credential',
       type: 'boolean',
-      description: 'Draws the eye to the standout qualification. Use it sparingly — usually once per doctor.',
+      description: 'Compatibility value retained for existing records. Credential emphasis follows the current website layout.',
       initialValue: false,
     }),
   ],
@@ -211,12 +213,13 @@ export const homeDoctor = defineType({
     }),
     defineField({
       name: 'credentials',
-      title: 'Credentials',
+      title: 'Previous Home qualifications (compatibility)',
+      readOnly: true,
       type: 'array',
       of: [{ type: 'credential' }],
       description:
-        'The short selection shown on the Home card. The full list lives on the doctor\'s own document.',
-      validation: (rule) => rule.required().min(1).max(6),
+        'Retained for existing records. The current Home cards show the quotation and introduction; edit qualifications on the Doctor for Team and profile pages.',
+      validation: (rule) => rule.max(6),
     }),
     localized('ctaLabel', { title: 'Consultation button text', translation: 'all' }),
     localized('storyLabel', { title: 'Profile link text', translation: 'all' }),
@@ -235,32 +238,44 @@ export const homeDoctor = defineType({
 })
 
 /**
- * An art-directed image pair: a desktop crop and a mobile crop of the same
- * artwork. This mirrors the pattern already in the codebase, where every
- * cost-of-waiting frame ships as `cost-desktop-N.png` plus `cost-mobile-N.png`.
- * A single image scaled to both would crop the subject badly on one of them.
+ * One scroll slide's optional desktop and mobile photos.
+ * Retain older desktop/mobile crops for saved artwork frames.
  */
+const costOfWaitingPhotoFields = (['desktop', 'mobile'] as const).map(name => (
+    { ...defineImageField({ name, title: name === 'desktop' ? 'Desktop photo' : 'Mobile photo',
+      fields: [localized('alt', { title: 'Photo description', description: 'Describe the selected photo in English and Marathi.', translation: 'all' })],
+    }), description: name === 'desktop' ? 'Optional landscape photo for large screens. Keep space for slide text; set the crop and hotspot.' : 'Optional portrait photo for small screens. Keep space for slide text; set the crop and hotspot.',
+      options: { hotspot: true, accept: 'image/jpeg,image/png,image/webp,image/avif' },
+    }
+))
+
 export const editorialImage = defineType({
-  name: 'editorialImage',
-  title: 'Artwork frame',
-  type: 'object',
+  name: 'editorialImage', title: 'Artwork frame', type: 'object',
   fields: [
     defineImageField({
       name: 'desktop',
-      title: 'Desktop artwork',
-      required: true,
+      title: 'Desktop artwork', required: true,
     }),
     defineImageField({
       name: 'mobile',
-      title: 'Mobile artwork',
+      title: 'Mobile artwork', required: true,
       description: 'The portrait-oriented crop of the same artwork.',
-      required: true,
     }),
   ],
   preview: {
     select: { media: 'desktop', alt: `desktop.alt.${DEFAULT_LOCALE}` },
-    prepare({ media, alt }) {
-      return { title: alt || 'Artwork frame', media }
-    },
+    prepare({ media, alt }) { return { title: alt || 'Artwork frame', media } },
+  },
+})
+
+export const costOfWaitingLine = defineType({
+  name: 'costOfWaitingLine', title: 'Narrative line', type: 'object',
+  fields: [...localizedString.fields, ...costOfWaitingPhotoFields,
+    defineField({ name: 'image', type: 'image', hidden: true, readOnly: true, fields: [localized('alt', { title: 'Previous photo description', translation: 'optional' })] }),
+    defineField({ name: 'imageType', type: 'string', hidden: true, readOnly: true }),
+  ],
+  preview: {
+    select: { en: 'en', mr: 'mr', desktop: 'desktop', mobile: 'mobile' },
+    prepare({ en, mr, desktop, mobile }) { return { title: (DEFAULT_LOCALE === 'mr' ? mr || en : en || mr) || 'Narrative line', media: desktop ?? mobile } },
   },
 })

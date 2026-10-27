@@ -60,6 +60,9 @@
     "formMessagePlaceholder": "जे काही समर्पक वाटेल ते लिहा — किंवा अजून शब्द सुचत नसतील तर हे रिकामे सोडा.",
     "formSubmit": "WhatsApp वर पाठवा",
     "formSubmitSecondary": "त्याऐवजी क्लिनिकला कॉल करा",
+    "formWhatsappUnavailable": "WhatsApp वर संपर्क सध्या उपलब्ध नाही. कृपया खालील फोन करण्याचा पर्याय वापरा.",
+    "formWhatsappRetry": "WhatsApp उघडले नाही? तुमचा संदेश उघडा",
+    "formWhatsappSendHint": "WhatsApp मध्ये तुमचा संदेश तपासा आणि पाठवा दाबा.",
     "panelTitle": "आमच्याशी संपर्क साधण्याचे इतर मार्ग",
     "panelWhatsapp": "WhatsApp वर संदेश पाठवा",
     "panelWhatsappSub": "आम्ही शक्य तितक्या लवकर उत्तर देऊ",
@@ -107,6 +110,7 @@
     "closingNote": "कोणताही दबाव नाही — फक्त एकमेकांना जाणून घेण्याची सुरुवात.",
     "detailBack": "टीमकडे परत जा",
     "detailCredentialsHeading": "अनुभव आणि शांत पुरावा",
+    "specializationsHeading": "विशेष कौशल्ये",
     "doctors": {
       "gorakh": {
         "name": "डॉ. गोरख मंद्रुपकर",

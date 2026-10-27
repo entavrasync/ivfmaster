@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Footer } from '@/components/shared/Footer'
@@ -56,6 +57,7 @@ export default async function ProcedureDetailPage({
     <>
       <ProcedureDetail proc={proc} allProcs={procedures} />
       {structuredData && <JsonLdScript data={structuredData} />}
+      <BacklinkReferences entries={proc.pageSeo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

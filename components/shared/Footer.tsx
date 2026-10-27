@@ -13,6 +13,7 @@ import { Clock, Globe, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { formatAvailability } from '@/lib/clinic-availability'
+import type { SiteMenuItem } from '@/sanity/lib/site-content-mapping'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -247,7 +248,7 @@ export function Footer() {
                 margin:                '0 0 0.1875rem 0',
               }}
             >
-              IVF Master
+              {chrome.identity?.name ?? siteConfig.name}
             </p>
             <p
               style={{
@@ -315,9 +316,9 @@ export function Footer() {
                 gap:           '0.625rem',
               }}
             >
-              {(chrome.footer?.[0].items ?? NAV_EXPLORE.map((item) => ({ ...item, label: t(item.key) }))).map(({ key, href, label }) => (
+              {(chrome.footer?.[0].items ?? NAV_EXPLORE.map((item): SiteMenuItem => ({ ...item, label: t(item.key) }))).map(({ key, href, label, opensInNewTab }) => (
                 <li key={key}>
-                  <Link href={href} style={LINK_STYLE}>{label}</Link>
+                  <Link href={href} target={opensInNewTab ? '_blank' : undefined} rel={opensInNewTab ? 'noopener noreferrer' : undefined} style={LINK_STYLE}>{label}</Link>
                 </li>
               ))}
             </ul>
@@ -337,9 +338,9 @@ export function Footer() {
                 marginBottom:  '2rem',
               }}
             >
-              {(chrome.footer?.[1].items ?? NAV_CLINIC.map((item) => ({ ...item, label: t(item.key) }))).map(({ key, href, label }) => (
+              {(chrome.footer?.[1].items ?? NAV_CLINIC.map((item): SiteMenuItem => ({ ...item, label: t(item.key) }))).map(({ key, href, label, opensInNewTab }) => (
                 <li key={key}>
-                  <Link href={href} style={LINK_STYLE}>{label}</Link>
+                  <Link href={href} target={opensInNewTab ? '_blank' : undefined} rel={opensInNewTab ? 'noopener noreferrer' : undefined} style={LINK_STYLE}>{label}</Link>
                 </li>
               ))}
             </ul>
@@ -423,17 +424,16 @@ export function Footer() {
                 margin:     0,
               }}
             >
-              {t('copyright')}
+              {chrome.footerCopyright?.replaceAll('{year}', String(new Date().getFullYear())) ?? t('copyright')}
             </p>
 
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-              {[
-                { key: 'privacyPolicy',   href: '/privacy' },
-                { key: 'termsOfService',  href: '/terms'   },
-              ].map(({ key, href }) => (
+              {(chrome.legalLinks ?? []).map(({ key, href, label, opensInNewTab }) => (
                 <Link
                   key={key}
                   href={href}
+                  target={opensInNewTab ? '_blank' : undefined}
+                  rel={opensInNewTab ? 'noopener noreferrer' : undefined}
                   style={{
                     fontFamily:     'var(--font-body)',
                     fontSize:       '0.8125rem',
@@ -441,7 +441,7 @@ export function Footer() {
                     textDecoration: 'none',
                   }}
                 >
-                  {t(key as 'privacyPolicy' | 'termsOfService')}
+                  {label}
                 </Link>
               ))}
             </div>

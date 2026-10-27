@@ -1,5 +1,6 @@
 import { CircleHelp, Images, BookOpen } from 'lucide-react'
 import { defineArrayMember, defineField, defineType } from 'sanity'
+import { validateWebsiteImage } from '../lib/image-validation'
 import { aboutInformationContent, facilityAreas, facilityGalleryContent, homeFaqContent } from '../lib/editorial-mapping.ts'
 import { approvalField, localizedField } from './editorial-fields.ts'
 
@@ -40,7 +41,7 @@ export const facilityGallery = defineType({
       defineField({ name: 'area', type: 'string', options: { list: [...facilityAreas] }, validation: (r) => r.required() }),
       copy('caption'), copy('imageAlt', 'Shared area alternative text'),
       defineField({ name: 'images', type: 'array', description: 'Optional replacement photos, ordered within this area. Leave unset to retain the current static photos. Native assets need dimensions/LQIP metadata.',
-        of: [defineArrayMember({ type: 'image', options: { hotspot: true }, validation: (r) => r.required().assetRequired() })], validation: (r) => r.min(1).max(10),
+        of: [defineArrayMember({ type: 'image', options: { hotspot: true, accept: 'image/jpeg,image/png,image/webp,image/avif' }, validation: (r) => [r.required().assetRequired(), r.custom(validateWebsiteImage)] })], validation: (r) => r.min(1).max(10),
       }),
     ] })], validation: (r) => r.required().length(4) }),
   ],

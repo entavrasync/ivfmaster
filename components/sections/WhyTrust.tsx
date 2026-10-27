@@ -1,5 +1,5 @@
 'use client'
-import { useSiteAction } from '@/components/providers/SiteContentContext'
+import { useSiteAction, useSiteContent } from '@/components/providers/SiteContentContext'
 
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
@@ -14,6 +14,7 @@ const EASE = [0.22, 1, 0.36, 1] as const
 
 export function WhyTrust() {
   const actionHref = useSiteAction('home.whyTrust.closing.primary', '/contact')
+  const { citation } = useSiteContent()
   const reduced = useReducedMotion()
   const t       = useTranslations('WhyTrust')
 
@@ -226,9 +227,9 @@ export function WhyTrust() {
               {t.rich('gestosisLink', {
                 link: (chunks) => (
                   <a
-                    href="https://hdpgestosisscore.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={citation?.href ?? 'https://hdpgestosisscore.com/'}
+                    target={!citation || citation.opensInNewTab ? '_blank' : undefined}
+                    rel={!citation || citation.opensInNewTab ? 'noopener noreferrer' : undefined}
                     style={{ color: '#2E4F8E', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px' }}
                   >
                     {chunks}

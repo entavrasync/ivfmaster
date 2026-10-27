@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import test from 'node:test'
 import ts from 'typescript'
-import { createSchema } from 'sanity'
+import { createSchema, validateDocument } from 'sanity'
 import { articleModels, articleSlugs } from '../sanity/article-model.ts'
 import { articleBodySchema, articleDocument, localizeArticleBody, mergeArticleMessages, resolveArticles } from '../sanity/lib/article-mapping.ts'
 import { articlesQuery } from '../sanity/lib/article-query.ts'
@@ -48,6 +48,37 @@ function document(slug = 'what-ivf-really-is', translated = true) {
     [model.field]: body(model.contract, namespace(en, slug), translated ? namespace(mr, slug) : undefined),
   }
 }
+
+function newDocument() {
+  return { _id: 'local-fixture-only', _type: 'article', reviewStatus: 'approved', slug: 'preparing-for-your-first-visit',
+    title: { en: 'Preparing for your first visit', mr: 'पहिल्या भेटीची तयारी' }, excerpt: { en: 'A clinic-reviewed introduction.' },
+    category: 'Understanding IVF', date: '2026-10-22', readTime: 4,
+    content: { intro: { en: 'CMS opening paragraph.' }, sections: { en: [{ _key: 'prepare', heading: 'Before your visit', body: 'CMS section text.\n\nAnother paragraph.' }] }, keyTakeaways: { en: ['Bring your records.'] } },
+  }
+}
+
+test('a new approved article survives the real query and localized reader without a built-in slug or body', async () => {
+  const doc = newDocument()
+  const stored = { ...doc, slug: { current: doc.slug } }
+  const data = await (await evaluate(parse(articlesQuery), { dataset: [stored, { ...stored, _id: 'drafts.hidden' }, { ...stored, _id: 'pending', reviewStatus: 'pendingReview' }] })).get()
+  assert.equal(data.length, 1)
+  for (const locale of ['en', 'mr']) {
+    const result = resolveArticles(data, fallback, locale)
+    assert.equal(result.status, 'sanity')
+    assert.equal(result.articles.length, 8)
+    const added = result.articles.find((item) => item.slug === doc.slug)
+    assert.equal(added.title, doc.title[locale])
+    assert.equal(added.intro, doc.content.intro.en)
+    assert.equal(added.sections[0].body, doc.content.sections.en[0].body)
+    assert.deepEqual(added.keyTakeaways, doc.content.keyTakeaways.en)
+    assert.equal(added.i18nKey, undefined)
+    assert.equal(added.coverImage, undefined)
+    assert.deepEqual(result.articles.slice(0, 7), fallback)
+  }
+  doc.content.sections.mr = [{ _key: 'translated', heading: 'भेटीपूर्वी', body: 'सर्व अहवाल सोबत आणा.' }]
+  assert.equal(resolveArticles([doc], fallback, 'mr').articles.at(-1).sections[0].body, doc.content.sections.mr[0].body)
+  for (const invalid of [{ ...doc, content: undefined }, { ...doc, reviewStatus: 'pendingReview' }, { ...doc, slug: 'understanding-pcos' }]) assert.equal(resolveArticles([invalid], fallback, 'en').articles, fallback)
+})
 
 test('all seven real source articles map to their actual English and Marathi renderer contracts', () => {
   assert.equal(fallback.length, 7)
@@ -149,6 +180,10 @@ test('native article cover mapping preserves crop, focus, dimensions, blur and l
   assert.ok(Math.abs(x - 75) < 0.00001)
   assert.equal(y, 40)
   assert.equal(article.coverImageAlt, 'Existing cover')
+  delete doc.coverImage.asset.metadata.lqip
+  const withoutBlur = resolveArticles([doc], fallback, 'en')
+  assert.equal(withoutBlur.status, 'sanity')
+  assert.ok(withoutBlur.articles.find(a => a.slug === 'pcos').coverImage)
 })
 
 test('actual GROQ excludes drafts/releases/unapproved records and dereferences related articles', async () => {
@@ -157,7 +192,7 @@ test('actual GROQ excludes drafts/releases/unapproved records and dereferences r
   const dataset = [...docs, { ...docs[0], _id: 'drafts.hidden' }, { ...docs[0], _id: 'versions.release.hidden' }, { ...docs[0], _id: 'unapproved', reviewStatus: 'pendingReview' }]
   const data = await (await evaluate(parse(articlesQuery), { dataset, params: { slugs: articleSlugs } })).get()
   assert.equal(data.length, 2)
-  assert.deepEqual(data[0].related, [{ _key: 'relation', slug: 'male-fertility', reviewStatus: 'approved' }])
+  assert.deepEqual(data.find((doc) => doc.slug === 'pcos').related, [{ _key: 'relation', slug: 'male-fertility', reviewStatus: 'approved' }])
   assert.equal(resolveArticles(data, fallback, 'mr').status, 'sanity')
   docs[1].reviewStatus = 'pendingReview'
   const broken = await (await evaluate(parse(articlesQuery), { dataset: docs, params: { slugs: articleSlugs } })).get()
@@ -167,7 +202,41 @@ test('actual GROQ excludes drafts/releases/unapproved records and dereferences r
 const schema = createSchema({ name: 'article-test', types: [localizedString, localizedText, sharedLocalizedString, sharedLocalizedText, article] })
 test('article schema compiles with native references and all existing body variants', () => assert.deepEqual(schema._validation, []))
 
-test('actual Studio rules reject pending approval, missing body, unknown and changed published slugs', async () => {
+test('new articles can publish with an independent optional SEO override while native slug uniqueness stays strict', async () => {
+  const doc = newDocument(); doc._id = 'drafts.local-new-article'; doc.slug = { current: doc.slug }
+  doc.content.sections.en.forEach(section => { section._type = 'object' })
+  let unique = true
+  const client = { withConfig() { return this }, fetch: async query => query.trim().startsWith('!defined') ? unique : null }
+  const validate = () => validateDocument({ document: doc, workspace: { schema }, getClient: () => client, getDocumentExists: async () => true })
+  doc.seo = { focusKeyword: 'local fixture' }
+  assert.deepEqual(await validate(), [])
+  doc.seo = { metaTitle: { en: 'Local SEO title' } }
+  assert.deepEqual(await validate(), [])
+  doc.seo = { metaDescription: { en: 'Local SEO description' } }
+  assert.deepEqual(await validate(), [])
+  unique = false
+  assert((await validate()).some(marker => marker.level === 'error' && marker.path[0] === 'slug'))
+  unique = true; delete doc.title
+  assert((await validate()).some(marker => marker.level === 'error' && marker.path[0] === 'title'))
+  doc.title = { en: 'Local article fixture' }
+  doc.related = [{ _type: 'reference', _key: 'self', _ref: 'local-new-article' }]
+  const selfReference = (await validate()).find(marker => marker.message.includes('cannot list itself'))
+  assert.deepEqual(selfReference.path, ['related', { _key: 'self' }])
+})
+
+test('new article content errors point to the English input and stable section key', () => {
+  const rule = schema.get('article').validation.flatMap((item) => item._rules).find((item) => item.flag === 'custom').constraint
+  const doc = newDocument(); doc.slug = { current: doc.slug }
+  assert.equal(rule(doc), true)
+  delete doc.content.intro.en
+  delete doc.content.sections.en[0].body
+  const errors = rule(doc)
+  assert(errors.some((error) => JSON.stringify(error.path) === JSON.stringify(['content', 'intro', 'en'])))
+  assert(errors.some((error) => JSON.stringify(error.path) === JSON.stringify(['content', 'sections', 'en', { _key: 'prepare' }, 'body'])))
+  assert(errors.every((error) => typeof error.message === 'string' && error.message.length > 15))
+})
+
+test('actual Studio rules keep approval, body, address format, redirects and published-address safeguards', async () => {
   const compiled = schema.get('article')
   const approval = compiled.fields.find((f) => f.name === 'reviewStatus').type.validation.flatMap((r) => r._rules).find((r) => r.flag === 'custom').constraint
   assert.notEqual(await approval('pendingReview', {}), true)
@@ -177,7 +246,8 @@ test('actual Studio rules reject pending approval, missing body, unknown and cha
   assert.equal(bodyRule(doc), true)
   assert.notEqual(bodyRule({ ...doc, pcos: undefined }), true)
   const slugRule = compiled.fields.find((f) => f.name === 'slug').type.validation.flatMap((r) => r._rules).filter((r) => r.flag === 'custom').at(-1).constraint
-  assert.notEqual(await slugRule({ current: 'new-url' }, {}), true)
+  assert.equal(await slugRule({ current: 'new-url' }, {}), true)
+  for (const current of ['Not a URL', 'understanding-pcos', 'male-fertility-explained', 'x'.repeat(97)]) assert.notEqual(await slugRule({ current }, {}), true)
   const context = { document: { _id: 'drafts.fixture' }, getClient: () => ({ withConfig: () => ({ fetch: async () => 'pcos' }) }) }
   assert.notEqual(await slugRule({ current: 'male-fertility' }, context), true)
   context.getClient = () => ({ withConfig: () => ({ fetch: async () => { throw new Error('access denied') } }) })
@@ -206,7 +276,7 @@ test('Studio listing and SEO copy reject the same unsupported message syntax as 
 
 test('optional article cover can be omitted, but a selected replacement needs an actual asset', async () => {
   const field = schema.get('article').fields.find((entry) => entry.name === 'coverImage').type
-  const context = { document: { _id: 'drafts.article', _type: 'article' }, path: ['coverImage'], type: field, schema, i18n: { t: (key) => key } }
+  const context = { document: { _id: 'drafts.article', _type: 'article' }, path: ['coverImage'], type: field, schema, i18n: { t: (key) => key }, getClient: () => ({ fetch: async () => ({ _id: 'image-testasset-1200x800-jpg', url: 'https://cdn.sanity.io/images/4k9zwr7s/production/testasset-1200x800.jpg', metadata: { dimensions: { width: 1200, height: 800 } } }) }) }
   const errors = async (value) => (await Promise.all((field.validation ?? []).map((rule) => rule.validate(value, context)))).flat()
   assert.deepEqual(await errors(undefined), [])
   assert.ok((await errors({ _type: 'image', alt: { en: 'Existing cover' } })).length > 0)

@@ -60,6 +60,9 @@
     "formMessagePlaceholder": "Write whatever feels relevant — or leave it blank if you're still finding the words.",
     "formSubmit": "Send on WhatsApp",
     "formSubmitSecondary": "Call the clinic instead",
+    "formWhatsappUnavailable": "WhatsApp booking is temporarily unavailable. Please use the call option below.",
+    "formWhatsappRetry": "WhatsApp didn’t open? Open your message",
+    "formWhatsappSendHint": "Check your message in WhatsApp, then press Send.",
     "panelTitle": "Other ways to reach us",
     "panelWhatsapp": "Message on WhatsApp",
     "panelWhatsappSub": "We'll reply as soon as we can",
@@ -107,6 +110,7 @@
     "closingNote": "No pressure — just the start of knowing each other.",
     "detailBack": "Back to the team",
     "detailCredentialsHeading": "Experience and quiet proof",
+    "specializationsHeading": "Specializations",
     "doctors": {
       "gorakh": {
         "name": "Dr. Gorakh Mandrupkar",

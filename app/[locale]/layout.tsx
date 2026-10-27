@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Figtree, Fraunces, Sacramento } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
@@ -50,14 +51,19 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  if ((await headers()).get('x-ivf-missing-route') === 'true') {
+    return { title: { absolute: '404 – Page Not Found | IVF Master' }, robots: { index: false, follow: true } }
+  }
   const t = await getTranslations({ locale, namespace: 'Meta' })
+  const content = await getSiteContent(locale)
+  const siteName = resolveSiteChrome(content.globals).identity?.name ?? siteConfig.name
   return {
     metadataBase: new URL(siteConfig.url),
-    applicationName: siteConfig.name,
+    applicationName: siteName,
     title: {
       default: t('siteTitle'),
       // Page-level titles use: `{ title: 'Page Name' }` which becomes "Page Name | IVF Master"
-      template: '%s | IVF Master',
+      template: `%s | ${siteName}`,
     },
     description: t('siteDescription'),
     category: 'healthcare',
@@ -69,7 +75,7 @@ export async function generateMetadata({
       url: siteConfig.url,
       title: t('siteTitle'),
       description: t('siteDescription'),
-      siteName: siteConfig.name,
+      siteName,
       locale: `${locale}_IN`,
       alternateLocale: routing.locales
         .filter((alternateLocale) => alternateLocale !== locale)
@@ -119,6 +125,10 @@ export default async function LocaleLayout({
     notFound()
   }
 
+  if ((await headers()).get('x-ivf-missing-route') === 'true') {
+    return <html lang={locale} className={`${figtree.variable} ${fraunces.variable}`}><body className={figtree.className}>{children}</body></html>
+  }
+
   // Load the full message map for this locale.
   // NextIntlClientProvider makes it available to all client components
   // via useTranslations() without any extra prop drilling.
@@ -136,7 +146,7 @@ export default async function LocaleLayout({
       <GoogleTagManager />
       <GoogleAnalytics />
       <body suppressHydrationWarning className={figtree.className}>
-        <StructuredData settings={settings} availability={availability} />
+        <StructuredData settings={settings} availability={availability} identity={resolveSiteChrome(siteContent.globals).identity} />
         <NextIntlClientProvider messages={messages}>
           <SiteContentProvider content={{ ...resolveSiteChrome(siteContent.globals, siteContent.home, siteContent), procedures: navProcedures }}>
           <ClinicSettingsProvider settings={settings}>

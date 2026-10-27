@@ -108,10 +108,10 @@ export function FacilityCarousel({ images, alt, sizes, labels }: FacilityCarouse
         >
           <Image
             src={images[index]}
-            alt={alt}
+            alt={images[index].alt ?? alt}
             fill
             sizes={sizes}
-            placeholder="blur"
+            placeholder={images[index].blurDataURL ? 'blur' : 'empty'}
             style={{ objectPosition: images[index].position }}
             className="object-cover"
           />

@@ -2,7 +2,7 @@
 import { useSiteContent } from '@/components/providers/SiteContentContext'
 import { useSiteAction } from '@/components/providers/SiteContentContext'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, type CSSProperties } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'motion/react'
@@ -297,7 +297,7 @@ export function CostOfWaiting() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [reduced])
+  }, [reduced, frames])
 
   /* ── REDUCED MOTION: two-phase static layout ─────────────────────────── *
    *  Dark → light handled as a gradient background so the emotional arc     *
@@ -472,7 +472,7 @@ export function CostOfWaiting() {
       {/* ── Responsive artwork — all seven stages stay mounted ─────────── */}
       {(frames ?? []).map((artwork, i) => (
         <div
-          key={artwork.desktop.src}
+          key={artwork.key}
           ref={(el) => { artworkRefs.current[i] = el }}
           aria-hidden="true"
           style={{
@@ -483,32 +483,34 @@ export function CostOfWaiting() {
             willChange:    'opacity',
           }}
         >
-          <picture
+          {(artwork.desktop || artwork.mobile) && <picture
+            className={!artwork.mobile ? 'hidden md:block' : !artwork.desktop ? 'block md:hidden' : 'block'}
             style={{
               position: 'absolute',
               inset:    0,
-              display:  'block',
             }}
           >
-            <source media="(max-width: 767px)" srcSet={artwork.mobile.src} />
+            <source media="(max-width: 767px)" srcSet={artwork.mobile?.image.src} />
             <img
-              src={artwork.desktop.src}
+              src={(artwork.desktop ?? artwork.mobile)!.image.src}
               alt=""
               loading="eager"
               decoding="async"
               draggable={false}
+              className="object-[var(--cost-photo-mobile)] md:object-[var(--cost-photo-desktop)]"
               style={{
                 position:      'absolute',
                 inset:         0,
                 width:         '100%',
                 height:        '100%',
                 objectFit:     'cover',
-                objectPosition:'center',
+                '--cost-photo-desktop': artwork.desktop?.position ?? 'center',
+                '--cost-photo-mobile': artwork.mobile?.position ?? 'center',
                 pointerEvents: 'none',
                 userSelect:    'none',
-              }}
+              } as CSSProperties}
             />
-          </picture>
+          </picture>}
         </div>
       ))}
 

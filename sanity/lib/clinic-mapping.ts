@@ -10,6 +10,12 @@ const text = z.string().refine((s) => s.trim().length > 0)
 const localized = z.object({ en: text, mr: z.string().nullish() })
 const item = localized.extend({ _key: text })
 const items = z.array(item).min(1)
+export const doctorQualification = z.object({
+  _key: text, text: localized,
+  institution: z.string().max(200).nullish(), awardingBody: z.string().max(200).nullish(),
+  year: z.number().int().min(1900).max(new Date().getFullYear()).nullish(),
+})
+const credentials = z.array(z.union([doctorQualification, item])).max(20).nullish().transform(value => value ?? [])
 const publishedId = text.refine((s) => !s.startsWith('drafts.') && !s.startsWith('versions.'))
 const fraction = z.number().min(0).max(1)
 const image = z.object({
@@ -19,7 +25,7 @@ const image = z.object({
   asset: z.object({
     _id: text.regex(/^image-[a-zA-Z0-9]+-\d+x\d+-(jpg|png|webp|avif)$/),
     url: z.url().refine((url) => url.startsWith(`https://cdn.sanity.io/images/${projectId}/${dataset}/`)),
-    metadata: z.object({ dimensions: z.object({ width: z.number().int().positive(), height: z.number().int().positive() }), lqip: text.regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/) }),
+    metadata: z.object({ dimensions: z.object({ width: z.number().int().positive(), height: z.number().int().positive() }), lqip: text.regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/).nullish() }),
   }),
 })
 
@@ -40,10 +46,11 @@ export const doctorDocument = z.object({
   slug: z.enum(['gorakh-mandrupkar', 'saie-mandrupkar']), order: z.number().int().nonnegative(),
   name: localized, title: localized, essence: localized, intro: localized,
   biography: localized.refine(validBiography, 'Use only existing b, br and link biography tags, without message variables.'),
-  credentials: z.array(item), metaDescription: localized, portrait: image.nullish(),
-  home: z.object({ essence: localized, intro: localized, credentials: items }).nullish(),
+  // Legacy published profiles stay readable; Studio requires qualifications on the next publish.
+  credentials, specializations: z.array(item).max(20).nullish().transform(value => value ?? []), metaDescription: localized, portrait: image.nullish(),
+  home: z.object({ essence: localized, intro: localized, credentials }).nullish(),
   about: z.object({ role: localized, pullQuote: localized, paragraphs: items, evidence: localized }).nullish(),
-}).refine((d) => !d.home || d.home.credentials.length === (d.slug === 'gorakh-mandrupkar' ? 4 : 3))
+})
 
 export function localize(value: z.infer<typeof localized>, locale: Locale): string {
   return locale === 'mr' && value.mr?.trim() ? value.mr : value.en
@@ -51,6 +58,9 @@ export function localize(value: z.infer<typeof localized>, locale: Locale): stri
 
 function mapDoctor(doc: z.infer<typeof doctorDocument>, locale: Locale, rawSeo?: unknown) {
   const read = (value: z.infer<typeof localized>) => localize(value, locale)
+  const qualificationText = (value: z.infer<typeof credentials>[number]) => 'text' in value
+    ? [read(value.text), value.institution?.trim(), value.awardingBody?.trim(), value.year].filter(value => value != null && value !== '').join(' · ')
+    : read(value)
   let portrait: { photo: StaticImageData; alt: string; position?: string } | undefined
   if (doc.portrait) {
     const p = doc.portrait
@@ -60,16 +70,16 @@ function mapDoctor(doc: z.infer<typeof doctorDocument>, locale: Locale, rawSeo?:
     const height = Math.max(1, Math.round(dimensions.height * (1 - crop.top - crop.bottom)))
     const clamp = (n: number) => Math.max(0, Math.min(100, n))
     portrait = {
-      photo: { src: createImageUrlBuilder({ projectId, dataset }).image({ asset: { _ref: p.asset._id }, crop: p.crop ?? undefined, hotspot: p.hotspot ?? undefined }).auto('format').url(), width, height, blurDataURL: p.asset.metadata.lqip },
+      photo: { src: createImageUrlBuilder({ projectId, dataset }).image({ asset: { _ref: p.asset._id }, crop: p.crop ?? undefined, hotspot: p.hotspot ?? undefined }).width(1200).auto('format').url(), width, height, ...(p.asset.metadata.lqip ? { blurDataURL: p.asset.metadata.lqip } : {}) },
       alt: read(p.alt),
       position: p.hotspot ? `${clamp((p.hotspot.x - crop.left) / (1 - crop.left - crop.right) * 100)}% ${clamp((p.hotspot.y - crop.top) / (1 - crop.top - crop.bottom) * 100)}%` : undefined,
     }
   }
   return {
     slug: doc.slug, order: doc.order, name: read(doc.name), title: read(doc.title), essence: read(doc.essence),
-    intro: read(doc.intro), biography: read(doc.biography), credentials: doc.credentials.map(read), metaDescription: read(doc.metaDescription), portrait,
+    intro: read(doc.intro), biography: read(doc.biography), credentials: doc.credentials.map(qualificationText), specializations: doc.specializations.map(item => ({ _key: item._key, text: read(item) })), metaDescription: read(doc.metaDescription), portrait,
     pageSeo: resolvePageSeo(rawSeo, locale),
-    home: doc.home ? { essence: read(doc.home.essence), intro: read(doc.home.intro), credentials: doc.home.credentials.map(read) } : undefined,
+    home: doc.home ? { essence: read(doc.home.essence), intro: read(doc.home.intro), credentials: doc.home.credentials.map(qualificationText) } : undefined,
     about: doc.about ? { role: read(doc.about.role), pullQuote: read(doc.about.pullQuote), paragraphs: doc.about.paragraphs.map(read), evidence: read(doc.about.evidence) } : undefined,
   }
 }

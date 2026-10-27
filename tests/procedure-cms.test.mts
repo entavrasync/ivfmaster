@@ -45,6 +45,18 @@ function fixture(): ProcedureDocument {
   }
 }
 
+test('the complete published procedure collection reaches the reader beyond the former twenty-record cutoff', async () => {
+  const dataset = Array.from({ length: 21 }, (_, index) => ({ ...fixture(), _id: `local-procedure-${index}`, _type: 'procedure', slug: { current: `local-procedure-${index}` }, _createdAt: `2026-01-${String(index + 1).padStart(2, '0')}T00:00:00Z` }))
+  const result = await (await groq.evaluate(groq.parse(allProceduresQuery), { dataset, params: { slug: 'ivf' } })).get()
+  assert(Array.isArray(result))
+  assert.equal(result.length, 21)
+  for (const locale of ['en', 'mr'] as const) {
+    const mapped = resolveProcedures(result, PROCEDURES, locale)
+    assert.equal(mapped.status, 'sanity')
+    assert(mapped.procedures.some(procedure => procedure.slug === 'local-procedure-20'))
+  }
+})
+
 test('maps the existing English copy without changing visuals, arrays or ordering', () => {
   const mapped = mapProcedureDocument(fixture(), original, 'en')!
   const { seo, ...page } = mapped
@@ -125,8 +137,8 @@ test('the live collection projection selects approved procedures and retains arr
   const result = await (await groq.evaluate(groq.parse(allProceduresQuery), { dataset, params: { slug: 'ivf' } })).get()
   assert.ok(Array.isArray(result))
   assert.equal(result.length, 2)
-  assert.deepEqual(result.map((record) => record._id), [doc._id, 'other'])
-  assert.ok(mapProcedureDocument(result[0], original, 'en'))
+  assert.deepEqual(result.map((record) => record._id).sort(), [doc._id, 'other'].sort())
+  assert.ok(mapProcedureDocument(result.find(record => record.slug === 'ivf'), original, 'en'))
   const duplicate = await (await groq.evaluate(groq.parse(allProceduresQuery), { dataset: [...dataset, { ...stored, _id: 'duplicate' }], params: { slug: 'ivf' } })).get()
   assert.equal(resolveProcedures(duplicate, PROCEDURES, 'en').status, 'ambiguous')
 })

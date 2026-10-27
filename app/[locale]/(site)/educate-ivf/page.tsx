@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { NextIntlClientProvider } from 'next-intl'
@@ -8,6 +9,8 @@ import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getArticles } from '@/sanity/lib/articles'
 import { getSeoContext } from '@/sanity/lib/site-content'
 import { SectionJsonLd } from '@/components/SEO/StructuredData'
+
+export const revalidate = 60
 
 export async function generateMetadata({
   params,
@@ -20,7 +23,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale: locale as Locale,
     path: '/educate-ivf',
-    ...(await getSeoContext(locale)),
+    ...(await getSeoContext(locale, 'education')),
     title: t('hubMetaTitle'),
     description: t('hubMetaDesc'),
   })
@@ -34,7 +37,8 @@ export default async function EducateIVFPage({ params }: { params: Promise<{ loc
       <NextIntlClientProvider messages={messages}>
         <EducateHub articles={articles} />
       </NextIntlClientProvider>
-      <SectionJsonLd locale={locale} section="educateIVF" />
+      <SectionJsonLd locale={locale} section="educateIVF" seoPage="education" />
+      <BacklinkReferences entries={(await getSeoContext(locale, 'education')).seo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

@@ -1,3 +1,15 @@
+import { z } from 'zod'
+
+const whatsappNumber = z.string().regex(/^[1-9][0-9]{6,14}$/)
+
+export function buildWhatsappUrl(number: unknown, message?: string): string | null {
+  const parsed = whatsappNumber.safeParse(number)
+  if (!parsed.success) return null
+  const url = new URL(`https://wa.me/${parsed.data}`)
+  if (message !== undefined) url.searchParams.set('text', message)
+  return url.toString()
+}
+
 export interface ContactFormData {
   name:             string
   reachingAs:       string
@@ -37,5 +49,5 @@ export function buildWhatsappMessage(data: ContactFormData): string {
   if (data.openMessage)
     lines.push('', '*In their words:*', data.openMessage)
 
-  return lines.join('\n')
+  return lines.join('\n').replace(/\r\n?|\n/g, '\r\n')
 }

@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 
 import { localized } from '../shared/fields'
+import { requireAllLocalesInEach } from '../../lib/localizedValidation'
 
 /**
  * The About page.
@@ -89,7 +90,7 @@ export const aboutPage = defineType({
           type: 'array',
           of: [{ type: 'localizedText' }],
           description: 'The right-hand column, one paragraph per entry.',
-          validation: (rule) => rule.required().min(1).max(6),
+          validation: rule => [rule.required().min(1).max(6), rule.custom(requireAllLocalesInEach)],
         }),
         localized('quote', {
           title: 'Pull quote',

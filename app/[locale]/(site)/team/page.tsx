@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
@@ -33,6 +34,7 @@ export default async function TeamPage({ params }: { params: Promise<{ locale: s
         <TeamPageContent />
       </main>
       <SectionJsonLd locale={locale} section="team" seoPage="team" />
+      <BacklinkReferences entries={(await getSeoContext(locale, 'team')).seo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

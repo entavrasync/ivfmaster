@@ -2,6 +2,7 @@ import { defineField, defineType, type ArrayRule } from 'sanity'
 
 import { requireAllLocalesInEach } from '../../lib/localizedValidation'
 import { defineImageField, localized } from '../shared/fields'
+import { CostOfWaitingLineInput } from '../../../studio/CostOfWaitingLineInput'
 
 /**
  * The Home page.
@@ -213,27 +214,29 @@ export const homePage = defineType({
           name: 'narrativeLines',
           title: 'Narrative lines',
           type: 'array',
-          of: [{ type: 'localizedString' }],
+          of: [{ type: 'costOfWaitingLine', title: 'Narrative line' }, { type: 'localizedString', title: 'Existing text-only line', components: { input: CostOfWaitingLineInput } }],
           description:
-            'Exactly five. Each line is one beat of the pinned timeline — fade in, hold, fade out — and the total scroll distance is calculated from the beat count. A sixth line would be scrolled past before it ever appeared.',
+            'Keep five lines. Open a line to edit its text and desktop/mobile photos. For an existing text-only line, choose Add desktop and mobile photos.',
           validation: (rule) => [rule.required().length(5), eachLocalized(rule)],
         }),
         defineField({
           name: 'hopeLines',
           title: 'Turning-point lines',
           type: 'array',
-          of: [{ type: 'localizedString' }],
+          of: [{ type: 'costOfWaitingLine', title: 'Turning-point line' }, { type: 'localizedString', title: 'Existing text-only line', components: { input: CostOfWaitingLineInput } }],
           description:
-            'Exactly two. These are the lines after the section turns from dark to light. The turn happens at a fixed position in the sequence, so the split between the five above and these two is not adjustable.',
+            'Keep two lines. Open a line to edit its text and desktop/mobile photos. For an existing text-only line, choose Add desktop and mobile photos.',
           validation: (rule) => [rule.required().length(2), eachLocalized(rule)],
         }),
         defineField({
           name: 'frames',
-          title: 'Artwork frames',
+          title: 'Previous artwork (kept for compatibility)',
+          hidden: true,
+          readOnly: true,
           type: 'array',
           of: [{ type: 'editorialImage' }],
           description:
-            'Optional — leave empty for the section’s background colour without artwork. Upload exactly seven desktop/mobile pairs to match the seven scroll beats; no local images are substituted.',
+            'Edit photos inside the narrative and turning-point lines. Existing saved artwork remains readable.',
           validation: (rule) => rule.length(7),
         }),
         defineField({

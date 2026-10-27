@@ -2,6 +2,7 @@ import { defineArrayMember, defineField, defineType, getPublishedId } from 'sani
 import { defaultAvailability } from '../../lib/clinicHours'
 import { availabilityContent, availabilityDocument } from '../lib/availability-mapping'
 import { approvalField } from './editorial-fields'
+import { HoursConfirmationInput } from '../studio/RecordHoursConfirmationAction'
 
 const days = [
   ['mon', 'Monday'], ['tue', 'Tuesday'], ['wed', 'Wednesday'], ['thu', 'Thursday'],
@@ -9,6 +10,7 @@ const days = [
 ]
 export const clinicAvailability = defineType({
   name: 'clinicAvailability', title: 'Clinic hours & availability', type: 'document',
+  components: { input: HoursConfirmationInput },
   description: 'One schedule for public hours, the open/closed indicator and structured data. Defaults copy current website hours; they are not automatically approved or published.',
   groups: [{ name: 'hours', title: 'Weekly hours', default: true }, { name: 'closures', title: 'Dated closures' }, { name: 'confirmation', title: 'Clinic confirmation' }],
   initialValue: () => ({
@@ -18,7 +20,9 @@ export const clinicAvailability = defineType({
     reviewStatus: 'pendingReview',
   }),
   fields: [
-    { ...approvalField, group: 'confirmation' },
+    { ...approvalField, title: 'Clinic approval', group: 'confirmation',
+      description: 'After the clinic has checked the current hours and closures, select Approved. Recording the confirmation and publishing are separate steps.',
+      validation: rule => rule.required().custom(value => value === 'approved' || 'Ask the clinic to check this schedule, then select Approved here before publishing.') },
     defineField({ name: 'timezone', title: 'Clinic timezone', type: 'string', group: 'hours', readOnly: true,
       description: 'Asia/Kolkata (IST). Opening status always uses clinic time, never the visitor’s timezone.',
       validation: rule => rule.required().custom(value => value === 'Asia/Kolkata' || 'Use the clinic timezone Asia/Kolkata.') }),
@@ -52,7 +56,7 @@ export const clinicAvailability = defineType({
       ], preview: { select: { title: 'reason', subtitle: 'date' } } })],
     }),
     defineField({ name: 'confirmationNote', title: 'Clinic confirmation reference', type: 'text', rows: 2, group: 'confirmation',
-      description: 'Record how the clinic confirmed these hours/closures. Do not infer approval from the website defaults. After review, use “Record hours confirmation”; any schedule change invalidates it. No patient information.',
+      description: 'Write who confirmed the hours and closures, when, and how (for example, a phone call or email). Use real confirmation details, not the website defaults. Then press Record hours confirmation above. No patient information.',
       validation: rule => rule.required().max(500) }),
     defineField({ name: 'confirmedAt', title: 'Last recorded confirmation', type: 'datetime', group: 'confirmation', readOnly: true,
       description: 'Recorded by the confirmation action. This action saves only your draft and does not publish it.' }),
@@ -61,8 +65,33 @@ export const clinicAvailability = defineType({
   validation: rule => rule.custom((value, context) => {
     if (context.document?._id && getPublishedId(context.document._id) !== 'clinicAvailability') return 'Use the Clinic hours & availability singleton.'
     const content = availabilityContent.safeParse(value)
-    if (!content.success) return content.error.issues.map(issue => issue.path.join('.') + ': ' + issue.message).join('; ')
-    return availabilityDocument.safeParse({ ...(value as Record<string, unknown>), _id: 'clinicAvailability' }).success || 'Review the schedule with the clinic, then use “Record hours confirmation”. Changing hours, closures or the reference requires a new confirmation.'
+    if (!content.success) return content.error.issues.map(issue => {
+      let current: unknown = value
+      const path = issue.path.map(segment => {
+        if (typeof segment === 'number' && Array.isArray(current)) {
+          current = current[segment]
+          if (current && typeof current === 'object' && '_key' in current && typeof current._key === 'string') return { _key: current._key }
+        } else current = current && typeof current === 'object' ? Reflect.get(current, segment) : undefined
+        return typeof segment === 'symbol' ? String(segment) : segment
+      })
+      const field = issue.path.at(-1)
+      if (issue.path[0] === 'weeklyHours' && typeof field === 'number') path.push('close')
+      const message = issue.code === 'custom' ? issue.message
+        : issue.path[0] === 'confirmationNote' ? 'Write who confirmed the schedule, when and how. Use plain text, up to 500 characters.'
+        : field === 'open' || field === 'close' ? 'Enter the time as HH:MM using the 24-hour clock, for example 18:00 for 6 PM.'
+        : field === 'day' ? 'Choose the weekday for this row.'
+        : field === 'closed' ? 'Choose whether the clinic is closed all day.'
+        : field === 'date' ? 'Choose a valid calendar date for this closure.'
+        : field === 'reason' ? 'Enter a public reason for the closure, up to 160 characters.'
+        : issue.path[0] === 'closures' ? 'Add a date and public reason for each closure, or leave this list empty.'
+        : issue.path[0] === 'timezone' ? 'The clinic timezone must be Asia/Kolkata.'
+        : 'Keep one row for each of the seven weekdays.'
+      return { message, paths: [path] }
+    })
+    return availabilityDocument.safeParse({ ...(value as Record<string, unknown>), _id: 'clinicAvailability' }).success || {
+      message: 'The current schedule has no matching confirmation. After the clinic checks it, press Record hours confirmation above the form.',
+      paths: [['confirmedAt']],
+    }
   }),
   preview: { prepare: () => ({ title: 'Clinic hours & availability', subtitle: 'IST · confirmation required before publication' }) },
 })

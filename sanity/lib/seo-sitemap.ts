@@ -3,14 +3,14 @@ import 'server-only'
 import type { SitemapOverrides } from '../../lib/seo/sitemap'
 import { client } from './client'
 
-const PAGE_PATHS: Record<string, string> = { homePage: '/', aboutPage: '/about', teamPage: '/team', proceduresPage: '/procedures', contactPage: '/contact' }
+const PAGE_PATHS: Record<string, string> = { homePage: '/', aboutPage: '/about', teamPage: '/team', proceduresPage: '/procedures', contactPage: '/contact', educationPage: '/educate-ivf' }
 const COLLECTION_PATHS: Record<string, string> = { procedure: '/procedures/', article: '/educate-ivf/', doctor: '/team/' }
 
 const sitemapQuery = `{
   "procedures": *[_type == "procedure" && reviewStatus == "approved" && defined(slug.current)
-    && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0...50].slug.current,
-  "hidden": *[_type in $types && reviewStatus == "approved" && (seo.noIndex == true || defined(seo.canonicalUrl))
-    && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0...100]{_type, "slug": slug.current}
+    && !(_id in path("drafts.**")) && !(_id in path("versions.**"))].slug.current,
+  "hidden": *[_type in $types && reviewStatus == "approved" && (seo.noIndex == true || seo.canonicalUrl match "*")
+    && !(_id in path("drafts.**")) && !(_id in path("versions.**"))]{_type, "slug": slug.current}
 }`
 
 /** Published CMS decisions that change the sitemap; any failure keeps the code-defined sitemap. */

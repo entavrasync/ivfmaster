@@ -24,7 +24,8 @@ test('team data defines the two real doctors and editable supporting-team slots'
   assert(careTeam.some((member) => member.credentials?.some((c) => c.includes('CHARUSAT'))))
   assert.equal(facilityPhotos.length, 4)
 
-  for (const item of [...doctors, ...careTeam]) {
+  assert(doctors.every(doctor => doctor.image === undefined), 'Doctor photos come from CMS, including intentional removal')
+  for (const item of careTeam) {
     assert(item.image.src.startsWith('/'), 'Team image slots must use public absolute paths')
     assert(item.image.altKey.length > 0, 'Every team image slot needs a translated alt key')
   }

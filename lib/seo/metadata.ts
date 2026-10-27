@@ -20,10 +20,11 @@ type PageMetadataOptions = {
   readonly seo?: PageSeo
   /** Site-wide SEO defaults (social image and text) used when the page leaves a field empty. */
   readonly fallbackSeo?: PageSeo
+  readonly siteName?: string
 }
 
-function ensureBrandedTitle(title: string): string {
-  return title.includes(siteConfig.name) ? title : title + ' | ' + siteConfig.name
+function ensureBrandedTitle(title: string, siteName: string): string {
+  return title.includes(siteName) ? title : title + ' | ' + siteName
 }
 
 export function buildPageMetadata({
@@ -35,11 +36,12 @@ export function buildPageMetadata({
   publishedTime,
   seo,
   fallbackSeo,
+  siteName = siteConfig.name,
 }: PageMetadataOptions): Metadata {
   const canonical = buildAbsoluteUrl(buildLocalizedPath(locale, seo?.canonicalPath ?? path))
-  const brandedTitle = ensureBrandedTitle(seo?.title ?? title)
+  const brandedTitle = ensureBrandedTitle(seo?.title ?? title, siteName)
   const pageDescription = seo?.description ?? description
-  const shareTitle = seo?.ogTitle ? ensureBrandedTitle(seo.ogTitle) : brandedTitle
+  const shareTitle = seo?.ogTitle ? ensureBrandedTitle(seo.ogTitle, siteName) : brandedTitle
   const shareDescription = seo?.ogDescription ?? pageDescription
   const shareImage = seo?.ogImage ?? fallbackSeo?.ogImage
   const languages = {
@@ -50,7 +52,7 @@ export function buildPageMetadata({
     url: canonical,
     title: shareTitle,
     description: shareDescription,
-    siteName: siteConfig.name,
+    siteName,
     locale: locale + '_IN',
     alternateLocale: routing.locales
       .filter((alternateLocale) => alternateLocale !== locale)

@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+import { localizedValue } from '../../lib/localized-query'
 
 /**
  * Contact page copy, keyed by the existing `Contact.*` message keys.
@@ -29,8 +30,8 @@ export const CONTACT_FIELDS = {
 /** Fields edited as multi-line text rather than a single line. */
 export const CONTACT_LONG_FIELDS: ReadonlySet<string> = new Set(['lead', 'formMessagePlaceholder', 'metaDescription'])
 
-const pick = (key: string) => `"${key}": select($locale == "en" => coalesce(${key}.en, ${key}.mr), coalesce(${key}.mr, ${key}.en))`
+const pick = (key: string) => `"${key}": ${localizedValue(key)}`
 
 export const contactPageQuery = defineQuery(`*[_type == "contactPage" && _id == "contactPage" && reviewStatus == "approved"][0]{
-  ${Object.entries(CONTACT_FIELDS).map(([section, keys]) => `${section}{ ${keys.map(pick).join(', ')} }`).join(',\n  ')}
+  ${Object.entries(CONTACT_FIELDS).map(([section, keys]) => `${section}{ ${keys.map(pick).join(', ')}${section === 'seo' ? ', backlinks[]{_key,url}' : ''} }`).join(',\n  ')}
 }`)

@@ -72,13 +72,12 @@ export function requireAnyLocale(value: unknown): ValidationResult {
  * which on the Home page means a blank line in the middle of a pinned scroll
  * sequence that still consumes its full GSAP beat.
  */
-export function requireAllLocalesInEach(value: unknown): ValidationResult {
+export function requireAllLocalesInEach(value: unknown): true | { message: string; paths: (string | number | { _key: string })[][] } {
   if (!Array.isArray(value)) return true
-  for (const [index, entry] of value.entries()) {
-    const result = requireAllLocales(entry)
-    if (result !== true) return `Item ${index + 1} — ${result}`
-  }
-  return true
+  const paths = value.flatMap((entry, index) => requireAllLocales(entry) === true ? [] : [[
+    entry && typeof entry === 'object' && typeof entry._key === 'string' ? { _key: entry._key } : index, 'en',
+  ]])
+  return paths.length ? { message: 'Enter this item’s text in English. Marathi is optional and uses English when empty.', paths } : true
 }
 
 /**

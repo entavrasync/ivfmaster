@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
@@ -13,7 +14,7 @@ import type { Locale } from '@/i18n/routing'
 import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getAboutInformation } from '@/sanity/lib/editorial'
 import { getSiteContent } from '@/sanity/lib/site-content'
-import { mergeAboutPage, at } from '@/sanity/lib/site-content-mapping'
+import { mergeAboutPage, at, plain } from '@/sanity/lib/site-content-mapping'
 import { aboutContent } from '@/lib/content/about'
 import { getSeoContext } from '@/sanity/lib/site-content'
 import { SectionJsonLd } from '@/components/SEO/StructuredData'
@@ -46,12 +47,13 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <AboutHero content={content.hero} />
         <AboutOrigin content={page.about ? content.origin : information?.origin ?? content.origin} />
         <CareJourney content={page.about ? content.care : information?.care ?? content.care} />
-        <DoctorStories content={content.doctors} />
+        <DoctorStories content={content.doctors} eyebrow={plain(at(page.about, 'doctorsSection.eyebrow'))} />
         <CareTeam content={content.team} />
         <TrustInPractice content={page.about ? content.trust : information?.trust ?? content.trust} />
         <AboutClosing content={content.closing} />
       </main>
       <SectionJsonLd locale={locale} section="about" seoPage="about" />
+      <BacklinkReferences entries={(await getSeoContext(locale, 'about')).seo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

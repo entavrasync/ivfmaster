@@ -2,6 +2,7 @@ import { defineField } from 'sanity'
 
 import { LOCALE_LABELS } from '../../lib/locales'
 import { createLocalizedType } from './createLocalizedType'
+import { validatePlainCopy } from '../../../lib/copy-validation'
 
 /**
  * A multi-line localized value with no formatting: intros, excerpts, meta
@@ -19,6 +20,7 @@ export const localizedText = createLocalizedType({
       name: locale,
       title: LOCALE_LABELS[locale],
       type: 'text',
+      validation: rule => rule.custom(validatePlainCopy),
       rows: 4,
     }),
 })

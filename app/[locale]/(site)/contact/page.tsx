@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import type { Locale } from '@/i18n/routing'
@@ -30,6 +31,7 @@ export default async function ContactRoute({ params }: { params: Promise<{ local
     <>
       <ContactPage />
       <SectionJsonLd locale={locale} section="contact" seoPage="contact" />
+      <BacklinkReferences entries={(await getSeoContext(locale, 'contact')).seo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

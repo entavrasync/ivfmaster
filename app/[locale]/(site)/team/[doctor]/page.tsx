@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -60,7 +61,7 @@ export default async function DoctorDetailPage({
   const structuredData = doctor.pageSeo?.structuredData === false ? null : buildPhysicianJsonLd({
     locale: pageLocale(locale), trail: await breadcrumbTrail(locale, 'team', { name: doctor.name, path: `/team/${slug}` }),
     slug, name: doctor.name, jobTitle: doctor.title, description: doctor.pageSeo?.description ?? doctor.metaDescription,
-    image: absoluteImage(doctor.image.src),
+    image: doctor.image ? absoluteImage(doctor.image.src) : undefined,
   })
 
   return (
@@ -80,13 +81,13 @@ export default async function DoctorDetailPage({
             {/* Image Section (30%) */}
             <div className="relative w-full flex-shrink-0 bg-white/40 p-6 sm:p-8 lg:w-[30%] lg:border-r lg:border-taupe/30 lg:p-10">
               <Reveal className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5" y={16}>
-                <Image
+                {doctor.image && <Image
                   src={doctor.image.src}
                   alt={doctor.imageAlt}
                   fill
                   sizes="(max-width: 1023px) 100vw, 30vw"
                   className="object-contain"
-                />
+                />}
               </Reveal>
             </div>
 
@@ -100,6 +101,10 @@ export default async function DoctorDetailPage({
                   {name}
                 </h1>
                 <p className="mt-3 text-lg font-semibold leading-8 text-navy">{doctor.title}</p>
+                {doctor.specializations.length > 0 && <div className="mt-6">
+                  <h2 className="font-display text-2xl text-ink">{t('specializationsHeading')}</h2>
+                  <ul className="mt-3 flex flex-wrap gap-2">{doctor.specializations.map(specialization => <li key={specialization._key} className="rounded-full bg-lavender/70 px-3 py-1 text-base text-ink">{specialization.text}</li>)}</ul>
+                </div>}
                 <div className="mt-7 text-lg leading-8 text-slate">
                   {biography.rich('biography', {
                     br: () => <br />,
@@ -151,6 +156,7 @@ export default async function DoctorDetailPage({
         </Container>
       </main>
       {structuredData && <JsonLdScript data={structuredData} />}
+      <BacklinkReferences entries={doctor.pageSeo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

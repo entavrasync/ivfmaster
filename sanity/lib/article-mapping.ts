@@ -5,7 +5,7 @@ import type { Article } from '../../lib/articles.ts'
 import type { Locale } from '../../i18n/routing.ts'
 import { dataset, projectId } from '../project.ts'
 import { resolvePageSeo, type PageSeo } from './seo-mapping.ts'
-import { articleModels, articleSlugs, type ArticleContract, type ArticleField } from '../article-model.ts'
+import { articleModels, isArticleSlug, reservedArticleSlugs, articleSlugPattern, maxArticles, type ArticleContract, type ArticleField } from '../article-model.ts'
 
 const text = z.string().refine((s) => s.trim().length > 0)
 // Content is passed through next-intl's string API: reject ICU markup/variables,
@@ -51,20 +51,30 @@ const coverImage = z.object({
   asset: z.object({
     _id: text.regex(/^image-[a-zA-Z0-9]+-\d+x\d+-(jpg|png|webp|avif)$/),
     url: z.url().refine((s) => s.startsWith(`https://cdn.sanity.io/images/${projectId}/${dataset}/`)),
-    metadata: z.object({ dimensions: z.object({ width: z.number().int().positive(), height: z.number().int().positive() }), lqip: text.regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/) }),
+    metadata: z.object({ dimensions: z.object({ width: z.number().int().positive(), height: z.number().int().positive() }), lqip: text.regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/).nullish() }),
   }),
 })
 const localizedText = localizedSchema('text')
+const optionalCopy = z.string().refine(value => !value.trim() || copy.safeParse(value).success).nullish()
+export const optionalArticleCopy = z.object({ en: optionalCopy, mr: optionalCopy })
+const newSections = z.array(z.object({ _key: text, heading: copy, body: copy })).min(1).max(100)
+  .refine((items) => new Set(items.map((item) => item._key)).size === items.length, 'Each section must be a separate item.')
+export const newArticleContent = z.object({
+  intro: localizedText,
+  sections: z.object({ en: newSections, mr: newSections.nullish() }),
+  keyTakeaways: z.object({ en: strings.max(20), mr: strings.max(20).nullish() }).nullish(),
+})
 export const articleDocument = z.object({
   _id: text.refine((s) => !s.startsWith('drafts.') && !s.startsWith('versions.')),
-  reviewStatus: z.literal('approved'), slug: z.enum(articleSlugs as [typeof articleSlugs[number], ...typeof articleSlugs[number][]]),
+  reviewStatus: z.literal('approved'), slug: text.max(96).regex(articleSlugPattern).refine((slug) => !reservedArticleSlugs.some((reserved) => reserved === slug), 'This address belongs to an existing article redirect.'),
   title: localizedText, excerpt: localizedText,
   category: z.enum(['Conditions', 'Understanding IVF', 'Myths']),
   date: z.iso.date(), readTime: z.number().int().positive().max(120),
   related: z.array(z.object({ _key: text, slug: text, reviewStatus: z.literal('approved') })).max(6).nullish(),
   // Either override may be set alone; keyword, social and visibility fields are read from the raw record.
-  seo: z.object({ metaTitle: localizedText.nullish(), metaDescription: localizedText.nullish() }).nullish(),
+  seo: z.object({ metaTitle: optionalArticleCopy.nullish(), metaDescription: optionalArticleCopy.nullish() }).nullish(),
   coverImage: coverImage.nullish(),
+  content: z.unknown().optional(),
   ...Object.fromEntries(Object.values(articleModels).map((model) => [model.field, z.unknown().optional()])),
 })
 
@@ -89,6 +99,17 @@ export function localizeArticleBody(contract: ArticleContract, body: Record<stri
 const read = (value: { en: unknown; mr?: unknown }, locale: Locale) => choose(value, locale) as string
 export type CmsArticle = Article & { pageSeo?: PageSeo }
 
+function withCover(result: CmsArticle, image: z.infer<typeof coverImage> | null | undefined, locale: Locale): CmsArticle {
+  if (!image) return result
+  const c = image.crop ?? { left: 0, right: 0, top: 0, bottom: 0 }, d = image.asset.metadata.dimensions
+  const clamp = (v: number) => Math.max(0, Math.min(100, v))
+  return { ...result,
+    coverImage: { src: createImageUrlBuilder({ projectId, dataset }).image({ asset: { _ref: image.asset._id }, crop: image.crop ?? undefined, hotspot: image.hotspot ?? undefined }).auto('format').url(), width: Math.max(1, Math.round(d.width * (1 - c.left - c.right))), height: Math.max(1, Math.round(d.height * (1 - c.top - c.bottom))), ...(image.asset.metadata.lqip ? { blurDataURL: image.asset.metadata.lqip } : {}) },
+    coverImageAlt: read(image.alt, locale),
+    ...(image.hotspot ? { coverPosition: `${clamp((image.hotspot.x - c.left) / (1 - c.left - c.right) * 100)}% ${clamp((image.hotspot.y - c.top) / (1 - c.top - c.bottom) * 100)}%` } : {}),
+  }
+}
+
 export function mergeArticleMessages(base: AbstractIntlMessages, overrides: AbstractIntlMessages): AbstractIntlMessages {
   const out = { ...base }
   for (const [key, value] of Object.entries(overrides)) {
@@ -107,19 +128,25 @@ function pageSeoFor(input: unknown, slug: string, locale: Locale): { pageSeo?: P
 
 export function resolveArticles(input: unknown, fallback: readonly Article[], locale: Locale): { articles: readonly CmsArticle[]; overrides: AbstractIntlMessages; status: string } {
   const fail = (status: string) => ({ articles: fallback, overrides: {}, status })
-  const parsed = z.array(articleDocument).max(articleSlugs.length).safeParse(input)
+  const parsed = z.array(articleDocument).max(maxArticles).safeParse(input)
   if (!parsed.success) return fail('invalid')
   if (parsed.data.length === 0) return fail('missing')
   if (new Set(parsed.data.map((d) => d.slug)).size !== parsed.data.length) return fail('ambiguous')
   try {
+    const eligible = new Set([...fallback.map((article) => article.slug), ...parsed.data.map((doc) => doc.slug)])
+    const relatedFor = (doc: z.infer<typeof articleDocument>) => {
+      const related = doc.related?.map((item) => item.slug)
+      if (related && (related.includes(doc.slug) || new Set(related).size !== related.length || related.some((slug) => !eligible.has(slug)))) throw new Error('Invalid article relationship')
+      return related
+    }
     let overrides: AbstractIntlMessages = {}
     const articles = fallback.map((original): CmsArticle => {
       const doc = parsed.data.find((d) => d.slug === original.slug)
       if (!doc) return original
+      if (!isArticleSlug(doc.slug)) throw new Error('Unexpected legacy article')
       const model = articleModels[doc.slug]
       const body = articleBodySchema(model.contract).parse((doc as Record<string, unknown>)[model.field])
-      const related = doc.related?.map((r) => r.slug)
-      if (related && (related.includes(doc.slug) || new Set(related).size !== related.length || related.some((s) => !articleSlugs.includes(s as typeof doc.slug)))) throw new Error('Invalid article relationship')
+      const related = relatedFor(doc)
       const title = read(doc.title, locale), excerpt = read(doc.excerpt, locale)
       const localizedBody = localizeArticleBody(model.contract, body, locale)
       const listing = { title, excerpt }
@@ -133,17 +160,17 @@ export function resolveArticles(input: unknown, fallback: readonly Article[], lo
         ...(related ? { relatedSlugs: related } : {}),
         ...(pageSeoFor(input, doc.slug, locale)),
       }
-      if (doc.coverImage) {
-        const p = doc.coverImage, c = p.crop ?? { left: 0, right: 0, top: 0, bottom: 0 }, d = p.asset.metadata.dimensions
-        const clamp = (v: number) => Math.max(0, Math.min(100, v))
-        return { ...result,
-          coverImage: { src: createImageUrlBuilder({ projectId, dataset }).image({ asset: { _ref: p.asset._id }, crop: p.crop ?? undefined, hotspot: p.hotspot ?? undefined }).auto('format').url(), width: Math.max(1, Math.round(d.width * (1 - c.left - c.right))), height: Math.max(1, Math.round(d.height * (1 - c.top - c.bottom))), blurDataURL: p.asset.metadata.lqip },
-          coverImageAlt: read(p.alt, locale),
-          ...(p.hotspot ? { coverPosition: `${clamp((p.hotspot.x - c.left) / (1 - c.left - c.right) * 100)}% ${clamp((p.hotspot.y - c.top) / (1 - c.top - c.bottom) * 100)}%` } : {}),
-        }
-      }
-      return result
+      return withCover(result, doc.coverImage, locale)
     })
+    for (const doc of parsed.data.filter((record) => !isArticleSlug(record.slug))) {
+      const content = newArticleContent.parse(doc.content)
+      const related = relatedFor(doc)
+      articles.push(withCover({ slug: doc.slug, title: read(doc.title, locale), excerpt: read(doc.excerpt, locale), category: doc.category, date: doc.date, readTime: doc.readTime,
+        intro: read(content.intro, locale), sections: choose(content.sections, locale) as Article['sections'],
+        ...(content.keyTakeaways ? { keyTakeaways: choose(content.keyTakeaways, locale) as string[] } : {}),
+        ...(related ? { relatedSlugs: related } : {}), ...pageSeoFor(input, doc.slug, locale),
+      }, doc.coverImage, locale))
+    }
     return { articles, overrides, status: parsed.data.length ? 'sanity' : 'missing' }
   } catch { return fail('invalid') }
 }
