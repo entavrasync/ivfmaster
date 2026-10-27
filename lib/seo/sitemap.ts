@@ -145,6 +145,7 @@ function dedupeSitemapRoutes(routes: readonly SitemapRoute[]): readonly SitemapR
 /** CMS-driven adjustments: procedures added in the Studio, and pages editors hid or canonicalized. */
 export type SitemapOverrides = {
   readonly extraProcedureSlugs?: readonly string[]
+  readonly extraArticleSlugs?: readonly string[]
   readonly excludedPaths?: ReadonlySet<string>
 }
 
@@ -163,6 +164,7 @@ export async function getCanonicalSitemapRoutes(overrides: SitemapOverrides = {}
     ...treatmentRoutes,
     ...extraTreatmentRoutes,
     ...educationRoutes,
+    ...(overrides.extraArticleSlugs ?? []).map((slug) => createSitemapRoute(`/educate-ivf/${slug}`, 'educationArticle')),
     ...doctorRoutes,
   ]).filter((route) => !overrides.excludedPaths?.has(route.path))
 }

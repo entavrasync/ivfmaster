@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next'
 import type { ComponentType } from 'react'
 import { NextIntlClientProvider } from 'next-intl'
@@ -20,6 +21,11 @@ import { buildPageMetadata } from '@/lib/seo/metadata'
 import { getSeoContext } from '@/sanity/lib/site-content'
 import { JsonLdScript, absoluteImage, breadcrumbTrail, pageLocale } from '@/components/SEO/StructuredData'
 import { buildArticleJsonLd } from '@/lib/seo/jsonLd'
+
+// Published CMS articles added after deployment become available on first visit.
+export const dynamicParams = true
+export const dynamic = 'force-static'
+export const revalidate = 60
 
 export async function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -196,6 +202,7 @@ export default async function ArticleDetailPage({
         <Selected article={article} allArticles={articles} />
       </NextIntlClientProvider>
       {structuredData && <JsonLdScript data={structuredData} />}
+      <BacklinkReferences entries={article.pageSeo?.backlinks} locale={locale} />
       <Footer />
     </>
   )

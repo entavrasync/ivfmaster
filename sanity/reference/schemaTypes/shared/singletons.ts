@@ -29,6 +29,7 @@ export interface SingletonDefinition {
 }
 
 export const SINGLETONS = [
+  { id: 'educationPage', type: 'educationPage', title: 'IVF education page' },
   {
     id: 'siteSettings',
     type: 'siteSettings',
@@ -64,6 +65,7 @@ export const SINGLETONS = [
     type: 'aboutPage',
     title: 'About page',
   },
+  { id: 'teamValues', type: 'teamValues', title: 'Team Values' },
   {
     id: 'contactPage',
     type: 'contactPage',

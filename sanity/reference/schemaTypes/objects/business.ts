@@ -1,5 +1,6 @@
 import { defineField, defineType, type ValidationContext } from 'sanity'
 
+import { isSiteMenuPath } from '../../../lib/site-content-mapping'
 import { localized } from '../shared/fields'
 
 // Site Settings retains this hidden object only for stored-data compatibility.
@@ -331,13 +332,23 @@ export const navItem = defineType({
     localized('label', {
       title: 'Label',
       translation: 'all',
-      description: 'Navigation is visible on every page in every language, so both are required.',
+      description: 'Enter the menu name in English and Marathi.',
     }),
     defineField({
       name: 'link',
       title: 'Destination',
       type: 'link',
-      validation: (rule) => rule.required(),
+      description: 'Choose Page on this site and enter its path, such as /contact. Use /procedures for the treatment dropdown.',
+      validation: (rule) => rule.required().custom((value, context) => {
+        // Footer destinations validate at their individual inputs, without a second parent error.
+        if (context.document?._type === 'footer') return true
+        const link = value as { kind?: string; internalPath?: string; anchor?: string; externalUrl?: string } | undefined
+        if (!link) return true
+        if (link.kind === 'external') return true // The link input validates the web address.
+        if (link.kind === 'anchor' && link.anchor === 'faq') return true
+        if (link.kind !== 'internal') return { message: 'Choose a website page, an external website, or the Home FAQ section.', paths: [['kind']] }
+        return typeof link.internalPath === 'string' && isSiteMenuPath(link.internalPath) || { message: 'Enter a website page path, such as /contact or /procedures/ivf. Leave out /en and /mr.', paths: [['internalPath']] }
+      }),
     }),
   ],
   preview: {

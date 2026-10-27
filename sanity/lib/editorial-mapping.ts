@@ -37,7 +37,7 @@ const galleryImage = z.object({
   asset: z.object({
     _id: text.regex(/^image-[a-zA-Z0-9]+-\d+x\d+-(jpg|png|webp|avif)$/),
     url: z.url().refine((value) => value.startsWith(`https://cdn.sanity.io/images/${projectId}/${dataset}/`)),
-    metadata: z.object({ dimensions: z.object({ width: z.number().int().positive(), height: z.number().int().positive() }), lqip: text.regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/) }),
+    metadata: z.object({ dimensions: z.object({ width: z.number().int().positive(), height: z.number().int().positive() }), lqip: text.regex(/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/).nullish() }),
   }),
 })
 export const facilityGalleryContent = z.object({
@@ -80,7 +80,7 @@ export function resolveAboutInformation(input: unknown, locale: Locale) {
 }
 export type AboutInformation = NonNullable<ReturnType<typeof resolveAboutInformation>['content']>
 
-export type FacilityImage = StaticImageData & { position?: string }
+export type FacilityImage = StaticImageData & { position?: string; alt?: string }
 function mapImage(image: z.infer<typeof galleryImage>): FacilityImage {
   const crop = image.crop ?? { left: 0, right: 0, top: 0, bottom: 0 }
   const dimensions = image.asset.metadata.dimensions
@@ -88,7 +88,7 @@ function mapImage(image: z.infer<typeof galleryImage>): FacilityImage {
   return {
     src: createImageUrlBuilder({ projectId, dataset }).image({ asset: { _ref: image.asset._id }, crop: image.crop ?? undefined, hotspot: image.hotspot ?? undefined }).auto('format').url(),
     width: Math.max(1, Math.round(dimensions.width * (1 - crop.left - crop.right))), height: Math.max(1, Math.round(dimensions.height * (1 - crop.top - crop.bottom))),
-    blurDataURL: image.asset.metadata.lqip,
+    ...(image.asset.metadata.lqip ? { blurDataURL: image.asset.metadata.lqip } : {}),
     ...(image.hotspot ? { position: `${clamp((image.hotspot.x - crop.left) / (1 - crop.left - crop.right) * 100)}% ${clamp((image.hotspot.y - crop.top) / (1 - crop.top - crop.bottom) * 100)}%` } : {}),
   }
 }

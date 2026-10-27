@@ -20,9 +20,12 @@ export function plain(value: unknown): string | undefined {
   return parsed.success ? parsed.data : undefined
 }
 const allowedRoutes = new Set(['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map((item) => '/procedures/' + item.slug), ...articleSlugs.map((slug) => '/educate-ivf/' + slug)])
-export type SiteMenuItem = { key: string; href: string; label: string }
+export const isSiteMenuPath = (path: string) => allowedRoutes.has(path) || path === '/#faq' || /^\/(procedures|educate-ivf)\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)
+export type SiteMenuItem = { key: string; href: string; label: string; opensInNewTab?: boolean }
 export type SiteImage = { image: StaticImageData; alt: string; position?: string }
-export type SiteChrome = { navigation: SiteMenuItem[] | null; footer: { heading: string; items: SiteMenuItem[] }[] | null; actions?: Record<string, string>; frames?: { desktop: StaticImageData; mobile: StaticImageData; alt: string }[]; hero?: { desktop: SiteImage | null; mobile: SiteImage | null }; stats?: { value: number; suffix: string; label: string }[]; homeDoctors?: Record<string, { intro: string; credentials: { text: string; accent: boolean }[] }>; procedures?: { id: string; label: string; description: string; href: string }[] }
+export type CostOfWaitingFrame = { key: string; desktop: SiteImage | null; mobile: SiteImage | null }
+export type SiteIdentity = { name?: string; legalName?: string; description?: string }
+export type SiteChrome = { citation?: { href: string; opensInNewTab: boolean }; identity?: SiteIdentity; navigation: SiteMenuItem[] | null; footer: { heading: string; items: SiteMenuItem[] }[] | null; legalLinks?: SiteMenuItem[]; footerCopyright?: string; actions?: Record<string, string>; frames?: CostOfWaitingFrame[]; hero?: { desktop: SiteImage | null; mobile: SiteImage | null }; stats?: { value: number; suffix: string; label: string }[]; homeDoctors?: Record<string, { intro: string; credentials: { text: string; accent: boolean }[] }>; procedures?: { id: string; label: string; description: string; href: string }[] }
 
 const fraction = z.number().min(0).max(1)
 const nativeImage = z.object({ assetId: z.string().regex(/^image-[A-Za-z0-9]+-\d+x\d+-(jpg|png|webp|avif)$/),
@@ -44,41 +47,58 @@ export function resolveSiteImage(input: unknown): SiteImage | null {
   } catch { return null }
 }
 
-function menuItems(input: unknown): SiteMenuItem[] | null {
-  if (!Array.isArray(input) || input.length === 0 || input.length > 7) return null
+function menuItems(input: unknown, maximum = 7): SiteMenuItem[] | null {
+  if (!Array.isArray(input) || input.length === 0 || input.length > maximum) return null
   const items: SiteMenuItem[] = []
   for (const [index, value] of input.entries()) {
     const label = plain(at(value, 'label')), kind = at(value, 'link.kind')
-    const path = kind === 'anchor' && at(value, 'link.anchor') === 'faq' ? '/#faq' : at(value, 'link.internalPath')
-    if (!label || typeof path !== 'string' || ![...allowedRoutes, '/#faq'].includes(path) || !['internal', 'anchor'].includes(String(kind))) return null
-    const key = ({ '/': 'home', '/educate-ivf': 'educateIVF', '/procedures': 'procedures', '/about': 'about', '/team': 'team', '/contact': 'contact' } as Record<string, string>)[path] ?? `cms-${index}`
-    items.push({ key, href: path, label })
+    const path = kind === 'external' ? at(value, 'link.externalUrl') : kind === 'anchor' && at(value, 'link.anchor') === 'faq' ? '/#faq' : at(value, 'link.internalPath')
+    if (!label || typeof path !== 'string' || !(kind === 'external' ? /^https?:\/\//.test(path) && z.url().safeParse(path).success : isSiteMenuPath(path)) || !['internal', 'anchor', 'external'].includes(String(kind))) continue
+    const key = ({ '/': 'home', '/educate-ivf': 'educateIVF', '/procedures': 'procedures', '/about': 'about', '/team': 'team', '/contact': 'contact' } as Record<string, string>)[path] ?? plain(at(value, '_key')) ?? `cms-${index}`
+    if (!items.some(item => item.href === path)) items.push({ key, href: path, label, ...(kind === 'external' ? { opensInNewTab: at(value, 'link.opensInNewTab') === true } : {}) })
   }
-  return new Set(items.map((item) => item.href)).size === items.length ? items : null
+  return items.length ? items : null
 }
 export function resolveSiteChrome(globals: unknown, home?: unknown, pages?: { procedures: unknown; team: unknown }): SiteChrome {
+  const identity: SiteIdentity = { name: plain(at(globals, 'settings.name')), legalName: plain(at(globals, 'settings.legalName')), description: plain(at(globals, 'settings.description')) }
   const navigation = menuItems(at(globals, 'navigation.items'))
   const groups = at(globals, 'footer.linkGroups')
-  const footer = Array.isArray(groups) && groups.length === 2 ? groups.map((group) => ({ heading: plain(at(group, 'heading')), items: menuItems(at(group, 'items')) })) : null
+  const footer = Array.isArray(groups) && groups.length === 2 ? groups.map((group) => ({ heading: plain(at(group, 'heading')), items: menuItems(at(group, 'items'), 8) })) : null
+  const legalLinks = menuItems(at(globals, 'footer.legalLinks'), 4) ?? []
+  const copyright = at(globals, 'footer.copyright')
+  const footerCopyright = typeof copyright === 'string' && plain(copyright.replaceAll('{year}', '2000')) ? copyright : undefined
   const sourceFrames = at(home, 'costOfWaiting.frames')
-  const frames = Array.isArray(sourceFrames) && sourceFrames.length === 7 ? sourceFrames.map((frame) => ({ desktop: resolveSiteImage(at(frame, 'desktop')), mobile: resolveSiteImage(at(frame, 'mobile')) })) : []
+  const legacyFrames = Array.isArray(sourceFrames) && sourceFrames.length <= 7 ? sourceFrames : []
+  const narrative = at(home, 'costOfWaiting.narrativeLines'), hope = at(home, 'costOfWaiting.hopeLines')
+  const lines = Array.isArray(narrative) && narrative.length === 5 && Array.isArray(hope) && hope.length === 2 ? [...narrative, ...hope] : []
+  const frames: CostOfWaitingFrame[] = Array.from({ length: 7 }, (_, index) => {
+    const line = lines[index]
+    const ownsLinePhoto = at(line, '_type') === 'costOfWaitingLine' || at(line, 'desktop') != null || at(line, 'mobile') != null
+    const frame = ownsLinePhoto ? line : legacyFrames[index]
+    const key = typeof at(line, '_key') === 'string' ? String(at(line, '_key')) : typeof at(frame, '_key') === 'string' ? String(at(frame, '_key')) : `slide-${index + 1}`
+    return { key, desktop: resolveSiteImage(at(frame, 'desktop')), mobile: resolveSiteImage(at(frame, 'mobile')) }
+  })
   const hero = { desktop: resolveSiteImage(at(home, 'hero.desktopImage')), mobile: resolveSiteImage(at(home, 'hero.mobileImage')) }
   const stats = z.array(z.object({ value: z.number().finite().nonnegative(), suffix: z.string().max(3).nullish().transform((value) => value ?? ''), label: z.string().trim().min(1) })).length(4).safeParse(at(globals, 'settings.stats'))
   const homeDoctors: NonNullable<SiteChrome['homeDoctors']> = {}
   const introductions = at(home, 'meetTheDoctors.doctors')
   if (Array.isArray(introductions)) for (const introduction of introductions) {
-    const parsed = z.object({ slug: z.enum(['gorakh-mandrupkar', 'saie-mandrupkar']), intro: z.string().trim().min(1), credentials: z.array(z.object({ text: z.string().trim().min(1), accent: z.boolean().nullish().transform(Boolean) })).min(1).max(6) }).safeParse(introduction)
+    const parsed = z.object({ slug: z.enum(['gorakh-mandrupkar', 'saie-mandrupkar']), intro: z.string().trim().min(1), credentials: z.array(z.object({ text: z.string().trim().min(1), accent: z.boolean().nullish().transform(Boolean) })).max(6).nullish().transform(value => value ?? []) }).safeParse(introduction)
     if (parsed.success) homeDoctors[parsed.data.slug] = parsed.data
   }
+  const citationLink = at(home, 'whyTrust.credentialCitation.link.link')
+  const citationUrl = at(citationLink, 'externalUrl')
+  const citation = at(citationLink, 'kind') === 'external' && typeof citationUrl === 'string' && /^https?:\/\//.test(citationUrl) && z.url().safeParse(citationUrl).success
+    ? { href: citationUrl, opensInNewTab: at(citationLink, 'opensInNewTab') === true } : undefined
   const actions: Record<string, string> = {}
-  const action = (slot: string, value: unknown) => { const path = at(value, 'link.internalPath'); if (at(value, 'link.kind') === 'internal' && typeof path === 'string' && allowedRoutes.has(path)) actions[slot] = path }
+  const action = (slot: string, value: unknown) => { const path = at(value, 'link.internalPath'); if (at(value, 'link.kind') === 'internal' && typeof path === 'string' && isSiteMenuPath(path)) actions[slot] = path }
   for (const slot of ['hero.primaryCta', 'hero.secondaryCta', 'painCta.primary', 'whyTrust.closing.primary', 'costOfWaiting.closing.primary', 'understandingIvf.closing.primary', 'mythsFacts.closing.primary', 'finalCta.formCta']) action('home.' + slot, at(home, slot))
   action('nav.primary', at(globals, 'navigation.primaryCta'))
   action('procedures.closing', at(pages?.procedures, 'closing.primary'))
   action('team.closing', at(pages?.team, 'closing.primary'))
-  return { navigation, footer: footer?.every((group) => group.heading && group.items) ? footer as NonNullable<SiteChrome['footer']> : null, actions, homeDoctors,
+  return { identity, navigation, ...(citation ? { citation } : {}), footer: footer?.every((group) => group.heading && group.items) ? footer as NonNullable<SiteChrome['footer']> : null, legalLinks, footerCopyright, actions, homeDoctors,
     ...(stats.success ? { stats: stats.data } : {}),
-    ...(frames.length === 7 && frames.every((frame) => frame.desktop && frame.mobile) ? { frames: frames.map((frame) => ({ desktop: frame.desktop!.image, mobile: frame.mobile!.image, alt: frame.desktop!.alt })) } : {}),
+    ...(frames.some(frame => frame.desktop || frame.mobile) ? { frames } : {}),
     ...(hero.desktop || hero.mobile ? { hero } : {}),
   }
 }
@@ -117,7 +137,7 @@ export function mergeSiteMessages(base: AbstractIntlMessages, source: Sources, l
   copy('WhyTrust', at(h, 'whyTrust'), { eyebrow: 'eyebrow', heading: 'heading', body: 'body', ctaButton: 'closing.primary.label', ctaSub: 'closing.microCopy' })
   assign('WhyTrust.gestosisNote', at(h, 'whyTrust.credentialNote'))
   const citation = at(h, 'whyTrust.credentialCitation')
-  if (typeof at(citation, 'textBefore') === 'string' && typeof at(citation, 'textAfter') === 'string' && plain(at(citation, 'link.label'))) assign('WhyTrust.gestosisLink', `${at(citation, 'textBefore')}<link>${at(citation, 'link.label')}</link>${at(citation, 'textAfter')}`)
+  if (plain(at(citation, 'link.label'))) assign('WhyTrust.gestosisLink', `${at(citation, 'textBefore') ?? ''}<link>${at(citation, 'link.label')}</link>${at(citation, 'textAfter') ?? ''}`)
   if (Array.isArray(at(h, 'whyTrust.cards')) && (at(h, 'whyTrust.cards') as unknown[]).length === 3) for (let i = 0; i < 3; i++) copy(`WhyTrust.card${i}`, at(h, `whyTrust.cards.${i}`), { label: 'label', worry: 'worry', response: 'response' })
   copy('CostOfWaiting', at(h, 'costOfWaiting'), { eyebrow: 'eyebrow', closeBody: 'closing.body', ctaButton: 'closing.primary.label', ctaSub: 'closing.microCopy' })
   for (const [field, prefix, count] of [['narrativeLines', 'line', 5], ['hopeLines', 'hopeLine', 2]] as const) if (Array.isArray(at(h, `costOfWaiting.${field}`)) && (at(h, `costOfWaiting.${field}`) as unknown[]).length === count) for (let i = 0; i < count; i++) assign(`CostOfWaiting.${prefix}${i + 1}`, at(h, `costOfWaiting.${field}.${i}.text`))
@@ -156,6 +176,10 @@ export function mergeAboutPage<T extends object>(base: T, input: unknown): T {
   function merge(original: unknown, incoming: unknown, key = ''): unknown {
     if (typeof original === 'string') return ['src', 'ctaHref', 'id', 'number'].includes(key) ? original : incoming === '' ? '' : plain(incoming) ?? original
     if (Array.isArray(original)) {
+      if (key === 'points' && Array.isArray(incoming) && incoming.length > 0 && incoming.length <= 10) {
+        const complete = incoming.every(item => ['label', 'title', 'body'].every(field => plain(at(item, field))))
+        return complete ? incoming.map(item => merge(original[0], item)) : original
+      }
       if (key === 'paragraphs' && Array.isArray(incoming) && incoming.length > 0 && incoming.length <= 10) {
         const rows = incoming.map((item) => plain(at(item, 'text') ?? item))
         return rows.every(Boolean) ? rows : original

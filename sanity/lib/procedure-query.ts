@@ -5,7 +5,7 @@ import { SEO_RAW_PROJECTION } from './seo-mapping'
 // to the listing, detail route and navigation. Ordered so new entries appear stably.
 export const allProceduresQuery = defineQuery(`
   *[_type == "procedure" && defined(slug.current) && reviewStatus == "approved"
-    && !(_id in path("drafts.**")) && !(_id in path("versions.**"))] | order(_createdAt asc) [0...20]{
+    && !(_id in path("drafts.**")) && !(_id in path("versions.**"))] | order(_createdAt asc, _id asc){
     _id, reviewStatus, "slug": slug.current,
     name{en, mr}, fullName{en, mr}, oneLiner{en, mr}, heroDescription{en, mr},
     quickFacts[]{_key, label{en, mr}, value{en, mr}},

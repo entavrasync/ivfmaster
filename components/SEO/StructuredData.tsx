@@ -4,9 +4,10 @@ import { buildAbsoluteUrl } from '@/lib/seo/routes'
 import type { ClinicSettings } from '@/sanity/lib/clinic-mapping'
 import type { ClinicAvailability } from '@/lib/clinic-availability'
 import { getSeoContext } from '@/sanity/lib/site-content'
+import type { SiteIdentity } from '@/sanity/lib/site-content-mapping'
 
-export function StructuredData({ settings = null, availability = null }: { settings?: ClinicSettings | null; availability?: ClinicAvailability | null }) {
-  return <JsonLdScript data={buildRootJsonLd(settings, availability)} />
+export function StructuredData({ settings = null, availability = null, identity }: { settings?: ClinicSettings | null; availability?: ClinicAvailability | null; identity?: SiteIdentity }) {
+  return <JsonLdScript data={buildRootJsonLd(settings, availability, identity)} />
 }
 
 export function JsonLdScript({ data }: { data: JsonLdValue | object }) {
@@ -28,7 +29,7 @@ export async function breadcrumbTrail(locale: string, section: Section, leaf?: {
 }
 
 /** Breadcrumb markup for a section page, unless its editor turned schema markup off. */
-export async function SectionJsonLd({ locale, section, seoPage }: { locale: string; section: Section; seoPage?: 'about' | 'team' | 'contact' | 'procedures' }) {
+export async function SectionJsonLd({ locale, section, seoPage }: { locale: string; section: Section; seoPage?: 'about' | 'team' | 'contact' | 'procedures' | 'education' }) {
   const { seo } = await getSeoContext(locale, seoPage)
   if (seo?.structuredData === false) return null
   return <JsonLdScript data={buildPageJsonLd(pageLocale(locale), await breadcrumbTrail(locale, section))} />

@@ -2,6 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { DEFAULT_LOCALE } from '../../lib/locales'
 import { defineImageField, localized } from '../shared/fields'
+import { validateWebsiteImage } from '../../../lib/image-validation'
 
 /**
  * Objects used only by the team page.
@@ -107,7 +108,8 @@ export const facilityTile = defineType({
       of: [
         defineArrayMember({
           type: 'image',
-          options: { hotspot: true },
+          options: { hotspot: true, accept: 'image/jpeg,image/png,image/webp,image/avif' },
+          validation: rule => [rule.assetRequired(), rule.custom(validateWebsiteImage)],
           fields: [
             localized('alt', {
               title: 'Alternative text',

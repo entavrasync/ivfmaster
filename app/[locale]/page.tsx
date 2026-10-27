@@ -1,3 +1,4 @@
+import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
@@ -89,6 +90,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <FinalCTA />
       </main>
 
+      <BacklinkReferences entries={(await getSeoContext(locale, 'home')).seo?.backlinks} locale={locale} />
       <Footer />
     </>
   );

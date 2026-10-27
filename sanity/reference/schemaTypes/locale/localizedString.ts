@@ -2,6 +2,7 @@ import { defineField } from 'sanity'
 
 import { LOCALE_LABELS } from '../../lib/locales'
 import { createLocalizedType } from './createLocalizedType'
+import { validatePlainCopy } from '../../../lib/copy-validation'
 
 /**
  * A single-line localized value: headings, labels, button text, image alt text.
@@ -20,5 +21,6 @@ export const localizedString = createLocalizedType({
       name: locale,
       title: LOCALE_LABELS[locale],
       type: 'string',
+      validation: rule => rule.custom(validatePlainCopy),
     }),
 })

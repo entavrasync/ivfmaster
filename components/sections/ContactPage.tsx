@@ -3,12 +3,12 @@
 import { siteConfig } from '@/config/site'
 import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
 import { useClinicAvailability } from '@/components/providers/ClinicAvailabilityProvider'
-import { buildWhatsappMessage } from '@/lib/buildWhatsappMessage'
+import { buildWhatsappMessage, buildWhatsappUrl } from '@/lib/buildWhatsappMessage'
 import { CLINIC_CONTACT, getClinicStatus, type ClinicStatus } from '@/lib/clinicHours'
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { formatAvailability } from '@/lib/clinic-availability'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const IG_URL = 'https://www.instagram.com/ivfmaster?utm_source=ig_web_button_share_sheet'
 
@@ -182,7 +182,6 @@ export function ContactPage() {
   const settings = useClinicSettings()
   const availability = useClinicAvailability()
   const hoursLocale = useLocale()
-  const whatsappNumber = settings?.whatsappNumber ?? CLINIC_CONTACT.whatsappNumber
   const t = useTranslations('Contact')
 
   const [form, setForm] = useState<FormState>({
@@ -190,7 +189,9 @@ export function ContactPage() {
     preferredContact: '', preferredDay: '', bestTime: '', openMessage: '',
   })
   const [nameError, setNameError] = useState(false)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
   const [status, setStatus] = useState<ClinicStatus | null>(null)
+  const nameInput = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const refresh = () => setStatus(getClinicStatus(new Date(), availability))
@@ -199,7 +200,9 @@ export function ContactPage() {
     return () => clearInterval(timer)
   }, [availability])
 
-  const waHref  = `https://wa.me/${whatsappNumber}`
+  const waHref = buildWhatsappUrl(settings?.whatsappNumber)
+  const message = buildWhatsappMessage({ ...form, name: form.name.trim(), openMessage: form.openMessage.trim() })
+  const retryHref = form.name.trim() ? buildWhatsappUrl(settings?.whatsappNumber, message) : null
   const telHref = `tel:${(settings?.telephone ?? CLINIC_CONTACT.phoneNumber).replace(/\s/g, '')}`
 
   const statusLabel: string | null = status ? (() => {
@@ -216,24 +219,18 @@ export function ContactPage() {
     if (key === 'name') setNameError(false)
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!form.name.trim()) { setNameError(true); return }
-    const message = buildWhatsappMessage({
-      name:             form.name.trim(),
-      reachingAs:       form.reachingAs,
-      duration:         form.duration,
-      reason:           form.reason,
-      preferredContact: form.preferredContact,
-      preferredDay:     form.preferredDay,
-      bestTime:         form.bestTime,
-      openMessage:      form.openMessage.trim(),
-    })
-    window.open(
-      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
-      '_blank',
-      'noopener,noreferrer',
-    )
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (!form.name.trim()) {
+      event.preventDefault()
+      setNameError(true)
+      nameInput.current?.focus()
+      return
+    }
+    if (!waHref) {
+      event.preventDefault()
+      return
+    }
+    setHasSubmitted(true)
   }
 
   const reachingAsOptions = [t('formReachingAsCouple'), t('formReachingAsIndividual')]
@@ -289,13 +286,16 @@ export function ContactPage() {
               boxShadow: '0 4px 28px -8px rgba(28,42,72,0.14), 0 1px 6px -2px rgba(28,42,72,0.07)',
               border: '1px solid rgba(216,204,190,0.50)',
             }}>
-              <form onSubmit={handleSubmit} noValidate>
+              <form action={waHref ?? undefined} method="get" target="_blank" rel="noopener noreferrer" acceptCharset="UTF-8" onSubmit={handleSubmit} noValidate>
+                <input type="hidden" name="text" value={message} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.875rem' }}>
 
                   {/* Name */}
                   <FieldGroup label={t('formNameLabel')} error={nameError ? t('formNameRequired') : undefined}>
                     <input
+                      ref={nameInput}
                       type="text"
+                      aria-invalid={nameError}
                       value={form.name}
                       onChange={(e) => setField('name', e.target.value)}
                       placeholder={t('formNamePlaceholder')}
@@ -369,16 +369,18 @@ export function ContactPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingTop: '0.25rem' }}>
                     <button
                       type="submit"
+                      disabled={!waHref}
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                         width: '100%', padding: '0.875rem 1.5rem', borderRadius: '100px',
                         fontFamily: 'var(--font-body)', fontSize: '1rem', fontWeight: 600,
-                        color: '#FFFFFF', border: 'none', cursor: 'pointer',
+                        color: '#FFFFFF', border: 'none', cursor: waHref ? 'pointer' : 'not-allowed', opacity: waHref ? 1 : 0.55,
                         background: 'linear-gradient(135deg, #D4617B 0%, #C24E6A 100%)',
                         boxShadow: '0 8px 22px -6px rgba(194,78,106,0.58), inset 0 1.5px 0 rgba(255,255,255,0.28)',
                         transition: 'transform 0.15s ease, box-shadow 0.15s ease',
                       }}
                       onMouseEnter={(e) => {
+                        if (!waHref) return
                         e.currentTarget.style.transform  = 'translateY(-1px)'
                         e.currentTarget.style.boxShadow  = '0 12px 28px -6px rgba(194,78,106,0.64), inset 0 1.5px 0 rgba(255,255,255,0.28)'
                       }}
@@ -390,6 +392,12 @@ export function ContactPage() {
                       <MessageCircle size={18} strokeWidth={2} />
                       {t('formSubmit')}
                     </button>
+
+                    {!waHref && <p role="alert" style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: '#C0392B' }}>{t('formWhatsappUnavailable')}</p>}
+                    {hasSubmitted && retryHref && <div role="status" style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', lineHeight: 1.5 }}>
+                      <a href={retryHref} target="_blank" rel="noopener noreferrer" style={{ color: '#1C2A48', textDecoration: 'underline' }}>{t('formWhatsappRetry')}</a>
+                      <p style={{ margin: '0.375rem 0 0', color: 'rgba(28,42,72,0.60)' }}>{t('formWhatsappSendHint')}</p>
+                    </div>}
 
                     <a
                       href={telHref}
@@ -452,7 +460,7 @@ export function ContactPage() {
                 </p>
 
                 <div style={{ borderBottom: '1px solid rgba(216,204,190,0.40)' }}>
-                  <ContactRow icon={<MessageCircle size={18} strokeWidth={1.75} />} label={t('panelWhatsapp')} sub={t('panelWhatsappSub')} href={waHref} />
+                  <ContactRow icon={<MessageCircle size={18} strokeWidth={1.75} />} label={t('panelWhatsapp')} sub={t('panelWhatsappSub')} href={waHref ?? undefined} />
                 </div>
                 <div style={{ borderBottom: '1px solid rgba(216,204,190,0.40)' }}>
                   <ContactRow icon={<Phone size={18} strokeWidth={1.75} />} label={t('panelCall')} sub={t('panelCallSub')} href={telHref} target="_self" />

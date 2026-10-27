@@ -20,6 +20,7 @@ type SeoValue = {
 type DocumentValue = Record<string, unknown> & { _type?: string; slug?: { current?: string } }
 
 const ROUTES: Record<string, (slug?: string) => string | null> = {
+  educationPage: () => '/educate-ivf',
   procedure: (slug) => slug ? `/procedures/${slug}` : null,
   article: (slug) => slug ? `/educate-ivf/${slug}` : null,
   doctor: (slug) => slug ? `/team/${slug}` : null,

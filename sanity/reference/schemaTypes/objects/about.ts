@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 import { DEFAULT_LOCALE } from '../../lib/locales'
 import { localized } from '../shared/fields'
+import { requireAllLocalesInEach } from '../../lib/localizedValidation'
 
 /**
  * Objects used only by the About page.
@@ -82,21 +83,21 @@ export const aboutDoctor = defineType({
       title: 'Pull quote',
       type: 'localizedText',
       description:
-        'The line set large against the left border, in the doctor\'s voice — "Experience matters most when it helps someone feel less lost."',
+        'Fallback quotation when the approved Doctor has no About story. To change an active Doctor story, edit Doctor → About story.',
     }),
     defineField({
       name: 'paragraphs',
       title: 'Paragraphs',
       type: 'array',
       of: [{ type: 'localizedText' }],
-      description: 'The narrative of this chapter, one paragraph per entry.',
-      validation: (rule) => rule.required().min(1).max(6),
+      description: 'Fallback narrative when the approved Doctor has no About story. Otherwise edit Doctor → About story. One paragraph per entry.',
+      validation: rule => [rule.required().min(1).max(6), rule.custom(requireAllLocalesInEach)],
     }),
     localized('evidence', {
       title: 'Closing note',
       type: 'localizedText',
       description:
-        'The single line between horizontal rules beneath the paragraphs, summing up how this doctor works.',
+        'Fallback closing note when the approved Doctor has no About story. Otherwise edit Doctor → About story.',
     }),
     localized('ctaLabel', {
       title: 'Consultation button text',

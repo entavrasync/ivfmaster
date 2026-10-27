@@ -71,3 +71,22 @@ test('preserves both locales and similarly named public routes', () => {
     )
   }
 })
+
+const ts = (await import('typescript')).default
+const compiled = ts.transpileModule(proxySource, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText
+const proxyModule = { exports: {} }
+new Function('require', 'module', 'exports', compiled)((id: string) => {
+  if (id === 'next-intl/middleware') return { default: () => (request: { headers: Headers }) => request.headers }
+  if (id === './i18n/routing') return { routing: {} }
+  throw new Error('Unexpected dependency: ' + id)
+}, proxyModule, proxyModule.exports)
+const invoke = (path: string) => Reflect.get(proxyModule.exports, 'default')({ nextUrl: new URL('http://localhost:3002' + path), headers: new Headers({ 'x-ivf-missing-route': 'true' }) })
+
+test('unknown menu URLs skip CMS layout work, while new CMS content routes remain eligible', () => {
+  for (const path of ['/shop', '/en/shop', '/unknown/deeper']) {
+    assert.equal(invoke(path).get('x-ivf-missing-route'), 'true', path)
+  }
+  for (const path of ['/', '/en', '/about', '/en/contact', '/procedures/new-cms-procedure', '/en/educate-ivf/new-cms-article', '/team/gorakh-mandrupkar']) {
+    assert.equal(invoke(path).get('x-ivf-missing-route'), 'false', path)
+  }
+})

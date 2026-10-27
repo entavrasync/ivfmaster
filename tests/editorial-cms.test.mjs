@@ -145,7 +145,7 @@ function image(key = 'photo') {
     metadata: { dimensions: { width: 1200, height: 800 }, lqip: 'data:image/jpeg;base64,AAAA' },
   } }
 }
-test('native replacement photos keep carousel order, crop/focus, dimensions and required blur metadata', () => {
+test('native replacement photos keep carousel order, crop/focus and dimensions with optional blur metadata', () => {
   const doc = gallery(); doc.areas[2].images = [image('first'), image('second')]
   const result = resolveFacilityGallery([doc], 'mr')
   assert.equal(result.status, 'sanity')
@@ -158,7 +158,8 @@ test('native replacement photos keep carousel order, crop/focus, dimensions and 
   assert.ok(Math.abs(parseFloat(images[0].position) - 75) < 0.00001)
   assert.equal(images[0].blurDataURL, 'data:image/jpeg;base64,AAAA')
   delete doc.areas[2].images[0].asset.metadata.lqip
-  assert.equal(resolveFacilityGallery([doc], 'en').content, null)
+  assert.equal(resolveFacilityGallery([doc], 'en').content.areas[2].images.length, 2)
+  assert.equal(resolveFacilityGallery([doc], 'en').content.areas[2].images[0].blurDataURL, undefined)
 })
 
 test('foreign assets, impossible crop and duplicate image keys retain the entire static gallery', () => {

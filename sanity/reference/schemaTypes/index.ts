@@ -34,6 +34,7 @@ import { ctaBlock } from './objects/ctaBlock'
 import {
   credential,
   editorialImage,
+  costOfWaitingLine,
   homeDoctor,
   mythFact,
   processStep,
@@ -79,6 +80,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   credential,
   homeDoctor,
   editorialImage,
+  costOfWaitingLine,
 
   // Team objects
   careTeamMember,

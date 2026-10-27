@@ -5,6 +5,10 @@ import { DEFAULT_LOCALE } from '../../lib/locales'
 import { SEO_LIMITS, warnOnLength } from '../../lib/localizedValidation'
 import { SeoPanel } from '../../../studio/SeoPanel'
 import { defineImageField, localized } from '../shared/fields'
+import { PROCEDURES } from '../../../../lib/procedures'
+import { articleSlugs } from '../../../article-model'
+import { apiVersion } from '../../../project'
+import { backlinksField } from '../../../schemaTypes/backlinks'
 
 /**
  * Editorial SEO content for a document.
@@ -43,6 +47,7 @@ const changesVisibility = (seo: SeoParent | undefined) => Boolean(seo?.noIndex |
  */
 export function seoAdvancedFields(): FieldDefinition[] {
   return [
+    { ...backlinksField(siteConfig.url), hidden: pageOnly },
     defineField({
       name: 'focusKeyword',
       hidden: pageOnly,
@@ -107,8 +112,20 @@ export function seoAdvancedFields(): FieldDefinition[] {
       type: 'url',
       fieldset: 'visibility',
       description: `Only when another page on this site should rank instead of this one, e.g. ${siteConfig.url}/procedures/ivf. Leave empty otherwise; the correct canonical is generated automatically. Removes this page from the sitemap.`,
-      validation: (rule) => rule.uri({ scheme: ['https'] }).custom((value) =>
-        !value || value.startsWith(`${siteConfig.url}/`) || value === siteConfig.url || `Use a page on ${siteConfig.url}.`),
+      validation: rule => rule.custom(async (value, context) => {
+        if (!value) return true
+        let url: URL
+        try { url = new URL(value) } catch { return `Use a full HTTPS page address on ${siteConfig.url}.` }
+        if (url.origin !== new URL(siteConfig.url).origin || url.search || url.hash || url.username || url.password) return `Use a page on ${siteConfig.url}, without query parameters or a fragment.`
+        const path = url.pathname.replace(/\/+$/, '') || '/'
+        const staticPaths = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map(item => '/procedures/' + item.slug), ...articleSlugs.map(slug => '/educate-ivf/' + slug)]
+        if (staticPaths.includes(path)) return true
+        const route = /^\/(procedures|educate-ivf)\/([a-z0-9]+(?:-[a-z0-9]+)*)$/.exec(path)
+        if (!route) return 'Choose an existing website page and leave out /en or /mr.'
+        try {
+          return await context.getClient({ apiVersion }).withConfig({ perspective: 'published' }).fetch<boolean>('defined(*[_type == $type && slug.current == $slug && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0])', { type: route[1] === 'procedures' ? 'procedure' : 'article', slug: route[2] }) || 'This page is not published. Choose an existing website page.'
+        } catch { return 'Could not verify the canonical page. Check access and retry.' }
+      }),
     }),
     defineField({
       name: 'visibilityReason',
@@ -143,7 +160,7 @@ export const seo = defineType({
     localized('metaTitle', {
       title: 'Search result title',
       description: `Shown as the clickable heading in search results. Around ${SEO_LIMITS.title.max} characters; put the focus keyword near the start. Leave empty to fall back to the document title.`,
-      translation: 'any',
+      translation: 'optional',
       warn: (value) =>
         warnOnLength(value, {
           max: SEO_LIMITS.title.max,
@@ -154,7 +171,7 @@ export const seo = defineType({
       title: 'Search result description',
       type: 'localizedText',
       description: `The summary beneath the title in search results. Around ${SEO_LIMITS.description.min}–${SEO_LIMITS.description.max} characters; include the focus keyword naturally.`,
-      translation: 'any',
+      translation: 'optional',
       warn: (value) =>
         warnOnLength(value, {
           min: SEO_LIMITS.description.min,

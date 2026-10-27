@@ -1,6 +1,4 @@
 import type { StaticImageData } from 'next/image'
-import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
-import saiePhoto from '@/assets/doctor/saie.jpeg'
 import pankajPhoto from '@/assets/doctor/Embryologist-doc-pankaj.png'
 import receptionPhoto from '@/assets/Clinic-photos/recetion.jpg'
 import consultingRoomPhoto from '@/assets/Clinic-photos/consulting-room.jpg'
@@ -23,7 +21,7 @@ export interface Doctor {
   readonly essence: string
   readonly intro: string
   readonly credentials: readonly string[]
-  readonly image: TeamImageSlot
+  readonly image?: TeamImageSlot
 }
 
 export interface CareTeamMember {
@@ -65,11 +63,6 @@ export const doctors: readonly Doctor[] = [
       "Developed the HDP Gestosis Score, adopted by India's National Health Mission",
       'Director of a FOGSI-recognized IVF training centre (10+ years)',
     ],
-    image: {
-      src: gorakhPhoto.src,
-      altKey: 'doctors.gorakh.imageAlt',
-      position: 'center 20%',
-    },
   },
   {
     slug: 'saie-mandrupkar',
@@ -84,11 +77,6 @@ export const doctors: readonly Doctor[] = [
       '20+ years in high-risk obstetrics and reproductive medicine',
       '2,000+ couples cared for',
     ],
-    image: {
-      src: saiePhoto.src,
-      altKey: 'doctors.saie.imageAlt',
-      position: 'center 20%',
-    },
   },
 ] as const
 

@@ -3,6 +3,8 @@ import { defineField, defineType, type Rule } from 'sanity'
 import { DEFAULT_LOCALE } from '../../lib/locales'
 import { requireAllLocales } from '../../lib/localizedValidation'
 import { localized } from '../shared/fields'
+import { isUnusedCtaSlot } from '../shared/cta-slots'
+import { isSiteMenuPath } from '../../../lib/site-content-mapping'
 
 const hasText = (value: unknown) => typeof value === 'string' && value.trim().length > 0
 
@@ -40,13 +42,21 @@ export const cta = defineType({
     localized('label', {
       title: 'Button text',
       translation: 'optional',
-      validation: (rule: Rule) => rule.custom((value, context) => isUnusedAction(context.parent) || requireAllLocales(value)),
+      validation: (rule: Rule) => rule.custom((value, context) => isUnusedCtaSlot(context.document, context.path) || isUnusedAction(context.parent) || requireAllLocales(value)),
     }),
     defineField({
       name: 'link',
       title: 'Destination',
       type: 'link',
-      validation: (rule) => rule.custom((value, context) => isUnusedAction(context.parent) || value ? true : 'Choose where this button should go.'),
+      validation: (rule) => rule.custom((value, context) => {
+        if (isUnusedCtaSlot(context.document, context.path) || isUnusedAction(context.parent)) return true
+        if (!value) return 'Choose where this button should go.'
+        const destination = value as { kind?: string; internalPath?: string }
+        const path = context.path?.join('.')
+        const kind = path === 'whyTrust.credentialCitation.link.link' ? 'external' : path === 'finalCta.whatsappCta.link' ? 'whatsapp' : 'internal'
+        if (destination.kind !== kind) return { message: `Choose ${kind === 'external' ? 'External website' : kind === 'whatsapp' ? 'WhatsApp (clinic number)' : 'Page on this site'} for this button.`, paths: [['kind']] }
+        return kind !== 'internal' || typeof destination.internalPath === 'string' && isSiteMenuPath(destination.internalPath) || { message: 'Enter an existing website page path, such as /contact. Leave out /en and /mr.', paths: [['internalPath']] }
+      }),
     }),
     defineField({
       name: 'emphasis',
@@ -63,7 +73,6 @@ export const cta = defineType({
         layout: 'radio',
       },
       initialValue: 'primary',
-      validation: (rule) => rule.required(),
     }),
   ],
   preview: {

@@ -7,8 +7,6 @@ import { Container } from '@/components/layout/Container'
 import { Pressable } from '@/components/motion/Pressable'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { Link } from '@/i18n/navigation'
-import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
-import saiePhoto from '@/assets/doctor/saie.jpeg'
 import { useSiteContent } from '@/components/providers/SiteContentContext'
 import type { DoctorContent } from '@/sanity/lib/clinic-mapping'
 
@@ -20,15 +18,14 @@ const PORTRAIT_GRADIENT =
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 
-type Credential = { text: string; accent: boolean }
 type Doctor = {
   id:             string
-  photo:          StaticImageData
+  photo?:         StaticImageData
+  photoAlt?:      string
   objectPosition: string
   name:           string
   essence:        string
   intro:          string
-  credentials:    Credential[]
   ctaLabel:       string
   ctaHref:        string
   storyLabel:     string
@@ -42,7 +39,7 @@ type Doctor = {
  *  well-framed regardless of the box's crop.
  */
 
-function Portrait({ photo, name, objectPosition }: Readonly<{ photo: StaticImageData; name: string; objectPosition: string }>) {
+function Portrait({ photo, name, objectPosition }: Readonly<{ photo?: StaticImageData; name: string; objectPosition: string }>) {
   return (
     <figure
       style={{
@@ -59,14 +56,14 @@ function Portrait({ photo, name, objectPosition }: Readonly<{ photo: StaticImage
         boxShadow:    '0 24px 48px -12px rgba(46,79,142,0.22), 0 8px 20px -8px rgba(46,79,142,0.12)',
       }}
     >
-      <Image
+      {photo && <Image
         src={photo}
         alt={name}
         fill
         sizes="(max-width: 639px) 100vw, 48vw"
-        placeholder="blur"
+        placeholder={photo.blurDataURL ? 'blur' : 'empty'}
         style={{ objectFit: 'cover', objectPosition }}
-      />
+      />}
 
       {/* Subtle bottom vignette — grounds the portrait, adds depth */}
       <div
@@ -112,7 +109,7 @@ function DoctorCard({ doctor, reduced }: Readonly<{ doctor: Doctor; reduced: boo
     >
       {/* Portrait */}
       <motion.div variants={portraitV} style={{ marginBottom: '1.625rem' }}>
-        <Portrait photo={doctor.photo} name={doctor.name} objectPosition={doctor.objectPosition} />
+        <Portrait photo={doctor.photo} name={doctor.photoAlt ?? doctor.name} objectPosition={doctor.objectPosition} />
       </motion.div>
 
       {/* Essence — emotional hook before the name */}
@@ -162,54 +159,10 @@ function DoctorCard({ doctor, reduced }: Readonly<{ doctor: Doctor; reduced: boo
       >
         {doctor.intro}
       </motion.p>
-
-      {/* Credentials — refined and readable, not faint */}
-      <motion.div variants={itemV}>
-        <ul
-          style={{
-            listStyle:  'none',
-            padding:    '1.125rem 0 0 0',
-            margin:     '1.25rem 0 1.625rem 0',
-            borderTop:  '1px solid rgba(100,120,176,0.13)',
-          }}
-        >
-          {doctor.credentials.map((cred) => (
-            <li
-              key={cred.text}
-              style={{
-                display:       'flex',
-                gap:           '0.5rem',
-                alignItems:    'flex-start',
-                fontFamily:    'var(--font-body)',
-                fontSize:      '0.875rem',
-                lineHeight:    1.65,
-                color:         cred.accent ? '#5E72A8' : '#5C6B8A',
-                fontWeight:    cred.accent ? 500      : 400,
-                paddingBottom: '0.3rem',
-              }}
-            >
-              <span
-                aria-hidden="true"
-                style={{
-                  flexShrink:    0,
-                  color:         cred.accent ? '#7888B8' : '#96A4C4',
-                  letterSpacing: '-0.05em',
-                  marginTop:     '0.05em',
-                  lineHeight:    1.65,
-                }}
-              >
-                -
-              </span>
-              {cred.text}
-            </li>
-          ))}
-        </ul>
-      </motion.div>
-
       {/* CTAs — full-width on mobile, inline on sm+ */}
       <motion.div
         variants={itemV}
-        className="mt-auto flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-center"
+        className="mt-auto flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-center pt-6"
       >
         <Pressable className="w-full sm:w-auto">
           <Link
@@ -304,17 +257,10 @@ export function MeetTheDoctors({ profiles = [] }: { profiles?: readonly DoctorCo
   const originalDoctors: Doctor[] = [
     {
       id:             'gorakh',
-      photo:          gorakhPhoto,
       objectPosition: 'center 20%',
       name:           t('gorakhName'),
       essence:     t('gorakhEssence'),
       intro:       t('gorakhIntro'),
-      credentials: [
-        { text: t('gorakhCred1'), accent: false },
-        { text: t('gorakhCred2'), accent: false },
-        { text: t('gorakhCred3'), accent: false },
-        { text: t('gorakhCred4'), accent: true  },
-      ],
       ctaLabel:   t('gorakhCta'),
       ctaHref:    '/contact?doctor=gorakh',
       storyLabel: t('gorakhStory'),
@@ -322,16 +268,10 @@ export function MeetTheDoctors({ profiles = [] }: { profiles?: readonly DoctorCo
     },
     {
       id:             'saie',
-      photo:          saiePhoto,
       objectPosition: 'center 20%',
       name:           t('saieName'),
       essence:     t('saieEssence'),
       intro:       t('saieIntro'),
-      credentials: [
-        { text: t('saieCred1'), accent: false },
-        { text: t('saieCred2'), accent: false },
-        { text: t('saieCred3'), accent: false },
-      ],
       ctaLabel:   t('saieCta'),
       ctaHref:    '/contact?doctor=saie',
       storyLabel: t('saieStory'),
@@ -344,12 +284,11 @@ export function MeetTheDoctors({ profiles = [] }: { profiles?: readonly DoctorCo
     const profile = profiles.find((item) => item.slug === `${doctor.id}-mandrupkar`)
     const introduction = homeDoctors?.[`${doctor.id}-mandrupkar`]
     return profile ? {
-      ...doctor, photo: profile.portrait?.photo ?? doctor.photo,
+      ...doctor, photo: profile.portrait?.photo, photoAlt: profile.portrait?.alt,
       objectPosition: profile.portrait?.position ?? doctor.objectPosition,
       name: profile.name, essence: profile.home?.essence ?? doctor.essence,
       intro: introduction?.intro ?? profile.home?.intro ?? doctor.intro,
-      credentials: introduction?.credentials ?? profile.home?.credentials.map((text, index) => ({ text, accent: doctor.credentials[index]?.accent ?? false })) ?? doctor.credentials,
-    } : introduction ? { ...doctor, intro: introduction.intro, credentials: introduction.credentials } : doctor
+    } : introduction ? { ...doctor, intro: introduction.intro } : doctor
   }).sort((a, b) => {
     const order = (id: string) => profiles.find((p) => p.slug === `${id}-mandrupkar`)?.order ?? originalDoctors.findIndex((d) => d.id === id)
     return order(a.id) - order(b.id) || a.id.localeCompare(b.id)

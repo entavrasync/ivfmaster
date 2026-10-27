@@ -1,6 +1,8 @@
 {
   "singletons": {
     "siteSettings": {
+      "name": "IVF Master",
+      "legalName": "IVF Master by Mandrupkar Clinic",
       "stats": [
         {
           "_type": "statistic",
@@ -296,36 +298,7 @@
         "mr": "© {year} IVF Master · Mandrupkar Clinic. सर्व हक्क राखीव.",
         "en": "© {year} IVF Master · Mandrupkar Clinic. All rights reserved."
       },
-      "legalLinks": [
-        {
-          "_type": "navItem",
-          "_key": "privacy",
-          "label": {
-            "_type": "localizedString",
-            "mr": "गोपनीयता धोरण",
-            "en": "Privacy policy"
-          },
-          "link": {
-            "_type": "link",
-            "kind": "internal",
-            "internalPath": "/privacy"
-          }
-        },
-        {
-          "_type": "navItem",
-          "_key": "terms",
-          "label": {
-            "_type": "localizedString",
-            "mr": "सेवा अटी",
-            "en": "Terms of service"
-          },
-          "link": {
-            "_type": "link",
-            "kind": "internal",
-            "internalPath": "/terms"
-          }
-        }
-      ],
+      "legalLinks": [],
       "reviewStatus": "pendingReview",
       "_type": "footer"
     },
@@ -2646,7 +2619,12 @@
           "mr": "डॉ. गोरख मंद्रुपकर यांना भेटा — प्रजनन वैद्यक व वंध्यत्व तज्ज्ञ, पुणे विद्यापीठ सुवर्णपदक विजेते (2004), आणि HDP Gestosis Score चे विकासक.",
           "_type": "procedureLocalizedText"
         },
-        "credentials": [],
+        "credentials": [
+          { "_type": "doctorCredential", "_key": "gyn-gold-medal", "text": { "_type": "localizedString", "en": "Gold Medallist in Gynecology" }, "institution": "Pune University", "year": 2004 }
+        ],
+        "specializations": [
+          { "_type": "procedureLocalizedText", "_key": "reproductive-medicine", "en": "Reproductive medicine and infertility specialist", "mr": "प्रजनन वैद्यक व वंध्यत्व तज्ज्ञ" }
+        ],
         "home": {
           "essence": {
             "en": "The doctor who explains until it finally makes sense.",
@@ -2759,7 +2737,12 @@
           "mr": "डॉ. सई मंद्रुपकर यांना भेटा — IVF Master मधील उच्च-जोखीम प्रसूती, स्त्रीरोग व प्रजनन वैद्यक तज्ज्ञ.",
           "_type": "procedureLocalizedText"
         },
-        "credentials": [],
+        "credentials": [
+          { "_type": "doctorCredential", "_key": "obgyn-postgraduate", "text": { "_type": "localizedString", "en": "Postgraduate in Obstetrics & Gynecology" }, "institution": "Pune University", "year": 2005 }
+        ],
+        "specializations": [
+          { "_type": "procedureLocalizedText", "_key": "obgyn-reproductive-medicine", "en": "High-risk obstetrics, gynecology and reproductive medicine", "mr": "उच्च-जोखीम प्रसूती, स्त्रीरोग व प्रजनन वैद्यक" }
+        ],
         "home": {
           "essence": {
             "en": "Gentle with people, fierce about their care.",

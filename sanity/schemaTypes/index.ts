@@ -4,6 +4,8 @@ import { doctor } from './doctor'
 import { clinicSettings } from './clinic-settings'
 import { clinicAvailability } from './clinic-availability'
 import { article } from './article'
+import { teamValues } from './team-values'
+import { educationPage } from './education-page'
 import { homeFaq, aboutInformation, facilityGallery } from './editorial'
 import { schemaTypes as referenceTypes } from '../reference/schemaTypes'
 import { approvalField } from './editorial-fields'
@@ -31,14 +33,18 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
     // Legacy clinic facts stay in the schema so stored values remain readable, but are hidden:
     // the website reads them from Shared clinic settings and Clinic hours & availability.
     if (type.name === 'siteSettings') return { ...type, ...defaults,
-      description: 'Site description, Home headline numbers and site-wide SEO defaults. Edit contact details and address in Shared clinic settings, and opening hours in Clinic hours & availability.',
+      description: 'Clinic identity, site description, Home headline numbers and site-wide SEO defaults. Edit contact details and address in Shared clinic settings, and opening hours in Clinic hours & availability.',
       preview: { select: { id: '_id' }, prepare: () => ({ title: 'Site settings' }) },
-      fields: fields.map((field) => ['name', 'contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'timezone', 'legalName', 'siteUrl', 'social'].includes(field.name) ? { ...field, hidden: true, readOnly: true, validation: undefined } : field),
+      fields: fields.map((field) => ['name', 'legalName'].includes(field.name) ? {
+        ...field,
+        description: field.name === 'name' ? 'The clinic brand in the header, footer and search metadata. Publish Site settings after editing.' : 'The registered clinic name used in structured data. Publish Site settings after editing.',
+        validation: (rule: Rule) => rule.max(field.name === 'name' ? 60 : 120).custom(value => value == null || typeof value === 'string' && value.trim().length > 0 && !/[<>{}]/.test(value) || 'Enter a nonblank clinic name without HTML.'),
+      } : ['contact', 'address', 'displayAddress', 'geo', 'hours', 'hoursSummary', 'holidays', 'timezone', 'siteUrl', 'social'].includes(field.name) ? { ...field, hidden: true, readOnly: true, validation: undefined } : field),
     } as SchemaTypeDefinition
     return { ...type, ...defaults, fields } as SchemaTypeDefinition
   })
 
-const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, clinicAvailability, article, homeFaq, aboutInformation, facilityGallery]
+const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, clinicAvailability, article, teamValues, educationPage, homeFaq, aboutInformation, facilityGallery]
 export const schemaTypes: SchemaTypeDefinition[] = [...targetTypes.map((type) => {
   const value = initialContent.legacy[type.name as keyof typeof initialContent.legacy]
   return value ? { ...type, initialValue: () => structuredClone(value) } as SchemaTypeDefinition : type

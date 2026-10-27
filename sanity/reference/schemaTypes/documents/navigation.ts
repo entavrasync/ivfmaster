@@ -14,7 +14,7 @@ export const navigation = defineType({
       type: 'array',
       of: [{ type: 'navItem' }],
       description:
-        'In the order they appear. Between four and seven — below four the header looks unfinished, above seven the links start colliding with the CTA on a laptop before the mobile drawer takes over.',
+        'Add a link and enter its name in both languages. Drag to reorder. Keep 4-7 links, then approve and publish. Published procedures appear under the /procedures link automatically.',
       validation: (rule) => rule.required().min(4).max(7),
     }),
     defineField({
@@ -27,7 +27,7 @@ export const navigation = defineType({
     localized('mobileMenuLabel', {
       title: 'Mobile menu label',
       description:
-        'The accessible name of the menu button, read aloud by screen readers — e.g. "Menu". It is not shown on screen.',
+        'Name read aloud by screen readers, for example "Menu".',
       translation: 'all',
     }),
   ],

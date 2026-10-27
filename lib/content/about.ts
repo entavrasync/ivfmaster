@@ -2,8 +2,6 @@ import type { StaticImageData } from 'next/image'
 
 import heroDesktop from '@/assets/cost/cost-desktop-2.png'
 import heroMobile from '@/assets/cost/cost-mobile-2.png'
-import gorakhPhoto from '@/assets/doctor/gorakh-mandrupkar.jpeg'
-import saiePhoto from '@/assets/doctor/saie.jpeg'
 import teamDesktop from '@/assets/cost/cost-desktop-5.png'
 import teamMobile from '@/assets/cost/cost-mobile-5.png'
 
@@ -27,7 +25,7 @@ export interface DoctorStory {
   pullQuote: string
   paragraphs: readonly string[]
   evidence: string
-  image: EditorialImage
+  image?: EditorialImage
   ctaLabel: string
   ctaHref: '/contact?doctor=gorakh' | '/contact?doctor=saie'
 }
@@ -101,11 +99,6 @@ export const aboutContent = {
         'The same practical curiosity led him to develop the HDP Gestosis Score, a screening tool for women at risk of preeclampsia that was adopted for clinical use by India\'s National Health Mission. He also serves as an honorary member on national committees of the Government of India and leading national associations of gynecologists. At the clinic, research and teaching are not separate from patient care; they shape how evidence is questioned, explained, and applied to each couple.',
       ],
       evidence: 'Clinical practice, research, and teaching are treated as one responsibility: improving the quality of the next decision.',
-      image: {
-        desktop: gorakhPhoto,
-        mobile: gorakhPhoto,
-        alt: 'Dr. Gorakh Mandrupkar',
-      },
       ctaLabel: 'Talk with Dr. Gorakh',
       ctaHref: '/contact?doctor=gorakh',
     },
@@ -120,11 +113,6 @@ export const aboutContent = {
         'Her participation in clinical research helps keep that care connected to current evidence. Just as importantly, her work creates continuity: the person who understands the uncertainty before treatment can remain present through the vulnerable stages that may follow.',
       ],
       evidence: 'Continuity matters: fertility treatment and high-risk pregnancy care are understood as connected parts of one reproductive journey.',
-      image: {
-        desktop: saiePhoto,
-        mobile: saiePhoto,
-        alt: 'Dr. Saie Mandrupkar',
-      },
       ctaLabel: 'Talk with Dr. Saie',
       ctaHref: '/contact?doctor=saie',
     },

@@ -1,4 +1,6 @@
 import { defineField, defineType } from 'sanity'
+import { backlinksField } from '../../../schemaTypes/backlinks'
+import { siteConfig } from '../../../../config/site'
 
 import en from '../../../../messages/en.json' with { type: 'json' }
 import mr from '../../../../messages/mr.json' with { type: 'json' }
@@ -55,10 +57,10 @@ export const contactPage = defineType({
   fields: sections.map(([section, keys]) => defineField({
     name: section, title: SECTIONS[section].title, description: SECTIONS[section].description, type: 'object', group: section,
     options: { collapsible: true, collapsed: false },
-    fields: keys.map((key) => localized(key, {
+    fields: [...keys.map((key) => localized(key, {
       title: TITLES[key], type: typeOf(key), translation: 'optional',
       description: 'Leave empty to keep the website’s built-in wording.',
-    })),
+    })), ...(section === 'seo' ? [backlinksField(siteConfig.url)] : [])],
   })),
   preview: { select: { id: '_id' }, prepare: () => ({ title: 'Contact page' }) },
 })

@@ -1,4 +1,5 @@
 'use client'
+import { siteConfig } from '@/config/site'
 import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useEffect, useRef, useState } from 'react'
@@ -58,6 +59,7 @@ function MenuIcon({ open }: Readonly<{ open: boolean }>) {
 
 /* ─── Desktop nav link — sliding pill + blush active bar ─────────────────── */
 interface DesktopNavLinkProps {
+  opensInNewTab?: boolean
   href: string
   label: string
   active: boolean
@@ -65,13 +67,15 @@ interface DesktopNavLinkProps {
   onMouseEnter: () => void
 }
 
-function DesktopNavLink({ href, label, active, isHovered, onMouseEnter }: Readonly<DesktopNavLinkProps>) {
+function DesktopNavLink({ href, label, active, isHovered, onMouseEnter, opensInNewTab }: Readonly<DesktopNavLinkProps>) {
 
   const reduced = useReducedMotion()
 
   return (
     <Link
       href={href}
+      target={opensInNewTab ? "_blank" : undefined}
+      rel={opensInNewTab ? "noopener noreferrer" : undefined}
       onMouseEnter={onMouseEnter}
       className="relative flex items-center px-4 py-2 rounded-full select-none"
     >
@@ -115,12 +119,13 @@ function DesktopNavLink({ href, label, active, isHovered, onMouseEnter }: Readon
 
 /* ─── Logo lockup ──────────────────────────────────────────────────────── */
 function LogoLockup() {
+  const { identity } = useSiteContent()
   return (
     <Link
       href="/"
       className="flex items-center shrink-0"
       style={{ gap: '10px' }}
-      aria-label="IVF Master — home"
+      aria-label={`${identity?.name ?? siteConfig.name} — home`}
     >
       <Image
         src="/icon.jpg"
@@ -239,7 +244,7 @@ export function Navbar() {
                 aria-label="Main navigation"
                 onMouseLeave={() => setHoveredHref(null)}
               >
-                {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key) }))).map(({ href, label }) => {
+                {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key), opensInNewTab: false }))).map(({ href, label, opensInNewTab }) => {
                   const active = pathname === href || (href !== '/' && pathname.startsWith(href))
                   if (href === '/procedures') {
                     return (
@@ -257,6 +262,7 @@ export function Navbar() {
                       key={href}
                       href={href}
                       label={label}
+                      opensInNewTab={opensInNewTab}
                       active={active}
                       isHovered={hoveredHref === href}
                       onMouseEnter={() => setHoveredHref(href)}

@@ -1,6 +1,8 @@
 import { defineField, defineType, type Path } from 'sanity'
 
 import { isUnusedAction } from './cta'
+import { isUnusedCtaSlot } from '../shared/cta-slots'
+import { isSiteMenuPath } from '../../../lib/site-content-mapping'
 
 /** The object two levels above a link field — its call to action, when it has one. */
 function enclosingObject(document: unknown, path: Path | undefined): unknown {
@@ -61,7 +63,9 @@ export const link = defineType({
       type: 'string',
       options: { list: [...LINK_KINDS], layout: 'radio' },
       initialValue: 'internal',
-      validation: (rule) => rule.required(),
+      validation: rule => rule.custom((value, context) => isUnusedCtaSlot(context.document, context.path) || (context.document?._type === 'footer'
+        ? ['internal', 'external', 'anchor'].includes(String(value)) || 'Choose Page on this site, External website, or the Home FAQ section.'
+        : LINK_KINDS.some(kind => kind.value === value) || 'Choose a destination type.')),
     }),
     defineField({
       name: 'internalPath',
@@ -72,6 +76,7 @@ export const link = defineType({
       hidden: showWhen('internal'),
       validation: (rule) =>
         rule.custom((value, context) => {
+          if (isUnusedCtaSlot(context.document, context.path)) return true
           const kind = (context.parent as { kind?: string } | undefined)?.kind
           if (kind !== 'internal') return true
           if (typeof value !== 'string' || value.trim().length === 0) {
@@ -83,22 +88,28 @@ export const link = defineType({
           if (/^\/(mr|en)(\/|$)/.test(value)) {
             return 'Leave the language prefix out — write "/about", not "/en/about". The locale is added for you.'
           }
+          if (context.document?._type === 'footer' && !isSiteMenuPath(value)) {
+            return `No page exists at "${value}". Enter an existing page path, choose External website, or remove this link.`
+          }
           return true
         }),
     }),
     defineField({
       name: 'externalUrl',
       title: 'Web address',
-      type: 'url',
+      // The url primitive always validates hidden stale values after switching kind.
+      type: 'string',
       hidden: showWhen('external'),
-      validation: (rule) =>
-        rule
-          .uri({ scheme: ['http', 'https'] })
-          .custom((value, context) => {
-            const kind = (context.parent as { kind?: string } | undefined)?.kind
-            if (kind !== 'external') return true
-            return value ? true : 'Enter the web address this link should open.'
-          }),
+      validation: rule => rule.custom((value, validationContext) => {
+          if (isUnusedCtaSlot(validationContext.document, validationContext.path)) return true
+          if ((validationContext.parent as { kind?: string } | undefined)?.kind !== 'external') return true
+          if (!value) return 'Paste the full website address, for example https://example.com/privacy.'
+          try {
+            const url = new URL(value)
+            if (/^https?:\/\//.test(value) && url.hostname) return true
+          } catch { /* The message below explains how to repair the URL. */ }
+          return 'Use a full website address starting with https:// or http://.'
+        }),
     }),
     defineField({
       name: 'anchor',
@@ -108,8 +119,10 @@ export const link = defineType({
       hidden: showWhen('anchor'),
       validation: (rule) =>
         rule.custom((value, context) => {
+          if (isUnusedCtaSlot(context.document, context.path)) return true
           const kind = (context.parent as { kind?: string } | undefined)?.kind
           if (kind !== 'anchor') return true
+          if (context.document?._type === 'footer') return value === 'faq' || 'Enter faq to link to the FAQ section on the Home page.'
           if (typeof value !== 'string' || value.trim().length === 0) {
             return 'Enter the id of the section to scroll to.'
           }

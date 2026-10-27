@@ -2,17 +2,18 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import test from 'node:test'
-import { createSchema } from 'sanity'
+import { createSchema, validateDocument, PatchEvent, unset, set } from 'sanity'
 import { siteConfig } from '../config/site.ts'
 import { buildRootJsonLd } from '../lib/seo/jsonLd.ts'
 import { resolveDoctors, resolveClinicSettings } from '../sanity/lib/clinic-mapping.ts'
 import { doctorsQuery, clinicSettingsQuery, availabilityQuery } from '../sanity/lib/clinic-queries.ts'
 import { clinicAvailability } from '../sanity/schemaTypes/clinic-availability.ts'
+import { hoursConfirmationState } from '../sanity/studio/RecordHoursConfirmationAction.ts'
 import { availabilityContent, availabilitySnapshot, resolveAvailability } from '../sanity/lib/availability-mapping.ts'
 import { availabilityClosuresJsonLd, formatAvailability, getAvailabilityStatus } from '../lib/clinic-availability.ts'
 import { getClinicStatus } from '../lib/clinicHours.ts'
 import { localizedString, localizedText } from '../sanity/schemaTypes/procedure.ts'
-import { doctor } from '../sanity/schemaTypes/doctor.ts'
+import { doctor, DoctorPortraitInput } from '../sanity/schemaTypes/doctor.ts'
 import { clinicSettings } from '../sanity/schemaTypes/clinic-settings.ts'
 // SEO social text and image alt use the shared Studio localized types, registered alongside in the real Studio.
 import { localizedString as sharedLocalizedString } from '../sanity/reference/schemaTypes/locale/localizedString.ts'
@@ -85,10 +86,12 @@ test('biography formatting accepts existing tags and rejects unsupported tags/va
   }
 })
 
-test('homepage credential counts protect the existing fixed card presentation', () => {
+test('homepage qualifications can be added, removed and cleared without a fixed line count', () => {
   const doc = profile()
   doc.home.credentials.pop()
-  assert.equal(resolveDoctors([doc], 'en').status, 'invalid')
+  assert.equal(resolveDoctors([doc], 'en').status, 'sanity')
+  doc.home.credentials = []
+  assert.deepEqual(resolveDoctors([doc], 'en').doctors[0].home.credentials, [])
 })
 
 test('portrait mapping retains crop, focus, dimensions, blur and localized alternative text', () => {
@@ -195,10 +198,80 @@ test('Studio biography validation matches the existing rich-message renderer', a
 test('optional doctor portrait can be omitted, but an image with only alt text cannot publish', async () => {
   const field = schema.get('doctor').fields.find((entry) => entry.name === 'portrait').type
   const document = { _id: 'drafts.doctor', _type: 'doctor' }
-  const errors = async (value) => (await Promise.all((field.validation ?? []).map((rule) => rule.validate(value, { document, path: ['portrait'], type: field, schema, i18n: { t: (key) => key } })))).flat()
+  let asset = { _id: 'image-testasset-1200x800-jpg', url: 'https://cdn.sanity.io/images/4k9zwr7s/production/testasset-1200x800.jpg', mimeType: 'image/jpeg', metadata: { dimensions: { width: 1200, height: 800 } } }
+  const errors = async (value) => (await Promise.all((field.validation ?? []).map((rule) => rule.validate(value, { document, path: ['portrait'], type: field, schema, getClient: () => ({ fetch: async () => asset }), i18n: { t: (key) => key } })))).flat()
   assert.deepEqual(await errors(undefined), [])
   assert.ok((await errors({ _type: 'image', alt: { en: 'Existing portrait' } })).length > 0)
   assert.deepEqual(await errors({ _type: 'image', asset: { _type: 'reference', _ref: 'image-testasset-1200x800-jpg' }, alt: { en: 'Existing portrait' } }), [])
+  asset = null
+  assert.deepEqual((await errors({ asset: { _ref: 'image-missing-1200x800-jpg' } }))[0].path, ['portrait', 'asset'])
+})
+
+test('doctor qualifications preserve legacy content, optional details, language and display order through the actual query', async () => {
+  const doc = { ...profile(), _type: 'doctor', slug: { current: 'gorakh-mandrupkar' } }
+  doc.credentials = [
+    { _key: 'first', _type: 'doctorCredential', text: { en: 'Local qualification fixture', mr: 'स्थानिक चाचणी' }, institution: 'Local institution fixture', awardingBody: null, year: 2020 },
+    { _key: 'second', _type: 'procedureLocalizedText', en: 'Legacy fixture' },
+  ]
+  const input = await query(doctorsQuery, [doc], { slugs })
+  assert.deepEqual(resolveDoctors(input, 'en').doctors[0].credentials, ['Local qualification fixture · Local institution fixture · 2020', 'Legacy fixture'])
+  assert.equal(resolveDoctors(input, 'mr').doctors[0].credentials[0], 'स्थानिक चाचणी · Local institution fixture · 2020')
+  doc.credentials.reverse()
+  const reversed = await query(doctorsQuery, [doc], { slugs })
+  assert.equal(resolveDoctors(reversed, 'en').doctors[0].credentials[0], 'Legacy fixture')
+  doc.credentials = []
+  assert.deepEqual(resolveDoctors(await query(doctorsQuery, [doc], { slugs }), 'en').doctors[0].credentials, [])
+  const withPortrait = profile()
+  withPortrait.portrait = { alt: { en: 'Local portrait fixture' }, asset: { _id: 'image-fixture-800x1000-jpg', url: 'https://cdn.sanity.io/images/4k9zwr7s/production/fixture-800x1000.jpg', metadata: { dimensions: { width: 800, height: 1000 } } } }
+  assert.ok(resolveDoctors([withPortrait], 'en').doctors[0].portrait, 'LQIP is optional asset metadata')
+  withPortrait.portrait = null
+  assert.equal(resolveDoctors([withPortrait], 'en').doctors[0].portrait, undefined)
+})
+
+test('Doctor publishing requires a qualification while the shorter Home list stays optional', async () => {
+  const type = schema.get('doctor'), document = { _id: 'drafts.local-doctor', _type: 'doctor' }
+  const qualifications = type.fields.find(field => field.name === 'credentials').type
+  for (const value of [undefined, null, []]) {
+    const errors = await validate(qualifications, value, document)
+    assert.equal(errors.length, 1, JSON.stringify({ value, errors }))
+    assert.match(errors[0].message, /at least one clinic-verified qualification/)
+  }
+  assert.deepEqual(await validate(qualifications, [{ _key: 'verified', _type: 'doctorCredential', text: { en: 'Local qualification fixture' } }], document), [])
+  const home = type.fields.find(field => field.name === 'home').type.fields.find(field => field.name === 'credentials').type
+  assert.deepEqual(await validate(home, undefined, document), [])
+  const member = qualifications.of.find(type => type.name === 'doctorCredential')
+  const text = member.fields.find(field => field.name === 'text').type
+  assert.deepEqual(await validate(text, { en: 'Local qualification fixture' }, document), [], 'Marathi is optional for Doctor qualifications')
+  const errors = await validate(text, { mr: 'स्थानिक चाचणी' }, document)
+  assert.deepEqual(errors[0].path, ['en']); assert.match(errors[0].message, /English/)
+})
+
+test('Doctor specializations preserve keys, order and Marathi fallback through the actual published query', async () => {
+  const doc = { ...profile(), _type: 'doctor', slug: { current: 'gorakh-mandrupkar' }, specializations: [
+    { _key: 'first', _type: 'procedureLocalizedText', en: 'Local practice fixture', mr: 'स्थानिक चाचणी' },
+    { _key: 'second', _type: 'procedureLocalizedText', en: 'Second practice fixture' },
+  ] }
+  const map = async locale => resolveDoctors(await query(doctorsQuery, [doc], { slugs }), locale).doctors[0]
+  assert.deepEqual((await map('mr')).specializations, [{ _key: 'first', text: 'स्थानिक चाचणी' }, { _key: 'second', text: 'Second practice fixture' }])
+  doc.specializations.reverse()
+  assert.deepEqual((await map('en')).specializations.map(item => item._key), ['second', 'first'])
+  doc.specializations[0].en = ' '
+  assert.equal(resolveDoctors(await query(doctorsQuery, [doc], { slugs }), 'en').status, 'invalid')
+  doc.specializations = []
+  assert.deepEqual((await map('en')).specializations, [])
+  delete doc.specializations
+  assert.deepEqual((await map('en')).specializations, [])
+})
+
+test('Doctor photo Remove clears retained alt text, passes replacement edits and respects read-only', () => {
+  let patches, change
+  const props = { value: { asset: { _ref: 'old' }, alt: { en: 'Old photo description' } }, onChange: event => { patches = PatchEvent.from(event).patches }, renderDefault: input => { change = input.onChange; return null } }
+  DoctorPortraitInput(props); change([unset(['asset']), unset(['crop'])])
+  assert.deepEqual(patches.map(patch => ({ type: patch.type, path: patch.path })), [{ type: 'unset', path: [] }])
+  change(set({ _ref: 'replacement' }, ['asset']))
+  assert.equal(patches[0].value._ref, 'replacement')
+  patches = undefined; DoctorPortraitInput({ ...props, readOnly: true }); change(unset(['asset']))
+  assert.equal(patches, undefined)
 })
 
 function hoursFixture() {
@@ -206,6 +279,38 @@ function hoursFixture() {
   doc.confirmedSnapshot = availabilitySnapshot(doc)
   return doc
 }
+
+test('hours publishing errors point to the editable input and distinguish confirmation from approval', async () => {
+  const validateHours = document => validateDocument({ document, workspace: { schema }, getClient: () => { throw new Error('No remote requests in local hours validation') }, getDocumentExists: async () => false })
+  const valid = hoursFixture()
+  assert.deepEqual(await validateHours(valid), [])
+  const pending = await validateHours({ ...valid, reviewStatus: 'pendingReview' })
+  assert(pending.some(error => error.path.join('.') === 'reviewStatus'))
+  assert(!pending.some(error => error.path.join('.') === 'confirmedAt'))
+  const unconfirmed = { ...valid, confirmedAt: undefined, confirmedSnapshot: undefined }
+  assert((await validateHours(unconfirmed)).some(error => error.path.join('.') === 'confirmedAt' && error.message.includes('Record hours confirmation')))
+  const changed = structuredClone(valid)
+  changed.weeklyHours[0].close = '17:00'
+  assert((await validateHours(changed)).some(error => error.path.join('.') === 'confirmedAt'))
+  changed.weeklyHours[0].close = '09:00'
+  const errors = await validateHours(changed)
+  assert(errors.some(error => JSON.stringify(error.path) === JSON.stringify(['weeklyHours', { _key: 'mon' }, 'close'])))
+  assert(!errors.some(error => error.path.length === 0), 'editors must not receive an unlocated schedule error')
+  const closure = { ...valid, closures: [{ _type: 'clinicAvailabilityClosure', _key: 'holiday', date: '2026-02-30', reason: 'Local fixture' }] }
+  assert((await validateHours(closure)).some(error => JSON.stringify(error.path) === JSON.stringify(['closures', { _key: 'holiday' }, 'date'])))
+})
+
+test('confirmation control can repair a malformed timestamp and never treats changed hours as confirmed', () => {
+  const valid = hoursFixture()
+  assert.equal(hoursConfirmationState(valid).confirmed, true)
+  const badTimestamp = { ...valid, confirmedAt: 'invalid-date' }
+  assert.ok(hoursConfirmationState(badTimestamp).snapshot)
+  assert.equal(hoursConfirmationState(badTimestamp).confirmed, false)
+  assert.equal(hoursConfirmationState({ ...valid, confirmationNote: 'Changed local reference' }).confirmed, false)
+  assert.equal(hoursConfirmationState({ ...valid, confirmationNote: '' }).snapshot, null)
+  assert.equal(hoursConfirmationState({ ...valid, reviewStatus: 'pendingReview' }).confirmed, true, 'confirmation does not grant editorial approval')
+  assert.equal(resolveAvailability([{ ...valid, reviewStatus: 'pendingReview' }], true).value, null)
+})
 
 test('hours form prefills all seven current website days without approval or invented confirmation', () => {
   const initial = clinicAvailability.initialValue()

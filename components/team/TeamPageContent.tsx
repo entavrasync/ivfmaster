@@ -9,7 +9,8 @@ import { Reveal } from '@/components/motion/Reveal'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
 import { Link } from '@/i18n/navigation'
 import { careTeam, facilityPhotos } from '@/lib/team'
-import { getTeamDoctors } from '@/sanity/lib/clinic'
+import { getTeamDoctors, getTeamValues } from '@/sanity/lib/clinic'
+import { TeamValuesSection } from '@/components/team/TeamValuesSection'
 import { getFacilityGallery } from '@/sanity/lib/editorial'
 import type { FacilityImage } from '@/sanity/lib/editorial-mapping'
 import type { Locale } from '@/i18n/routing'
@@ -20,7 +21,7 @@ import { at, plain, resolveSiteImage, resolveSiteChrome } from '@/sanity/lib/sit
 export async function TeamPageContent() {
   const t = await getTranslations('Team')
   const locale = await getLocale() as Locale
-  const [localizedDoctors, gallery, siteContent] = await Promise.all([getTeamDoctors(locale), getFacilityGallery(locale), getSiteContent(locale)])
+  const [localizedDoctors, gallery, siteContent, teamValues] = await Promise.all([getTeamDoctors(locale), getFacilityGallery(locale), getSiteContent(locale), getTeamValues(locale)])
   const closingHref = resolveSiteChrome(null, null, siteContent).actions?.['team.closing'] ?? '/contact'
   const careMembers = at(siteContent.team, 'careTeamSection.members')
   const localizedCareTeam = careTeam.map((member, index) => {
@@ -47,7 +48,7 @@ export async function TeamPageContent() {
     const area = Array.isArray(referenceAreas) && referenceAreas.length === 4 ? referenceAreas[index] : null
     const native = at(area, 'images')
     const replacements = Array.isArray(native) && native.length > 0 && native.length <= 10 ? native.map(resolveSiteImage) : []
-    const images = replacements.length && replacements.every(Boolean) ? replacements.map((item) => ({ ...item!.image, position: item!.position })) : undefined
+    const images = replacements.length && replacements.every(Boolean) ? replacements.map((item) => ({ ...item!.image, position: item!.position, alt: item!.alt })) : undefined
 
     return {
       ...photo,
@@ -110,14 +111,14 @@ export async function TeamPageContent() {
                         index % 2 === 1 && 'lg:order-2'
                       )}
                     >
-                      <Image
+                      {doctor.image && <Image
                         src={doctor.image.src}
                         alt={doctor.imageAlt}
                         fill
                         sizes="(max-width: 1023px) 100vw, 42vw"
                         className="object-cover transition-transform duration-700 ease-out hover:scale-[1.02] motion-reduce:transition-none"
                         style={{ objectPosition: doctor.image.position }}
-                      />
+                      />}
                       <div
                         aria-hidden="true"
                         className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-ink/15 to-transparent"
@@ -141,6 +142,10 @@ export async function TeamPageContent() {
                         {doctor.title}
                       </p>
                       <p className="mt-6 max-w-[42rem] text-lg leading-8 text-slate">{doctor.intro}</p>
+                      {doctor.specializations.length > 0 && <div className="mt-6">
+                        <h4 className="font-semibold text-navy">{t('specializationsHeading')}</h4>
+                        <ul className="mt-3 flex flex-wrap gap-2">{doctor.specializations.map(specialization => <li key={specialization._key} className="rounded-full bg-lavender/70 px-3 py-1 text-sm text-ink">{specialization.text}</li>)}</ul>
+                      </div>}
 
                       <ul className="mt-8 grid gap-3 border-t border-taupe/60 pt-7 sm:grid-cols-2 sm:gap-x-8">
                         {doctor.credentials.map((credential) => (
@@ -278,7 +283,7 @@ export async function TeamPageContent() {
                       <FacilityCarousel
                         key={photo.images.map((image) => image.src).join('|')}
                         images={photo.images}
-                        alt={photo.imageAlt}
+                        alt={photo.images[0].alt ?? photo.imageAlt}
                         sizes="(max-width: 767px) 84vw, 58vw"
                         labels={{
                           prev: t('facilityPrev'),
@@ -289,10 +294,10 @@ export async function TeamPageContent() {
                     ) : (
                       <Image
                         src={photo.images[0]}
-                        alt={photo.imageAlt}
+                        alt={photo.images[0].alt ?? photo.imageAlt}
                         fill
                         sizes="(max-width: 767px) 84vw, 58vw"
-                        placeholder="blur"
+                        placeholder={photo.images[0].blurDataURL ? 'blur' : 'empty'}
                         style={{ objectPosition: photo.images[0].position }}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
                       />
@@ -308,6 +313,8 @@ export async function TeamPageContent() {
           <p className="mt-5 text-sm leading-6 text-ash md:hidden">{t('facilitySwipeHint')}</p>
         </Container>
       </section>
+
+      <TeamValuesSection values={teamValues} />
 
       <section className="bg-[#f3e5e5] py-20 sm:py-24">
         <Container>

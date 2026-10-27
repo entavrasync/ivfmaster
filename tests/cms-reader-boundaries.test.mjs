@@ -8,10 +8,57 @@ import { doctorsQuery, clinicSettingsQuery } from '../sanity/lib/clinic-queries.
 import { homeFaqQuery, aboutInformationQuery, facilityGalleryQuery } from '../sanity/lib/editorial-queries.ts'
 import { articlesQuery } from '../sanity/lib/article-query.ts'
 import { doctorDocument } from '../sanity/lib/clinic-mapping.ts'
+import initialContent from '../sanity/reference/initial-content.json' with { type: 'json' }
+import { mergeSiteMessages } from '../sanity/lib/site-content-mapping.ts'
+import { buildWhatsappUrl } from '../lib/buildWhatsappMessage.ts'
 
 const messages = JSON.parse(readFileSync(new URL('../messages/en.json', import.meta.url), 'utf8'))
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
+
+test('published Contact refresh and recipient mapping retain the 60-second cache contract without leaking drafts', async (t) => {
+  const hook = registerHooks({ resolve(specifier, context, nextResolve) {
+    if (specifier === 'server-only') return { url: 'data:text/javascript,export {}', shortCircuit: true }
+    if (specifier === 'next-intl/server') return { url: 'data:text/javascript,export const getTranslations = async () => {}', shortCircuit: true }
+    return nextResolve(specifier, context)
+  } })
+  t.after(() => hook.deregister())
+  const { client } = await import('../sanity/lib/client.ts')
+  const { getSiteContent } = await import('../sanity/lib/site-content.ts')
+  const { getClinicSettings } = await import('../sanity/lib/clinic.ts')
+  const originalFetch = client.fetch, originalError = console.error
+  t.after(() => { client.fetch = originalFetch; console.error = originalError })
+  console.error = () => {}
+  const published = { _id: 'contactPage', _type: 'contactPage', reviewStatus: 'approved', form: { formSubmit: { en: 'Published send button', mr: 'प्रकाशित बटण' } } }
+  const settings = { ...structuredClone(initialContent.legacy.clinicSettings), _id: 'clinicSettings', _type: 'clinicSettings', reviewStatus: 'approved', whatsappNumber: '919876543210' }
+  const draft = { ...structuredClone(published), _id: 'drafts.contactPage' }; draft.form.formSubmit.en = 'Private draft button'
+  const dataset = [published, settings, draft, { ...settings, _id: 'drafts.clinicSettings', whatsappNumber: '919111111111' }, { ...published, _id: 'versions.release.contactPage' }]
+  const tags = new Set()
+  client.fetch = async (query, params, options) => {
+    const tag = options.next.tags[0]; tags.add(tag)
+    assert.equal(options.cache, 'force-cache'); assert.equal(options.next.revalidate, 60)
+    if (!['contactPage', 'clinicSettings'].includes(tag)) return null
+    return (await groq.evaluate(groq.parse(query), { dataset, params })).get()
+  }
+  for (const locale of ['en', 'mr']) {
+    const base = locale === 'en' ? messages : JSON.parse(readFileSync(new URL('../messages/mr.json', import.meta.url), 'utf8'))
+    let content = await getSiteContent(locale), clinic = await getClinicSettings(locale)
+    assert.equal(mergeSiteMessages(base, content, locale).Contact.formSubmit, published.form.formSubmit[locale])
+    assert.equal(buildWhatsappUrl(clinic?.whatsappNumber), 'https://wa.me/919876543210')
+    published.form.formSubmit[locale] = locale === 'en' ? 'Updated published button' : 'अद्ययावत प्रकाशित बटण'
+    settings.whatsappNumber = '919876543211'
+    content = await getSiteContent(locale); clinic = await getClinicSettings(locale)
+    assert.equal(mergeSiteMessages(base, content, locale).Contact.formSubmit, published.form.formSubmit[locale])
+    assert.equal(buildWhatsappUrl(clinic?.whatsappNumber), 'https://wa.me/919876543211')
+    settings.whatsappNumber = '919876543210'
+  }
+  settings.whatsappNumber = 'invalid'
+  assert.equal(buildWhatsappUrl((await getClinicSettings('en'))?.whatsappNumber), null)
+  settings.reviewStatus = 'pendingReview'; published.reviewStatus = 'pendingReview'
+  assert.equal(buildWhatsappUrl((await getClinicSettings('en'))?.whatsappNumber), null)
+  assert.equal((await getSiteContent('en')).contact, null)
+  assert(tags.has('contactPage')); assert(tags.has('clinicSettings'))
+})
 
 test('all seven actual queries exclude drafts, releases and pending approval', async () => {
   for (const [type, query, id, slug] of [
@@ -120,5 +167,5 @@ test('the actual page reader keeps published 60-second revalidation and forwards
     const updated = await getSiteContent(locale)
     assert.match(resolveSiteChrome(null, updated.home).hero.desktop.image.src, /replacement-100x100/)
   }
-  assert.deepEqual([...new Set(tags)].sort(), ['homePage', 'aboutPage', 'teamPage', 'proceduresPage', 'siteGlobals', 'contactPage'].sort())
+  assert.deepEqual([...new Set(tags)].sort(), ['homePage', 'aboutPage', 'teamPage', 'proceduresPage', 'siteGlobals', 'contactPage', 'educationPage'].sort())
 })

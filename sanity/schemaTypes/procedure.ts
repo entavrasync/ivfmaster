@@ -1,20 +1,22 @@
 import { ClipboardList } from 'lucide-react'
 import { defineArrayMember, defineField, defineType, getPublishedId } from 'sanity'
 import { apiVersion } from '../project.ts'
-import { defineImageField } from '../reference/schemaTypes/shared/fields.ts'
+import { defineImageField, localized } from '../reference/schemaTypes/shared/fields.ts'
 import { SEO_FIELDSETS, seoAdvancedFields } from '../reference/schemaTypes/objects/seo.ts'
 import { SeoPanel } from '../studio/SeoPanel.ts'
+import { validatePlainCopy } from '../lib/copy-validation'
+import { ProcedurePublicationInput } from '../studio/ProcedurePublicationInput'
 
-const nonBlank = (value: string | undefined) =>
-  value === undefined || value.trim().length > 0 || 'Enter text rather than whitespace.'
+const nonBlank = (value: unknown) =>
+  value == null || typeof value === 'string' && value.trim().length > 0 || 'Enter text rather than whitespace.'
 
 export const localizedString = defineType({
   name: 'procedureLocalizedString',
   title: 'Localized text',
   type: 'object',
   fields: [
-    defineField({ name: 'en', title: 'English', type: 'string', validation: (r) => r.required().custom(nonBlank) }),
-    defineField({ name: 'mr', title: 'Marathi (optional; falls back to English)', type: 'string' }),
+    defineField({ name: 'en', title: 'English', type: 'string', validation: r => [r.required().custom(nonBlank), r.custom(validatePlainCopy)] }),
+    defineField({ name: 'mr', title: 'Marathi (optional; falls back to English)', type: 'string', validation: r => r.custom(validatePlainCopy) }),
   ],
 })
 
@@ -23,8 +25,8 @@ export const localizedText = defineType({
   title: 'Localized paragraph',
   type: 'object',
   fields: [
-    defineField({ name: 'en', title: 'English', type: 'text', rows: 4, validation: (r) => r.required().custom(nonBlank) }),
-    defineField({ name: 'mr', title: 'Marathi (optional; falls back to English)', type: 'text', rows: 4 }),
+    defineField({ name: 'en', title: 'English', type: 'text', rows: 4, validation: r => [r.required().custom(nonBlank), r.custom(validatePlainCopy)] }),
+    defineField({ name: 'mr', title: 'Marathi (optional; falls back to English)', type: 'text', rows: 4, validation: r => r.custom(validatePlainCopy) }),
   ],
 })
 
@@ -33,6 +35,7 @@ export const procedure = defineType({
   title: 'Procedure',
   type: 'document',
   icon: ClipboardList,
+  components: { input: ProcedurePublicationInput },
   groups: [
     { name: 'identity', title: 'Identity & approval', default: true },
     { name: 'hero', title: 'Introduction & quick facts' },
@@ -98,8 +101,8 @@ export const procedure = defineType({
       of: [defineArrayMember({
         name: 'procedureStep', type: 'object',
         fields: [
-          defineField({ name: 'title', type: 'procedureLocalizedString', validation: (r) => r.required() }),
-          defineField({ name: 'detail', type: 'procedureLocalizedText', validation: (r) => r.required() }),
+          defineField({ name: 'title', title: 'Step heading', type: 'procedureLocalizedString', validation: (r) => r.required() }),
+          defineField({ name: 'detail', title: 'Step description', type: 'procedureLocalizedText', validation: (r) => r.required() }),
         ],
         preview: { select: { title: 'title.en' } },
       })],
@@ -131,8 +134,8 @@ export const procedure = defineType({
       description: 'Every field is optional: empty fields use the procedure name and summary. Language alternates are always generated automatically.',
       fieldsets: SEO_FIELDSETS, components: { input: SeoPanel },
       fields: [
-        defineField({ name: 'metaTitle', title: 'Search title', type: 'procedureLocalizedString', description: 'Shown as the page title in search results. About 50–60 characters.' }),
-        defineField({ name: 'metaDescription', title: 'Search description', type: 'procedureLocalizedText', description: 'Shown under the title in search results. About 140–160 characters.' }),
+        localized('metaTitle', { title: 'Search title', translation: 'optional', description: 'Shown as the page title in search results. About 50–60 characters.' }),
+        localized('metaDescription', { title: 'Search description', type: 'localizedText', translation: 'optional', description: 'Shown under the title in search results. About 140–160 characters.' }),
         ...seoAdvancedFields(),
       ],
     }),

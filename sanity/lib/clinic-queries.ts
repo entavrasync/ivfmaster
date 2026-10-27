@@ -9,8 +9,8 @@ export const doctorsQuery = defineQuery(`
   | order(order asc, slug.current asc)[0...3]{
     _id, reviewStatus, order, "slug": slug.current,
     name{en,mr}, title{en,mr}, essence{en,mr}, intro{en,mr}, biography{en,mr}, metaDescription{en,mr}, ${SEO_RAW_PROJECTION},
-    credentials[]{_key,en,mr},
-    home{essence{en,mr},intro{en,mr},credentials[]{_key,en,mr}},
+    credentials[]{_key,en,mr,text{en,mr},institution,awardingBody,year}, specializations[]{_key,en,mr},
+    home{essence{en,mr},intro{en,mr},credentials[]{_key,en,mr,text{en,mr},institution,awardingBody,year}},
     about{role{en,mr},pullQuote{en,mr},paragraphs[]{_key,en,mr},evidence{en,mr}},
     portrait{alt{en,mr},crop,hotspot,asset->{_id,url,metadata{dimensions{width,height},lqip}}}
   }

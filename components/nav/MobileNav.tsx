@@ -1,4 +1,5 @@
 'use client'
+import { siteConfig } from '@/config/site'
 import { useSiteAction } from '@/components/providers/SiteContentContext'
 
 import { useState } from 'react'
@@ -153,9 +154,10 @@ interface MobileNavProps {
 
 export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
   const actionHref = useSiteAction('nav.primary', '/contact')
-  const { navigation } = useSiteContent()
+  const { navigation, identity } = useSiteContent()
   const pathname = usePathname()
   const t        = useTranslations('Nav')
+  const tFooter = useTranslations('Footer')
 
   return (
     <AnimatePresence>
@@ -193,12 +195,12 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
               className="flex items-center justify-between shrink-0"
               style={{ padding: '18px 20px 16px', borderBottom: '1px solid rgba(216,204,190,0.6)' }}
             >
-              <Link href="/" onClick={onClose} className="flex flex-col" style={{ gap: '2px' }} aria-label="IVF Master — home">
+              <Link href="/" onClick={onClose} className="flex flex-col" style={{ gap: '2px' }} aria-label={`${identity?.name ?? siteConfig.name} — home`}>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.125rem', fontWeight: 700, color: '#2E4F8E', letterSpacing: '-0.02em' }}>
-                  IVF Master
+                  {identity?.name ?? siteConfig.name}
                 </span>
                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.6875rem', color: '#9AA0AC', letterSpacing: '0.02em' }}>
-                  by Mandrupkar Clinic
+                  {tFooter('byline')}
                 </span>
               </Link>
 
@@ -226,7 +228,7 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
               {/* Nav links */}
               <nav style={{ padding: '8px 0' }}>
                 <Stagger stagger={0.055} delay={0.04}>
-                  {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key) }))).map(({ href, label }) => {
+                  {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key), opensInNewTab: false }))).map(({ href, label, opensInNewTab }) => {
                     /* Procedures gets its own expandable accordion */
                     if (href === '/procedures') {
                       return (
@@ -242,6 +244,8 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
                         <Pressable haptic onClick={onClose}>
                           <Link
                             href={href}
+                            target={opensInNewTab ? "_blank" : undefined}
+                            rel={opensInNewTab ? "noopener noreferrer" : undefined}
                             className={cn('flex items-center justify-between group')}
                             style={{
                               padding:         '13px 20px',

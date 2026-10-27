@@ -12,7 +12,7 @@ import { getDoctorContent } from '@/sanity/lib/clinic'
 
 import { EditorialPicture } from './EditorialPicture'
 
-function DoctorChapter({ doctor, index }: { doctor: DoctorStory; index: number }) {
+function DoctorChapter({ doctor, index, eyebrow }: { doctor: DoctorStory; index: number; eyebrow: string }) {
   const reversed = index % 2 === 1
 
   return (
@@ -22,11 +22,11 @@ function DoctorChapter({ doctor, index }: { doctor: DoctorStory; index: number }
           <div className={reversed ? 'lg:order-2 lg:col-span-5' : 'lg:col-span-5'}>
             <Parallax range={20}>
               <Reveal y={18}>
-                <EditorialPicture
+                {doctor.image ? <EditorialPicture
                   image={doctor.image}
                   sizes="(max-width: 767px) 90vw, (max-width: 1023px) 70vw, 38vw"
                   className="aspect-[4/5] rounded-[1.75rem] bg-navy shadow-[0_28px_70px_rgba(10,22,50,0.22)] sm:rounded-[2.5rem]"
-                />
+                /> : <div aria-hidden="true" className="aspect-[4/5] rounded-[1.75rem] bg-navy sm:rounded-[2.5rem]" />}
               </Reveal>
             </Parallax>
           </div>
@@ -34,7 +34,7 @@ function DoctorChapter({ doctor, index }: { doctor: DoctorStory; index: number }
           <div className={reversed ? 'lg:order-1 lg:col-span-6 lg:col-start-1' : 'lg:col-span-6 lg:col-start-7'}>
             <Reveal y={18}>
               <p className={`eyebrow mb-4 ${reversed ? 'text-navy' : 'text-periwinkle'}`}>
-                Two doctors, one continuity of care
+                {eyebrow}
               </p>
               <h2 className={`display-lg ${reversed ? 'text-ink' : 'text-ivory'}`}>{doctor.name}</h2>
               <p className={`mt-3 text-sm uppercase tracking-[0.1em] ${reversed ? 'text-navy' : 'text-periwinkle'}`}>
@@ -78,12 +78,12 @@ function DoctorChapter({ doctor, index }: { doctor: DoctorStory; index: number }
   )
 }
 
-export async function DoctorStories({ content }: { content?: readonly DoctorStory[] }) {
+export async function DoctorStories({ content, eyebrow = 'Two doctors, one continuity of care' }: { content?: readonly DoctorStory[]; eyebrow?: string }) {
   const profiles = await getDoctorContent(await getLocale() as Locale)
   const stories = (content ?? aboutContent.doctors).map((story) => {
     const profile = profiles.find((item) => item.slug === `${story.id}-mandrupkar`)
     return profile ? { ...story, ...profile.about, name: profile.name,
-      image: profile.portrait ? { desktop: profile.portrait.photo, mobile: profile.portrait.photo, alt: profile.portrait.alt, position: profile.portrait.position } : story.image,
+      image: profile.portrait ? { desktop: profile.portrait.photo, mobile: profile.portrait.photo, alt: profile.portrait.alt, position: profile.portrait.position } : undefined,
     } : story
   }).sort((a, b) => {
     const order = (id: string) => profiles.find((p) => p.slug === `${id}-mandrupkar`)?.order ?? aboutContent.doctors.findIndex((d) => d.id === id)
@@ -92,7 +92,7 @@ export async function DoctorStories({ content }: { content?: readonly DoctorStor
   return (
     <section aria-label="Meet the doctors">
       {stories.map((doctor, index) => (
-        <DoctorChapter key={doctor.id} doctor={doctor} index={index} />
+        <DoctorChapter key={doctor.id} doctor={doctor} index={index} eyebrow={eyebrow} />
       ))}
     </section>
   )

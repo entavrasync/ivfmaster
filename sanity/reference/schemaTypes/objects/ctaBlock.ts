@@ -1,7 +1,8 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType, type Path } from 'sanity'
 
 import { DEFAULT_LOCALE } from '../../lib/locales'
 import { localized } from '../shared/fields'
+import { isUnusedCtaSlot } from '../shared/cta-slots'
 
 /**
  * The closing beat of a section: a short lead-in, then one or two actions.
@@ -58,7 +59,7 @@ export const ctaBlock = defineType({
         'The small line beneath the buttons — e.g. "No pressure. Just answers." Optional.',
       translation: 'optional',
     }),
-  ],
+  ].map(field => ({ ...field, hidden: ({ document, path }: { document?: { _type?: unknown }; path: Path }) => isUnusedCtaSlot(document, path) })),
   preview: {
     select: {
       heading: `heading.${DEFAULT_LOCALE}`,

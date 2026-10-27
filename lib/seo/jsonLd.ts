@@ -2,6 +2,7 @@ import { siteConfig } from '../../config/site.ts'
 import { buildAbsoluteUrl, buildLocalizedPath } from './routes.ts'
 import { availabilityJsonLd, availabilityClosuresJsonLd, type ClinicAvailability } from '../clinic-availability.ts'
 import type { ClinicSettings } from '../../sanity/lib/clinic-mapping.ts'
+import type { SiteIdentity } from '../../sanity/lib/site-content-mapping.ts'
 
 export type JsonLdValue =
   | string
@@ -16,7 +17,7 @@ export function serializeJsonLd(data: JsonLdValue | object): string {
   return JSON.stringify(data).replace(/</g, '\\u003c')
 }
 
-export function buildRootJsonLd(settings: ClinicSettings | null = null, availability: ClinicAvailability | null = null) {
+export function buildRootJsonLd(settings: ClinicSettings | null = null, availability: ClinicAvailability | null = null, identity: SiteIdentity = {}) {
   const clinicId = `${siteConfig.url}/#medical-clinic`
   const websiteId = `${siteConfig.url}/#website`
 
@@ -26,7 +27,7 @@ export function buildRootJsonLd(settings: ClinicSettings | null = null, availabi
       {
         '@type': 'WebSite',
         '@id': websiteId,
-        name: siteConfig.name,
+        name: identity.name ?? siteConfig.name,
         url: siteConfig.url,
         inLanguage: ['en-IN', 'hi-IN', 'mr-IN'],
         publisher: {
@@ -36,9 +37,9 @@ export function buildRootJsonLd(settings: ClinicSettings | null = null, availabi
       {
         '@type': 'MedicalClinic',
         '@id': clinicId,
-        name: siteConfig.legalName,
-        alternateName: siteConfig.name,
-        description: siteConfig.description,
+        name: identity.legalName ?? siteConfig.legalName,
+        alternateName: identity.name ?? siteConfig.name,
+        description: identity.description ?? siteConfig.description,
         url: siteConfig.url,
         email: settings?.email ?? siteConfig.contact.email,
         telephone: settings?.telephone ?? siteConfig.contact.telephone,

@@ -21,7 +21,7 @@ export const procedureDocument = z.object({
   process: z.array(key.extend({ title: localized, detail: localized })).min(1),
   whatToExpect: localized,
   faqs: z.array(key.extend({ q: localized, a: localized })).min(1),
-  seo: z.object({ metaTitle: localized.nullish(), metaDescription: localized.nullish() }).nullish(),
+  seo: z.object({ metaTitle: z.object({ en: z.string().nullish(), mr: z.string().nullish() }).nullish(), metaDescription: z.object({ en: z.string().nullish(), mr: z.string().nullish() }).nullish() }).nullish(),
 })
 
 export type ProcedureDocument = z.infer<typeof procedureDocument>
@@ -80,8 +80,8 @@ export function mapProcedureDocument(input: unknown, original: Procedure, locale
     whatToExpect: read(doc.whatToExpect),
     faqs: doc.faqs.map((faq) => ({ q: read(faq.q), a: read(faq.a) })),
     seo: {
-      title: doc.seo?.metaTitle ? read(doc.seo.metaTitle) : undefined,
-      description: doc.seo?.metaDescription ? read(doc.seo.metaDescription) : undefined,
+      title: pageSeo?.title,
+      description: pageSeo?.description,
     },
     // The parsed document keeps only the validated title/description; read the rest from the raw record.
     ...(pageSeo ? { pageSeo } : {}),
