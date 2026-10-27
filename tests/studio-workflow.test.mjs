@@ -803,6 +803,31 @@ test('the actual Hero and Footer renderers use mapped CMS media and links', asyn
     assert(!/href="(?:\/en)?\/(?:privacy|terms)"/.test(emptyHtml))
     assert.equal((emptyHtml.match(/href="https:\/\/example.com\/policy"/g) ?? []).length, 2, 'only column links remain')
   }
+  // Exercise the same menu hook used by the desktop dropdown and mobile accordion.
+  // Fixtures stay local: no invented procedure is saved or published to Sanity.
+  const { useNavProcedures } = require('../components/nav/procedures-data.tsx')
+  const { resolveProcedures } = await import('../sanity/lib/procedure-mapping.ts')
+  const { allProceduresQuery } = await import('../sanity/lib/procedure-query.ts')
+  const { PROCEDURES } = await import('../lib/procedures.ts')
+  const fresh = { ...structuredClone(initialContent.procedures[0].value), _type: 'procedure', _id: 'local-fixture-only', reviewStatus: 'approved', slug: { current: 'new-cms-procedure' }, name: { en: 'CMS new procedure', mr: 'नवीन प्रक्रिया' }, oneLiner: { en: 'CMS menu description', mr: 'नवीन प्रक्रियेची माहिती' } }
+  const stored = [fresh, { ...fresh, _id: 'drafts.hidden', slug: { current: 'draft-procedure' } }, { ...fresh, _id: 'pending', reviewStatus: 'pendingReview', slug: { current: 'pending-procedure' } }]
+  const data = await (await groq.evaluate(groq.parse(allProceduresQuery), { dataset: stored })).get()
+  function MenuData() {
+    return createElement('nav', {}, useNavProcedures().map((item) => createElement('a', { key: item.id, href: item.href }, item.label, item.description)))
+  }
+  for (const locale of ['en', 'mr']) {
+    const mapped = resolveProcedures(data, PROCEDURES, locale)
+    assert.equal(mapped.status, 'sanity')
+    const procedures = mapped.procedures.map((item) => ({ id: item.slug, label: item.name, description: item.oneLiner, href: `/procedures/${item.slug}` }))
+    const menu = renderToStaticMarkup(createElement(SiteContentProvider, { content: { navigation: null, footer: null, procedures } }, createElement(MenuData)))
+    assert(menu.includes('href="/procedures/new-cms-procedure"'))
+    assert(menu.includes(fresh.name[locale]))
+    assert(menu.includes(fresh.oneLiner[locale]))
+    assert(!menu.includes('draft-procedure'))
+    assert(!menu.includes('pending-procedure'))
+    assert.equal(mapped.procedures.at(-1).slug, 'new-cms-procedure')
+
+  }
 })
 
 test('Footer validation identifies the exact keyed field and preserves approval and language requirements', async () => {
