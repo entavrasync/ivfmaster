@@ -10,8 +10,8 @@ const localize = createMiddleware(routing);
 
 export default function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname.replace(/^\/(en|mr)(?=\/|$)/, '').replace(/\/$/, '') || '/';
-  const pageExists = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf'].includes(path)
-    || /^\/(procedures|educate-ivf|team)\/[^/]+$/.test(path);
+  const pageExists = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/news', '/events'].includes(path)
+    || /^\/(procedures|educate-ivf|team|news|events)\/[^/]+$/.test(path);
   // A menu entry cannot create a page. Unknown route shapes need no CMS lookup.
   // Always overwrite this header so a caller cannot select the lightweight layout.
   request.headers.set('x-ivf-missing-route', pageExists ? 'false' : 'true');
@@ -22,6 +22,6 @@ export default function proxy(request: NextRequest) {
 // file (including Search Console verification HTML) untouched.
 export const config = {
   matcher: [
-    '/((?!_next/|ivfmaster-studio(?:/|$)|favicon\\.ico|.*\\..*).*)',
+    '/((?!_next/|api(?:/|$)|ivfmaster-studio(?:/|$)|favicon\\.ico|.*\\..*).*)',
   ],
 };

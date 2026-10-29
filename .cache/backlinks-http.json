@@ -1,0 +1,212 @@
+[
+  {
+    "port": 3402,
+    "route": "/",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/about",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/about",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/contact",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/contact",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/team",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/team",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/procedures",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/procedures/ivf",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/procedures",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/procedures/ivf",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/educate-ivf/pcos",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/en/educate-ivf",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/educate-ivf/pcos",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/educate-ivf",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/ivfmaster-studio",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": false
+  },
+  {
+    "port": 3402,
+    "route": "/en/team/gorakh-mandrupkar",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3402,
+    "route": "/team/gorakh-mandrupkar",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/about",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/contact",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/doctor",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/insights",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/services/dental-implants",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/services",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/aesthedent-experience",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/dental-clinic-in-kothrud",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  },
+  {
+    "port": 3401,
+    "route": "/aesthedent-studio",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": false
+  },
+  {
+    "port": 3401,
+    "route": "/insights/when-to-get-braces",
+    "status": 200,
+    "backlinkSection": false,
+    "footer": true
+  }
+]

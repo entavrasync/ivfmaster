@@ -9,6 +9,7 @@ import { projectId, dataset, apiVersion } from './sanity/project'
 import { SINGLETONS, SINGLETON_TYPES } from './sanity/reference/schemaTypes/shared/singletons'
 import initialContent from './sanity/reference/initial-content.json' with { type: 'json' }
 import { RecordHoursConfirmationAction } from './sanity/studio/RecordHoursConfirmationAction'
+import { publicationPresentation } from './sanity/presentation'
 
 // Superseded by the page singletons and the shared Question type; schemas stay
 // registered so any stored documents remain readable, but editors no longer see them.
@@ -141,8 +142,10 @@ export default defineConfig({
         })),
       ]),
     ),
-    ...S.documentTypeListItems().filter((item) => !['clinicSettings', 'clinicAvailability', 'procedure', 'article', 'doctor'].includes(item.getId() ?? '') && !SINGLETON_TYPES.has(item.getId() ?? '') && !LEGACY_TYPES.has(item.getId() ?? '')),
-  ]) })],
+    S.divider(),
+    ...(['news', 'event', 'publicationCategory'] as const).map(type => S.documentTypeListItem(type).title(type === 'news' ? 'News — publish updates' : type === 'event' ? 'Events — upcoming & past' : 'News & event categories')),
+    ...S.documentTypeListItems().filter((item) => !['clinicSettings', 'clinicAvailability', 'procedure', 'article', 'doctor', 'news', 'event', 'publicationCategory'].includes(item.getId() ?? '') && !SINGLETON_TYPES.has(item.getId() ?? '') && !LEGACY_TYPES.has(item.getId() ?? '')),
+  ]) }), publicationPresentation],
   schema: { types: schemaTypes, templates: (prev) => [
     ...prev,
     { id: 'new-article', schemaType: 'article', title: 'Add new article', value: () => ({ reviewStatus: 'pendingReview' }) },

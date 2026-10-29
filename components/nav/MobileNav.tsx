@@ -2,7 +2,7 @@
 import { siteConfig } from '@/config/site'
 import { useSiteAction } from '@/components/providers/SiteContentContext'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { AnimatePresence, motion } from 'motion/react'
@@ -13,6 +13,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useNavProcedures } from './procedures-data'
 import { cn } from '@/lib/utils'
 import { useSiteContent } from '@/components/providers/SiteContentContext'
+import { ContentDropdown } from './ContentDropdown'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -153,6 +154,14 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
+  const panel = useRef<HTMLDivElement>(null), close = useRef(onClose)
+  close.current = onClose
+  useEffect(() => {
+    if (!isOpen) return
+    const previous = document.activeElement
+    panel.current?.focus()
+    return () => { if (previous instanceof HTMLElement) previous.focus() }
+  }, [isOpen])
   const actionHref = useSiteAction('nav.primary', '/contact')
   const { navigation, identity } = useSiteContent()
   const pathname = usePathname()
@@ -179,6 +188,19 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
           {/* Panel — flex column, NO overflow here so footer sticks */}
           <motion.div
             key="panel"
+            ref={panel}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('openMenu')}
+            tabIndex={-1}
+            onKeyDown={event => {
+              if (event.key === 'Escape') { event.preventDefault(); close.current() }
+              if (event.key !== 'Tab') return
+              const focusable = Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"]') ?? []).filter(element => element.getClientRects().length > 0)
+              const first = focusable[0], last = focusable.at(-1)
+              if (event.shiftKey && (document.activeElement === first || document.activeElement === panel.current)) { event.preventDefault(); last?.focus() }
+              else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+            }}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -228,7 +250,10 @@ export function MobileNav({ isOpen, onClose }: Readonly<MobileNavProps>) {
               {/* Nav links */}
               <nav style={{ padding: '8px 0' }}>
                 <Stagger stagger={0.055} delay={0.04}>
-                  {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key), opensInNewTab: false }))).map(({ href, label, opensInNewTab }) => {
+                  {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key), opensInNewTab: false }))).map((item) => {
+                    const { href, label, opensInNewTab } = item
+                    if ('children' in item && item.children?.length) return <StaggerItem key={item.key}><ContentDropdown item={item} mobile onNavigate={onClose} /></StaggerItem>
+                    if (href === undefined) return null
                     /* Procedures gets its own expandable accordion */
                     if (href === '/procedures') {
                       return (

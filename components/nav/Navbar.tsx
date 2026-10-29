@@ -12,6 +12,7 @@ import { Pressable } from '@/components/motion'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileNav } from './MobileNav'
 import { ProceduresDropdown } from './ProceduresDropdown'
+import { ContentDropdown } from './ContentDropdown'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 import { useSiteContent } from '@/components/providers/SiteContentContext'
@@ -59,6 +60,7 @@ function MenuIcon({ open }: Readonly<{ open: boolean }>) {
 
 /* ─── Desktop nav link — sliding pill + blush active bar ─────────────────── */
 interface DesktopNavLinkProps {
+  compact?: boolean
   opensInNewTab?: boolean
   href: string
   label: string
@@ -67,7 +69,7 @@ interface DesktopNavLinkProps {
   onMouseEnter: () => void
 }
 
-function DesktopNavLink({ href, label, active, isHovered, onMouseEnter, opensInNewTab }: Readonly<DesktopNavLinkProps>) {
+function DesktopNavLink({ href, label, active, isHovered, onMouseEnter, opensInNewTab, compact }: Readonly<DesktopNavLinkProps>) {
 
   const reduced = useReducedMotion()
 
@@ -77,7 +79,7 @@ function DesktopNavLink({ href, label, active, isHovered, onMouseEnter, opensInN
       target={opensInNewTab ? "_blank" : undefined}
       rel={opensInNewTab ? "noopener noreferrer" : undefined}
       onMouseEnter={onMouseEnter}
-      className="relative flex items-center px-4 py-2 rounded-full select-none"
+      className={cn('relative flex items-center py-2 rounded-full select-none', compact ? 'px-2.5' : 'px-4')}
     >
       {/* Sliding hover background pill */}
       {isHovered && !reduced && (
@@ -96,7 +98,8 @@ function DesktopNavLink({ href, label, active, isHovered, onMouseEnter, opensInN
         )}
         style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '1.0625rem',
+          fontSize: compact ? '0.875rem' : '1.0625rem',
+          whiteSpace: 'nowrap',
           fontWeight: active ? 600 : 500,
           letterSpacing: '-0.01em',
         }}
@@ -150,6 +153,7 @@ function LogoLockup() {
 export function Navbar() {
   const actionHref = useSiteAction('nav.primary', '/contact')
   const { navigation } = useSiteContent()
+  const hasContentDropdown = navigation?.some(item => item.children?.length) === true
   const pathname   = usePathname()
   const reduced    = useReducedMotion()
   const t          = useTranslations('Nav')
@@ -240,15 +244,19 @@ export function Navbar() {
 
               {/* ── Desktop centre nav ── */}
               <nav
-                className="hidden lg:flex items-center gap-1"
+                className={cn(hasContentDropdown ? 'hidden xl:flex' : 'hidden lg:flex', 'items-center gap-1')}
                 aria-label="Main navigation"
                 onMouseLeave={() => setHoveredHref(null)}
               >
-                {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key), opensInNewTab: false }))).map(({ href, label, opensInNewTab }) => {
+                {(navigation ?? NAV_LINKS.map((item) => ({ ...item, label: t(item.key), opensInNewTab: false }))).map((item) => {
+                  const { href, label, opensInNewTab } = item
+                  if ('children' in item && item.children?.length) return <ContentDropdown key={item.key} item={item} isHovered={hoveredHref === item.key} onHoverEnter={() => setHoveredHref(item.key)} />
+                  if (href === undefined) return null
                   const active = pathname === href || (href !== '/' && pathname.startsWith(href))
                   if (href === '/procedures') {
                     return (
                       <ProceduresDropdown
+                        compact={hasContentDropdown}
                         label={navigation ? label : undefined}
                         key={href}
                         active={active}
@@ -259,6 +267,7 @@ export function Navbar() {
                   }
                   return (
                     <DesktopNavLink
+                      compact={hasContentDropdown}
                       key={href}
                       href={href}
                       label={label}
@@ -272,7 +281,7 @@ export function Navbar() {
               </nav>
 
               {/* ── Desktop right — language + CTA ── */}
-              <div className="hidden lg:flex items-center gap-3 shrink-0">
+              <div className={cn(hasContentDropdown ? 'hidden xl:flex' : 'hidden lg:flex', 'items-center gap-3 shrink-0')}>
                 <LanguageSwitcher variant="bar" />
 
                 <Pressable haptic>
@@ -296,7 +305,7 @@ export function Navbar() {
               </div>
 
               {/* ── Mobile hamburger ── */}
-              <Pressable className="lg:hidden" onClick={() => setMobileOpen((v) => !v)}>
+              <Pressable className={hasContentDropdown ? 'xl:hidden' : 'lg:hidden'} onClick={() => setMobileOpen((v) => !v)}>
                 <button
                   aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                   aria-expanded={mobileOpen}

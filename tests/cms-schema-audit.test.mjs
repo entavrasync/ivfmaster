@@ -22,6 +22,7 @@ import { proceduresHubQuery } from '../sanity/reference/queries/procedures.ts'
 import { globalsQuery } from '../sanity/reference/queries/globals.ts'
 import { contactPageQuery } from '../sanity/reference/queries/contact.ts'
 import { articlesQuery } from '../sanity/lib/article-query.ts'
+import { newsFixture, eventFixture } from './publication-fixtures.mjs'
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
@@ -29,7 +30,7 @@ const query = async (source, dataset, locale = 'en') => (await groq.evaluate(gro
 const schema = createSchema({ name: 'whole-cms-audit', types: config.schema.types })
 const photo = { _type: 'image', asset: { _type: 'reference', _ref: 'image-audit-1800x1200-jpg' }, alt: { en: 'Local image fixture' }, crop: { left: .1, right: .1, top: .1, bottom: .1 }, hotspot: { x: .7, y: .4, width: .2, height: .2 } }
 const asset = { _id: photo.asset._ref, _type: 'sanity.imageAsset', url: 'https://cdn.sanity.io/images/4k9zwr7s/production/audit-1800x1200.jpg', metadata: { dimensions: { width: 1800, height: 1200 } } }
-const client = { withConfig() { return this }, fetch: async (source, params) => source.includes('sanity.imageAsset') ? { ...asset, _id: params.id } : source.trim().startsWith('!defined') ? true : null }
+const client = { withConfig() { return this }, fetch: async (source, params) => source.includes('sanity.imageAsset') ? { ...asset, _id: params.id } : source.includes('_type == "publicationCategory"') || source.trim().startsWith('!defined') ? true : null }
 const validate = async document => (await validateDocument({ document, workspace: { schema }, getClient: () => client, getDocumentExists: async () => true })).filter(marker => marker.level === 'error')
 const approved = (type, value, id = type) => ({ ...structuredClone(value), _id: id, _type: type, reviewStatus: 'approved' })
 
@@ -40,7 +41,10 @@ test('every registered document type has a native valid fixture and retains its 
     const type = definition.name
     if (['procedure', 'doctor', 'article'].includes(type)) {
       documents.push(...initial[{ procedure: 'procedures', doctor: 'doctors', article: 'articles' }[type]].map((entry, index) => approved(type, entry.value, `local-${type}-${index}`)))
-    } else if (type === 'teamValues') documents.push(approved(type, teamValuesFromTrust(initial.singletons.aboutPage.trust)))
+    } else if (type === 'news') documents.push(structuredClone(newsFixture))
+    else if (type === 'event') documents.push(structuredClone(eventFixture))
+    else if (type === 'publicationCategory') continue // Taxonomy has native Publish, without a clinical-content approval gate.
+    else if (type === 'teamValues') documents.push(approved(type, teamValuesFromTrust(initial.singletons.aboutPage.trust)))
     else if (type === 'faq') documents.push(approved(type, { question: { en: 'Local question fixture?' }, answer: { en: 'Local answer fixture.' }, order: 0, isPublished: true }))
     else if (type === 'testimonial') documents.push(approved(type, { quote: 'Local test quotation; no patient content or publication.', quoteLanguage: 'en', order: 0, consentOnFile: false, isPublished: false }))
     else {
@@ -55,7 +59,7 @@ test('every registered document type has a native valid fixture and retains its 
       documents.push(doc)
     }
   }
-  assert.equal(new Set(documents.map(doc => doc._type)).size, 20)
+  assert.equal(new Set(documents.map(doc => doc._type)).size, config.schema.types.filter(type => type.type === 'document' && type.name !== 'publicationCategory').length)
   for (const doc of documents) {
     assert.deepEqual(await validate(doc), [], `${doc._type}: ${doc._id}`)
     assert((await validate({ ...doc, reviewStatus: 'pendingReview' })).some(marker => marker.path[0] === 'reviewStatus'), `${doc._type} approval must remain required`)

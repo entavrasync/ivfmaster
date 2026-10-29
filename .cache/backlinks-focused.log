@@ -1,0 +1,13 @@
+✔ native Studio input preserves editing, reorder/remove callbacks, keys and read-only permissions (7.4434ms)
+✔ native validation targets malformed and duplicate URLs while optional fields stay optional (692.3283ms)
+✔ defensive mapping isolates malformed records, keeps meaningful URLs and renders localized safe links (10.7565ms)
+✔ every page schema has backlinks, site-wide defaults cannot supply public links (1147.7889ms)
+✔ published singleton and collection queries carry backlinks through readers in both locales and refresh without static fallback (1932.8363ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10765.9698

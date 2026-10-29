@@ -10,6 +10,7 @@ import { useNavProcedures } from './procedures-data'
 const EASE = [0.22, 1, 0.36, 1] as const
 
 interface ProceduresDropdownProps {
+  readonly compact?: boolean
   readonly label?: string
   readonly active:       boolean
   readonly isHovered:    boolean
@@ -17,6 +18,7 @@ interface ProceduresDropdownProps {
 }
 
 export function ProceduresDropdown({
+  compact,
   label,
   active,
   isHovered,
@@ -107,7 +109,7 @@ export function ProceduresDropdown({
         aria-haspopup="true"
         aria-expanded={open}
         aria-controls="procedures-panel"
-        className="relative flex items-center gap-1 px-4 py-2 rounded-full select-none"
+        className={`relative flex items-center gap-1 py-2 rounded-full select-none ${compact ? 'px-2.5' : 'px-4'}`}
       >
         {showPill && !reduced && (
           <motion.div
@@ -122,7 +124,7 @@ export function ProceduresDropdown({
           className="relative z-10 transition-colors duration-200"
           style={{
             fontFamily:    'var(--font-body)',
-            fontSize:      '1.0625rem',
+            fontSize:      compact ? '0.875rem' : '1.0625rem',
             fontWeight:    active ? 600 : 500,
             letterSpacing: '-0.01em',
             color:         active ? '#1C2A48' : 'rgba(28,42,72,0.60)',

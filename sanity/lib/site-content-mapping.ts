@@ -20,12 +20,13 @@ export function plain(value: unknown): string | undefined {
   return parsed.success ? parsed.data : undefined
 }
 const allowedRoutes = new Set(['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map((item) => '/procedures/' + item.slug), ...articleSlugs.map((slug) => '/educate-ivf/' + slug)])
-export const isSiteMenuPath = (path: string) => allowedRoutes.has(path) || path === '/#faq' || /^\/(procedures|educate-ivf)\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)
-export type SiteMenuItem = { key: string; href: string; label: string; opensInNewTab?: boolean }
+export const isSiteMenuPath = (path: string) => allowedRoutes.has(path) || ['/news', '/events', '/#faq'].includes(path) || /^\/(procedures|educate-ivf|news|events)\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)
+export type SiteMenuItem = { key: string; href: string; label: string; behavior?: 'link'; opensInNewTab?: boolean; children?: SiteMenuItem[] }
+export type SiteNavigationItem = SiteMenuItem | { key: string; label: string; behavior: 'dropdown'; children: SiteMenuItem[]; href?: never; opensInNewTab?: never }
 export type SiteImage = { image: StaticImageData; alt: string; position?: string }
 export type CostOfWaitingFrame = { key: string; desktop: SiteImage | null; mobile: SiteImage | null }
 export type SiteIdentity = { name?: string; legalName?: string; description?: string }
-export type SiteChrome = { citation?: { href: string; opensInNewTab: boolean }; identity?: SiteIdentity; navigation: SiteMenuItem[] | null; footer: { heading: string; items: SiteMenuItem[] }[] | null; legalLinks?: SiteMenuItem[]; footerCopyright?: string; actions?: Record<string, string>; frames?: CostOfWaitingFrame[]; hero?: { desktop: SiteImage | null; mobile: SiteImage | null }; stats?: { value: number; suffix: string; label: string }[]; homeDoctors?: Record<string, { intro: string; credentials: { text: string; accent: boolean }[] }>; procedures?: { id: string; label: string; description: string; href: string }[] }
+export type SiteChrome = { citation?: { href: string; opensInNewTab: boolean }; identity?: SiteIdentity; navigation: SiteNavigationItem[] | null; footer: { heading: string; items: SiteMenuItem[] }[] | null; legalLinks?: SiteMenuItem[]; footerCopyright?: string; actions?: Record<string, string>; frames?: CostOfWaitingFrame[]; hero?: { desktop: SiteImage | null; mobile: SiteImage | null }; stats?: { value: number; suffix: string; label: string }[]; homeDoctors?: Record<string, { intro: string; credentials: { text: string; accent: boolean }[] }>; procedures?: { id: string; label: string; description: string; href: string }[] }
 
 const fraction = z.number().min(0).max(1)
 const nativeImage = z.object({ assetId: z.string().regex(/^image-[A-Za-z0-9]+-\d+x\d+-(jpg|png|webp|avif)$/),
@@ -47,21 +48,29 @@ export function resolveSiteImage(input: unknown): SiteImage | null {
   } catch { return null }
 }
 
-function menuItems(input: unknown, maximum = 7): SiteMenuItem[] | null {
+function menuItems(input: unknown, maximum?: number, allowChildren?: false): SiteMenuItem[] | null
+function menuItems(input: unknown, maximum: number, allowChildren: true): SiteNavigationItem[] | null
+function menuItems(input: unknown, maximum = 7, allowChildren = false): SiteNavigationItem[] | null {
   if (!Array.isArray(input) || input.length === 0 || input.length > maximum) return null
-  const items: SiteMenuItem[] = []
+  const items: SiteNavigationItem[] = []
   for (const [index, value] of input.entries()) {
     const label = plain(at(value, 'label')), kind = at(value, 'link.kind')
+    const children = allowChildren ? menuItems(at(value, 'children'), 6) : null
+    if (allowChildren && at(value, 'behavior') === 'dropdown') {
+      const key = plain(at(value, '_key')) ?? `cms-${index}`
+      if (label && children?.length && !items.some(item => item.key === key)) items.push({ key, label, behavior: 'dropdown', children })
+      continue
+    }
     const path = kind === 'external' ? at(value, 'link.externalUrl') : kind === 'anchor' && at(value, 'link.anchor') === 'faq' ? '/#faq' : at(value, 'link.internalPath')
     if (!label || typeof path !== 'string' || !(kind === 'external' ? /^https?:\/\//.test(path) && z.url().safeParse(path).success : isSiteMenuPath(path)) || !['internal', 'anchor', 'external'].includes(String(kind))) continue
     const key = ({ '/': 'home', '/educate-ivf': 'educateIVF', '/procedures': 'procedures', '/about': 'about', '/team': 'team', '/contact': 'contact' } as Record<string, string>)[path] ?? plain(at(value, '_key')) ?? `cms-${index}`
-    if (!items.some(item => item.href === path)) items.push({ key, href: path, label, ...(kind === 'external' ? { opensInNewTab: at(value, 'link.opensInNewTab') === true } : {}) })
+    if (!items.some(item => item.href === path)) items.push({ key, href: path, label, ...(children ? { children } : {}), ...(kind === 'external' ? { opensInNewTab: at(value, 'link.opensInNewTab') === true } : {}) })
   }
   return items.length ? items : null
 }
 export function resolveSiteChrome(globals: unknown, home?: unknown, pages?: { procedures: unknown; team: unknown }): SiteChrome {
   const identity: SiteIdentity = { name: plain(at(globals, 'settings.name')), legalName: plain(at(globals, 'settings.legalName')), description: plain(at(globals, 'settings.description')) }
-  const navigation = menuItems(at(globals, 'navigation.items'))
+  const navigation = menuItems(at(globals, 'navigation.items'), 7, true)
   const groups = at(globals, 'footer.linkGroups')
   const footer = Array.isArray(groups) && groups.length === 2 ? groups.map((group) => ({ heading: plain(at(group, 'heading')), items: menuItems(at(group, 'items'), 8) })) : null
   const legalLinks = menuItems(at(globals, 'footer.legalLinks'), 4) ?? []

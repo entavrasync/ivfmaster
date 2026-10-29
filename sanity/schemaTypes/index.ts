@@ -6,6 +6,7 @@ import { clinicAvailability } from './clinic-availability'
 import { article } from './article'
 import { teamValues } from './team-values'
 import { educationPage } from './education-page'
+import { news, event, publicationCategory, publicationImage, publicationMedia, publicationRichText } from './publications'
 import { homeFaq, aboutInformation, facilityGallery } from './editorial'
 import { schemaTypes as referenceTypes } from '../reference/schemaTypes'
 import { approvalField } from './editorial-fields'
@@ -44,7 +45,7 @@ const reusedTypes: SchemaTypeDefinition[] = referenceTypes
     return { ...type, ...defaults, fields } as SchemaTypeDefinition
   })
 
-const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, clinicAvailability, article, teamValues, educationPage, homeFaq, aboutInformation, facilityGallery]
+const targetTypes: SchemaTypeDefinition[] = [localizedString, localizedText, procedure, doctor, clinicSettings, clinicAvailability, article, teamValues, educationPage, homeFaq, aboutInformation, facilityGallery, news, event, publicationCategory, publicationImage, publicationMedia, publicationRichText]
 export const schemaTypes: SchemaTypeDefinition[] = [...targetTypes.map((type) => {
   const value = initialContent.legacy[type.name as keyof typeof initialContent.legacy]
   return value ? { ...type, initialValue: () => structuredClone(value) } as SchemaTypeDefinition : type

@@ -16,6 +16,13 @@ function enclosingObject(document: unknown, path: Path | undefined): unknown {
   return node
 }
 
+/** Hidden destinations may retain old values when a header becomes a dropdown. */
+function isDropdownOnlyDestination(document: { _type?: string } | undefined, path: Path | undefined): boolean {
+  if (document?._type !== 'navigation' || path?.[0] !== 'items' || path[2] !== 'link') return false
+  const item = enclosingObject(document, path)
+  return !!item && typeof item === 'object' && 'behavior' in item && item.behavior === 'dropdown'
+}
+
 /**
  * A destination, expressed as intent rather than as a raw href.
  *
@@ -63,7 +70,7 @@ export const link = defineType({
       type: 'string',
       options: { list: [...LINK_KINDS], layout: 'radio' },
       initialValue: 'internal',
-      validation: rule => rule.custom((value, context) => isUnusedCtaSlot(context.document, context.path) || (context.document?._type === 'footer'
+      validation: rule => rule.custom((value, context) => isDropdownOnlyDestination(context.document, context.path) || isUnusedCtaSlot(context.document, context.path) || (context.document?._type === 'footer'
         ? ['internal', 'external', 'anchor'].includes(String(value)) || 'Choose Page on this site, External website, or the Home FAQ section.'
         : LINK_KINDS.some(kind => kind.value === value) || 'Choose a destination type.')),
     }),
@@ -76,7 +83,7 @@ export const link = defineType({
       hidden: showWhen('internal'),
       validation: (rule) =>
         rule.custom((value, context) => {
-          if (isUnusedCtaSlot(context.document, context.path)) return true
+          if (isDropdownOnlyDestination(context.document, context.path) || isUnusedCtaSlot(context.document, context.path)) return true
           const kind = (context.parent as { kind?: string } | undefined)?.kind
           if (kind !== 'internal') return true
           if (typeof value !== 'string' || value.trim().length === 0) {
@@ -101,7 +108,7 @@ export const link = defineType({
       type: 'string',
       hidden: showWhen('external'),
       validation: rule => rule.custom((value, validationContext) => {
-          if (isUnusedCtaSlot(validationContext.document, validationContext.path)) return true
+          if (isDropdownOnlyDestination(validationContext.document, validationContext.path) || isUnusedCtaSlot(validationContext.document, validationContext.path)) return true
           if ((validationContext.parent as { kind?: string } | undefined)?.kind !== 'external') return true
           if (!value) return 'Paste the full website address, for example https://example.com/privacy.'
           try {
@@ -119,7 +126,7 @@ export const link = defineType({
       hidden: showWhen('anchor'),
       validation: (rule) =>
         rule.custom((value, context) => {
-          if (isUnusedCtaSlot(context.document, context.path)) return true
+          if (isDropdownOnlyDestination(context.document, context.path) || isUnusedCtaSlot(context.document, context.path)) return true
           const kind = (context.parent as { kind?: string } | undefined)?.kind
           if (kind !== 'anchor') return true
           if (context.document?._type === 'footer') return value === 'faq' || 'Enter faq to link to the FAQ section on the Home page.'

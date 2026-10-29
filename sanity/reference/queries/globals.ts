@@ -54,8 +54,11 @@ export const globalsQuery = defineQuery(`{
   },
   "navigation": *[_type == "navigation" && _id == "navigation" && reviewStatus == "approved"][0]{
     items[]{
+      _key,
+      behavior,
       "label": ${localizedValue('label')},
-      link{kind, internalPath, externalUrl, anchor, opensInNewTab}
+      link{kind, internalPath, externalUrl, anchor, opensInNewTab},
+      children[]{_key,"label": ${localizedValue('label')},link{kind,internalPath,externalUrl,anchor,opensInNewTab}}
     },
     primaryCta{
       "label": ${localizedValue('label')},

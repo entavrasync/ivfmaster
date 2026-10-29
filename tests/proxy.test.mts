@@ -62,6 +62,10 @@ test('leaves the Studio root and nested routes outside localization', () => {
   }
 })
 
+test('draft-mode and media API routes bypass public localization', () => {
+  for (const url of ['/api/draft-mode/enable', '/api/draft-mode/disable', '/api/media/instagram']) assert.equal(unstable_doesMiddlewareMatch({ config, nextConfig: {}, url }), false)
+})
+
 test('preserves both locales and similarly named public routes', () => {
   for (const url of ['/', '/contact', '/en', '/en/contact', '/ivfmaster-studio-example']) {
     assert.equal(
@@ -86,7 +90,7 @@ test('unknown menu URLs skip CMS layout work, while new CMS content routes remai
   for (const path of ['/shop', '/en/shop', '/unknown/deeper']) {
     assert.equal(invoke(path).get('x-ivf-missing-route'), 'true', path)
   }
-  for (const path of ['/', '/en', '/about', '/en/contact', '/procedures/new-cms-procedure', '/en/educate-ivf/new-cms-article', '/team/gorakh-mandrupkar']) {
+  for (const path of ['/', '/en', '/about', '/en/contact', '/procedures/new-cms-procedure', '/en/educate-ivf/new-cms-article', '/team/gorakh-mandrupkar', '/news', '/en/news/new-story', '/events', '/en/events/new-event']) {
     assert.equal(invoke(path).get('x-ivf-missing-route'), 'false', path)
   }
 })

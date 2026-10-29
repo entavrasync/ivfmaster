@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useClinicSettings } from '@/components/providers/ClinicSettingsContext'
 import { useClinicAvailability } from '@/components/providers/ClinicAvailabilityProvider'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { usePathname } from '@/i18n/navigation'
 import {
   getClinicStatus,
   CLINIC_CONTACT,
@@ -73,6 +74,8 @@ function StatusDot({ state, size = 8 }: Readonly<{ state: ClinicStatus['state'];
 /* ─── Floating CTA ───────────────────────────────────────────────── */
 
 export function FloatingContactCTA() {
+  const pathname = usePathname()
+  const publicationPage = /^\/(news|events)(\/|$)/.test(pathname)
   const settings = useClinicSettings()
   const availability = useClinicAvailability()
   const reduced  = useReducedMotion()
@@ -94,7 +97,7 @@ export function FloatingContactCTA() {
 
   // One-time 3 s attention pulse on the pill
   useEffect(() => {
-    if (reduced || !status || nudged) return
+    if (reduced || publicationPage || !status || nudged) return
     const id = setTimeout(async () => {
       if (!expanded) {
         setNudged(true)
@@ -103,7 +106,7 @@ export function FloatingContactCTA() {
       }
     }, 3_000)
     return () => clearTimeout(id)
-  }, [reduced, status, nudged, expanded, controls])
+  }, [reduced, publicationPage, status, nudged, expanded, controls])
 
   if (!status) return null
 
@@ -131,7 +134,8 @@ export function FloatingContactCTA() {
         position:      'fixed',
         bottom:        'clamp(1.25rem, 3vw, 1.75rem)',
         right:         'clamp(1rem, 3vw, 1.5rem)',
-        zIndex:        9999,
+        // Keep contact controls below the navigation backdrop and menu panel.
+        zIndex:        30,
         isolation:     'isolate',
         display:       'flex',
         flexDirection: 'row',
@@ -141,7 +145,7 @@ export function FloatingContactCTA() {
     >
 
       {/* ── Quiet secondary action; no competing hover label ─────────── */}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: publicationPage ? 'none' : 'flex', alignItems: 'center' }}>
         <motion.a
           href={settings?.instagram ?? IG_URL}
           target="_blank"
@@ -341,6 +345,7 @@ export function FloatingContactCTA() {
           style={{
             display:       'flex',
             alignItems:    'center',
+            justifyContent: 'center',
             gap:           '0.4375rem',
             fontFamily:    'var(--font-body)',
             fontSize:      '0.875rem',
@@ -349,14 +354,15 @@ export function FloatingContactCTA() {
             color:         '#FFFFFF',
             position:      'relative',
             overflow:      'hidden',
-            background:    expanded ? 'linear-gradient(145deg, #D8628B 0%, #B8386A 100%)' : PILL_BG,
+            background:    publicationPage ? 'var(--color-navy)' : expanded ? 'linear-gradient(145deg, #D8628B 0%, #B8386A 100%)' : PILL_BG,
             border:        '1px solid rgba(255,255,255,0.30)',
             height:        '48px',
-            paddingLeft:   'clamp(1rem, 2vw, 1.25rem)',
-            paddingRight:  'clamp(1rem, 2vw, 1.25rem)',
+            width:         publicationPage ? '48px' : undefined,
+            paddingLeft:   publicationPage ? '0' : 'clamp(1rem, 2vw, 1.25rem)',
+            paddingRight:  publicationPage ? '0' : 'clamp(1rem, 2vw, 1.25rem)',
             borderRadius:  '100px',
             cursor:        'pointer',
-            boxShadow:     expanded ? PILL_SHADOW_ACTIVE : PILL_SHADOW,
+            boxShadow:     publicationPage ? '0 4px 16px #1c2a4826' : expanded ? PILL_SHADOW_ACTIVE : PILL_SHADOW,
             whiteSpace:    'nowrap',
             transition:    reduced ? 'none' : 'background 0.18s ease, box-shadow 0.18s ease',
           }}
@@ -384,9 +390,9 @@ export function FloatingContactCTA() {
             opacity:       expanded ? 0.45 : 0.9,
             pointerEvents: 'none',
           }} />
-          <StatusDot state={status.state} size={8} />
+          {!publicationPage && <StatusDot state={status.state} size={8} />}
           <MessageCircle size={16} strokeWidth={2} />
-          <span className="hidden sm:inline">{t('contact')}</span>
+          {!publicationPage && <span className="hidden sm:inline">{t('contact')}</span>}
         </motion.button>
       </div>
     </div>
