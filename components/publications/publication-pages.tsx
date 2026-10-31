@@ -21,6 +21,7 @@ import { MediaPreview } from './media-preview'
 import { EventRefresh } from './event-refresh'
 import { NewsCard, EventCard, EventDates, EventStatus } from './publication-cards'
 import { CategoryFilter } from './category-filter'
+import { LoadMoreList } from './load-more-list'
 import { orderPublications } from './listing-order'
 import styles from './publication-design.module.css'
 
@@ -70,20 +71,16 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
     .sort((a, b) => localize(a.title, locale).localeCompare(localize(b.title, locale), locale))
   const matchingCategory = docs.filter(doc => !category || doc.category?.slug.current === category)
   const filtered = orderPublications(matchingCategory.filter(doc => doc._type !== 'event' || eventLifecycle(doc, now).group === group), group, now)
-  const pageCount = Math.max(1, Math.ceil(filtered.length / 12)), parsed = typeof query.page === 'string' && /^\d+$/.test(query.page) ? Number(query.page) : 1
-  const page = Math.min(pageCount, Math.max(1, parsed))
   const eligibleLead = filtered.filter(doc => doc._type === 'news' || group === 'upcoming' && doc.status === 'scheduled')
-  const selectedLead = !category ? eligibleLead.find(doc => doc.featured) ?? eligibleLead[0] : undefined
-  const lead = page === 1 ? selectedLead : undefined
-  const ordered = selectedLead ? [selectedLead, ...filtered.filter(doc => doc._id !== selectedLead._id)] : filtered
-  const slice = ordered.slice((page - 1) * 12, page * 12)
-  const spotlight = kind === 'news' && page === 1 && !category ? slice.slice(0, 3) : []
-  const remaining = kind === 'news' ? slice.filter(doc => !spotlight.some(item => item._id === doc._id)) : lead ? slice.filter(doc => doc._id !== lead._id) : slice
-  const href = (changes: { category?: string; view?: string; page?: number }) => {
-    const values = { category, view: kind === 'event' ? group : '', page: 1, ...changes }, query = new URLSearchParams()
+  const lead = !category ? eligibleLead.find(doc => doc.featured) ?? eligibleLead[0] : undefined
+  const ordered = lead ? [lead, ...filtered.filter(doc => doc._id !== lead._id)] : filtered
+  const spotlight = kind === 'news' && !category ? ordered.slice(0, 3) : []
+  const remaining = kind === 'news' ? ordered.filter(doc => !spotlight.some(item => item._id === doc._id)) : lead ? ordered.filter(doc => doc._id !== lead._id) : ordered
+  const featuredCount = kind === 'news' ? spotlight.length : lead ? 1 : 0
+  const href = (changes: { category?: string; view?: string }) => {
+    const values = { category, view: kind === 'event' ? group : '', ...changes }, query = new URLSearchParams()
     if (values.category) query.set('category', values.category)
     if (values.view === 'past') query.set('view', 'past')
-    if (values.page > 1) query.set('page', String(values.page))
     return pathFor(kind) + (query.size ? `?${query}` : '')
   }
   const boundaries = docs.flatMap(doc => doc._type === 'event' ? [eventLifecycle(doc, now).nextBoundary].filter((value): value is number => value != null) : Date.parse(doc.publishedAt) > now ? [Date.parse(doc.publishedAt)] : [])
@@ -92,10 +89,10 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
   const filterOptions = [{ value: '', label: t.all, href: href({ category: '' }) }, ...categories.map(cat => ({ value: cat.slug.current, label: localize(cat.title, locale), href: href({ category: cat.slug.current }) }))]
   if (category && !filterOptions.some(option => option.value === category)) filterOptions.push({ value: category, label: t.noCategory, href: href({ category }) })
   const emptyTitle = result.error ? t.error : category ? t.noCategory : kind === 'event' ? group === 'upcoming' ? t.noUpcoming : t.noPast : t.empty
-  return <main id="main-content" className={styles.page}><div className={styles.container}>
+  return <main id="main-content" className={`${styles.page} ${styles.listing}`}><div className={styles.container}>
     {result.preview && <PreviewBanner locale={locale} />}<EventRefresh boundary={boundaries.length ? Math.min(...boundaries) : null} />
     <header className={styles.masthead}>
-      <div><h1>{kind === 'news' ? t.newsTitle : t.eventsTitle}</h1><p className={styles.intro}>{kind === 'news' ? t.newsIntro : t.eventsIntro}</p></div>
+      <div className={styles.headingGroup}><p className={styles.journalLabel}>{t.eyebrow}</p><h1>{kind === 'news' ? t.newsTitle : t.eventsTitle}</h1><p className={styles.intro}>{kind === 'news' ? t.newsIntro : t.eventsIntro}</p></div>
       <PublicationLinks locale={locale} current={pathFor(kind)} />
     </header>
     <div className={styles.toolbar}>
@@ -115,9 +112,11 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
       {kind === 'event' && lead?._type === 'event' && <section aria-label={t.featured}><EventCard event={lead} locale={locale} now={now} featured /></section>}
       {remaining.length > 0 && <section className={kind === 'news' ? styles.archive : styles.agenda} aria-label={kind === 'news' ? t.latest : t[group]}>
         <div className={styles.sectionHeading}><h2>{kind === 'news' ? spotlight.length ? t.moreNews : t.allNews : t[group]}</h2></div>
-        <div className={kind === 'news' ? styles.archiveGrid : undefined}>{remaining.map(doc => doc._type === 'news' ? <NewsCard key={doc._id} doc={doc} locale={locale} variant="archive" /> : <EventCard key={doc._id} event={doc} locale={locale} now={now} />)}</div>
+        <LoadMoreList key={`${kind}:${category}:${group}:${lead?._id ?? ''}`}
+          items={remaining.map(doc => ({ id: doc._id, content: doc._type === 'news' ? <NewsCard doc={doc} locale={locale} variant="archive" /> : <EventCard event={doc} locale={locale} now={now} /> }))}
+          featuredCount={featuredCount} className={kind === 'news' ? styles.archiveGrid : undefined}
+          loadMoreLabel={t.loadMore} showLessLabel={t.showLess} showingLabel={t.showing} />
       </section>}
-      {pageCount > 1 && <nav aria-label={t.pagination} className={styles.pagination}>{page > 1 ? <Link href={href({ page: page - 1 })}><ArrowLeft size={14} />{t.previous}</Link> : <span />}<span>{t.page} {page} {t.of} {pageCount}</span>{page < pageCount ? <Link href={href({ page: page + 1 })}>{t.next}<ArrowRight size={14} /></Link> : <span />}</nav>}
     </>}
   </div></main>
 }
