@@ -1,0 +1,219 @@
+(node:27568) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/article-model.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a new approved article survives the real query and localized reader without a built-in slug or body (86.1628ms)
+✔ all seven real source articles map to their actual English and Marathi renderer contracts (328.6869ms)
+✔ localized lists retain different counts, and absent Marathi falls back without index alignment (6.276ms)
+✔ age tables, definition lists, PCOS callout and myth/fact pairs retain their original data shapes (116.8848ms)
+✔ missing, invalid, unapproved, duplicate or unsupported documents preserve the entire static collection (17.3272ms)
+✔ partial CMS coverage preserves routes and aliases while a cleared cover stays cleared (17.1896ms)
+✔ related references resolve in order; self, broken, duplicate and unapproved relationships fail closed (93.8903ms)
+✔ SEO overrides localize without changing the canonical slug; system copy remains untouched (19.6572ms)
+✔ invalid translated copy, ICU variables and changed category cannot break existing renderer expectations (130.7258ms)
+✔ native article cover mapping preserves crop, focus, dimensions, blur and localized alt (25.2479ms)
+✔ actual GROQ excludes drafts/releases/unapproved records and dereferences related articles (90.4116ms)
+✔ article schema compiles with native references and all existing body variants (0.2822ms)
+✔ new articles can publish with an independent optional SEO override while native slug uniqueness stays strict (1016.7009ms)
+✔ new article content errors point to the English input and stable section key (1.6091ms)
+✔ actual Studio rules keep approval, body, address format, redirects and published-address safeguards (27.3697ms)
+✔ Studio listing and SEO copy reject the same unsupported message syntax as the published reader (6.3121ms)
+✔ optional article cover can be omitted, but a selected replacement needs an actual asset (6.521ms)
+✔ native Studio input preserves editing, reorder/remove callbacks, keys and read-only permissions (18.5418ms)
+✔ native validation targets malformed and duplicate URLs while optional fields stay optional (1602.3225ms)
+✔ defensive mapping isolates malformed records, keeps meaningful URLs and renders localized safe links (63.3569ms)
+✔ every page schema has backlinks, site-wide defaults cannot supply public links (4430.0179ms)
+✔ published singleton and collection queries carry backlinks through readers in both locales and refresh without static fallback (5993.3328ms)
+(node:6208) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/config/site.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ maps real profile fields and keeps homepage copy distinct from Team copy (84.2821ms)
+✔ doctor localization uses existing source translations when present and English otherwise (5.0869ms)
+✔ doctor ordering is deterministic and duplicate slugs/orders fail closed (30.6127ms)
+✔ missing, malformed, unapproved, draft and unsupported profiles retain static consumers (62.4928ms)
+✔ biography formatting accepts existing tags and rejects unsupported tags/variables (66.6415ms)
+✔ homepage qualifications can be added, removed and cleared without a fixed line count (5.2952ms)
+✔ portrait mapping retains crop, focus, dimensions, blur and localized alternative text (22.7789ms)
+✔ settings requires exactly one approved canonical singleton and validates destinations (23.8966ms)
+✔ settings address localizes without moving system labels or hours into CMS (44.007ms)
+✔ structured data contact overrides preserve existing identity, URLs and hours (1.8587ms)
+✔ real doctor query filters approval/drafts and projects existing content in order (130.0778ms)
+✔ real settings query detects approved duplicates without selecting an arbitrary singleton (5.3834ms)
+✔ doctor and settings schemas compile without schema problems (16.5896ms)
+✔ actual singleton and doctor approval rules enforce canonical identity and pending review (5.9537ms)
+✔ Studio contact validation rejects values that the published settings reader rejects (3.3324ms)
+✔ Studio biography validation matches the existing rich-message renderer (1.7996ms)
+✔ optional doctor portrait can be omitted, but an image with only alt text cannot publish (4.3726ms)
+✔ doctor qualifications preserve legacy content, optional details, language and display order through the actual query (80.3251ms)
+✔ Doctor publishing requires a qualification while the shorter Home list stays optional (1.8008ms)
+✔ Doctor specializations preserve keys, order and Marathi fallback through the actual published query (52.7544ms)
+✔ Doctor photo Remove clears retained alt text, passes replacement edits and respects read-only (0.9466ms)
+✔ hours publishing errors point to the editable input and distinguish confirmation from approval (492.6622ms)
+✔ confirmation control can repair a malformed timestamp and never treats changed hours as confirmed (20.5873ms)
+✔ hours form prefills all seven current website days without approval or invented confirmation (0.9942ms)
+✔ availability validates clock ranges, dates, weekday identity and renewed confirmation (27.2626ms)
+✔ open indicator uses IST boundaries, weekly closures and extended holidays from the same schedule (74.2081ms)
+✔ published hours query excludes drafts/releases/unapproved records and structured data shares the confirmed schedule (8.3681ms)
+(node:19216) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/article-model.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ published Contact refresh and recipient mapping retain the 60-second cache contract without leaking drafts (719.4102ms)
+✔ all seven actual queries exclude drafts, releases and pending approval (126.2767ms)
+✔ actual doctor validator accepts target assets, rejects source/foreign URLs and retains optional portrait fallback (108.7943ms)
+✔ real server readers forward published-cache policy and retain fallback on absent, invalid or failed reads (115.9709ms)
+✔ the actual page reader keeps published 60-second revalidation and forwards replacement banners (63.0964ms)
+(node:23788) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity.config.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ every registered document type has a native valid fixture and retains its approval gate (8478.5663ms)
+✔ all active image fields reject unsupported, unavailable and invalidly cropped assets (58.9389ms)
+✔ blank optional translations fall back in every page query, including references and nested arrays (1986.98ms)
+✔ clearing optional SEO preserves procedure and article content and native publication (617.6567ms)
+✔ closed days ignore hidden stale times without changing confirmation or open-day validation (199.0003ms)
+✔ CMS mappings apply citation destinations, empty prose halves, trust-point counts and social-image crops (337.1113ms)
+✔ Studio suppresses layout slots that have no public output and validates active destinations (603.4585ms)
+✔ plain-copy validation identifies editable locale inputs and preserves supported copyright and biography syntax (533.5935ms)
+✔ canonical validation accepts published destinations and identifies missing or incorrectly localized URLs (2.1322ms)
+✔ localized paragraph arrays identify the exact stable item and English field (231.3181ms)
+✔ procedure publication guidance opens approval and keyed headings without changing the article editor or review status (730.6392ms)
+(node:31844) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/lib/editorial-mapping.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ homepage FAQ maps all seven real source questions in order in both locales (14.3125ms)
+✔ About information preserves the actual English origin, four care steps and five trust points in both locale fallbacks (65.6145ms)
+✔ facility captions/alt localize while omitted images retain the caller static photo fallback (7.0333ms)
+✔ missing, unavailable-shaped, duplicate, unapproved, draft and release results fail closed independently (50.9409ms)
+✔ Marathi fallback is per field; malformed translations and missing English reject the document (2.2317ms)
+✔ blank and duplicate FAQ entries are rejected without merging partial clinical answers (1.3825ms)
+✔ About layout requires four care steps and complete paragraphs/principles (7.3153ms)
+✔ gallery fixed area order, unique identities and nonempty replacement photos protect the existing layout (6.983ms)
+✔ native replacement photos keep carousel order, crop/focus and dimensions with optional blur metadata (52.0555ms)
+✔ foreign assets, impossible crop and duplicate image keys retain the entire static gallery (2.6682ms)
+✔ all three actual GROQ projections filter approval, drafts and releases and preserve localized array keys (195.3113ms)
+✔ actual gallery GROQ dereferences native assets in carousel order (4.2284ms)
+✔ new schemas compile without schema problems (0.2323ms)
+✔ actual Studio rules enforce complete copy, layout structure and pending approval (6.2149ms)
+(node:36408) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/lib/procedures.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ all existing procedure templates flow through the actual collection query and reader without replacing route styling (140.3071ms)
+✔ the complete published procedure collection reaches the reader beyond the former twenty-record cutoff (202.8435ms)
+✔ maps the existing English copy without changing visuals, arrays or ordering (0.6425ms)
+✔ Marathi resolves per field with English fallback, including nested arrays (0.4949ms)
+✔ rejects incomplete, unapproved, draft, release and incorrect-route content as a whole (2.1149ms)
+✔ missing, malformed and duplicate results retain the complete existing list (1.2328ms)
+✔ only IVF is replaced; other procedures keep their identities and list position (1.673ms)
+✔ SEO overrides preserve canonical, hreflang and social image architecture (4.7515ms)
+✔ the live collection projection selects approved procedures and retains array keys/locales (136.9638ms)
+(node:4100) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/schemaTypes/procedure.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the registered procedure schema compiles without schema problems (3.1647ms)
+✔ actual approval rules reject missing/pending status and accept approved (3.277ms)
+✔ English is required and nonblank while Marathi is optional in both value types (3.2643ms)
+✔ actual quick-fact rules enforce one to four entries (2.1465ms)
+✔ actual slug rule preserves the published URL and fails closed on lookup errors (19.9276ms)
+✔ approval is a manual status: editing content does not itself require reapproval (0.5226ms)
+✔ release-version slug validation looks up the published document identity (0.9002ms)
+﹣ actual production start preserves Marathi rewrites, English routes, redirects, Studio and fallback HTML (1.4396ms) # SKIP
+✔ does not localize public files with extensions (229.8156ms)
+✔ does not intercept Next.js internal routes (1.008ms)
+✔ continues to localize application routes (0.6635ms)
+✔ leaves the Studio root and nested routes outside localization (1.6261ms)
+✔ preserves both locales and similarly named public routes (3.6421ms)
+✔ unknown menu URLs skip CMS layout work, while new CMS content routes remain eligible (3.6798ms)
+(node:19708) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/lib/procedure-mapping.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ explicit FAQ/slug mapping passes the real target validator without granting approval (28.7118ms)
+✔ missing approval, legacy required fields and unsupported slugs remain failures (11.0085ms)
+✔ localized mappings retain Marathi copy and existing English fallback (2.3544ms)
+✔ duplicate IDs and conflicting target singleton mappings are rejected (101.5477ms)
+✔ unsupported types are explicit and reports are deterministic (2.5602ms)
+✔ dry-run reconciliation preserves existing values, blanks, revisions, arrays and keys (1.0455ms)
+✔ published/draft/release target family members block automatic reconciliation (0.9399ms)
+✔ same target slug under a different ID is a conflict rather than a new-document proposal (1.3818ms)
+(node:10084) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/lib/seo/metadata.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ keyword checks report missing placements and good lengths (111.8471ms)
+✔ keyword checks ask for a keyword and preview text is truncated (0.6924ms)
+✔ page SEO resolves the visitor locale and rejects foreign images and canonicals (44.5549ms)
+✔ metadata without editor SEO is unchanged (1.4628ms)
+✔ metadata applies editor overrides for title, social, keywords, robots and canonical (0.9195ms)
+✔ site-wide social image is the fallback for pages without their own (0.6425ms)
+✔ sitemap adds CMS procedures and drops hidden or canonicalized pages (1.6972ms)
+✔ procedure JSON-LD lists only the visible FAQs and links to the clinic (25.3368ms)
+✔ doctor JSON-LD extends the clinic-level Physician node and articles credit the clinic (20.5593ms)
+(node:33744) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/lib/seo/routes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ builds canonical URLs with clean default-locale paths (1.7628ms)
+✔ builds hreflang alternates for every configured locale (1.772ms)
+✔ enumerates all localized routes used by the sitemap (1.3539ms)
+✔ builds route-specific canonical and social metadata (0.7326ms)
+(node:8832) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/config/site.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ new CMS article addresses appear in both locales without duplicates and respect exclusions (25.3125ms)
+✔ sitemap includes every canonical localized public page and excludes non-routes (3.2364ms)
+✔ sitemap uses stable meaningful lastModified dates instead of build time (106.5172ms)
+✔ sitemap priorities and change frequencies follow the SEO taxonomy (4.4899ms)
+✔ sitemap emits hreflang alternates for every supported locale (1.3475ms)
+(node:14364) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/lib/site-content-mapping.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ Cost of Waiting line popups expose independent desktop/mobile uploads and preserve existing text (1902.825ms)
+✔ Cost of Waiting query, mapper and renderer preserve sparse slide positions and both viewport photos (1480.9553ms)
+✔ WhatsApp URLs preserve messages exactly and reject unavailable or malformed recipients (1.9678ms)
+✔ the actual Contact form submits published settings natively and offers an up-to-date retry without a legacy recipient (195.4674ms)
+✔ Team Values fixed editor and initial template preserve saved sources and existing singleton edits (9.8079ms)
+✔ Team Values native validation targets keyed localized fields without weakening approval (424.7924ms)
+✔ Team Values real query, mapper and section preserve card order, optional text and published-only localization (34.6341ms)
+✔ published clinic identity drives presentation, metadata and structured data in both locales (149.7958ms)
+✔ hidden legacy Site Settings addresses do not block publication; active address and approval rules still apply (435.3089ms)
+✔ the actual Studio template pipeline initializes a pending-review canonical singleton (5.7201ms)
+✔ creation menus exclude arbitrary clinic settings documents while retaining ordinary types (0.1518ms)
+✔ singleton destructive actions remain excluded without changing publishing actions (0.1978ms)
+✔ Article and Procedure Delete appears in both menus without bypassing native safeguards (0.2261ms)
+✔ each existing procedure resolves its own complete body for editor fill without granting approval (0.7489ms)
+✔ editor fill preserves saved copy, blanks, nulls, arrays, keys and identity while filling missing localized fields (0.1903ms)
+✔ the real Studio structure exposes all four procedures with matching stored-record filters and creation templates (2.6347ms)
+✔ all reference page models are registered without replacing established target contracts (1.9881ms)
+✔ named Doctor entries open prefilled drafts or existing records without overwriting or duplicating them (6.0984ms)
+✔ Doctor copy action fills only empty qualification/practice lists from existing website sources (142.6121ms)
+✔ actual reference projections preserve target source copy and per-language fallback (269.4054ms)
+✔ malformed menu, rich copy, shared FAQ and foreign image data preserve safe fallbacks (72.7147ms)
+✔ Studio hero fields require a native asset before publishing (0.2227ms)
+✔ actual published GROQ resolves both hero assets, crops, locale alt and replacements (85.2092ms)
+✔ CMS blanks, headline numbers and variable-length Home credentials beat code defaults (5.7922ms)
+✔ the actual Hero and Footer renderers use mapped CMS media and links (794.7491ms)
+✔ Footer validation identifies the exact keyed field and preserves approval and language requirements (1683.1534ms)
+✔ Footer mapper applies its own limits, retains valid siblings and never invents legal links (57.7131ms)
+✔ new procedure and article menu paths map in both languages without replacing CMS labels (126.0726ms)
+✔ an invalid page cannot replace valid CMS navigation and external links retain new-tab choice (0.5908ms)
+(node:31952) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/lib/team.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ team data defines the two real doctors and editable supporting-team slots (60.1729ms)
+✔ all locales expose the same complete team-page message contract (4.9281ms)
+ℹ tests 159
+ℹ suites 0
+ℹ pass 158
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 53108.1272

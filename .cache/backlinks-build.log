@@ -1,0 +1,44 @@
+$ next build
+▲ Next.js 16.2.10 (Turbopack)
+- Experiments (use with caution):
+  ✓ globalNotFound
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 27.3s
+  Running TypeScript ...
+  Finished TypeScript in 9.1s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/47) ...
+  Generating static pages using 7 workers (11/47) 
+  Generating static pages using 7 workers (23/47) 
+  Generating static pages using 7 workers (35/47) 
+✓ Generating static pages using 7 workers (47/47) in 3.7s
+  Finalizing page optimization ...
+
+Route (app)                             Revalidate  Expire
+┌ ƒ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/[...rest]
+├ ƒ /[locale]/about
+├ ƒ /[locale]/contact
+├ ƒ /[locale]/educate-ivf
+├ ● /[locale]/educate-ivf/[slug]                1m      1y
+│ ├ /mr/educate-ivf/what-ivf-really-is          1m      1y
+│ ├ /mr/educate-ivf/pcos                        1m      1y
+│ ├ /mr/educate-ivf/understanding-pcos          1m      1y
+│ └ [+15 more paths]
+├ ƒ /[locale]/procedures
+├ ƒ /[locale]/procedures/[slug]
+├ ƒ /[locale]/team
+├ ƒ /[locale]/team/[doctor]
+├ ○ /ivfmaster-studio/[[...tool]]
+├ ○ /robots.txt
+└ ○ /sitemap.xml                                1m      1y
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,10 @@
+const {execFileSync}=require('node:child_process'),fs=require('node:fs');
+const git=args=>execFileSync('git',args,{encoding:'utf8'});
+const changed=[...git(['diff','--name-only','-z']).split('\0'),...git(['ls-files','--others','--exclude-standard','-z']).split('\0')].filter(Boolean);
+const roots=['app/','components/','lib/','messages/','sanity/','tests/','scripts/'];
+const configs=['sanity.config.ts','next.config.js','next.config.mjs','proxy.ts','package.json'];
+const files=[...new Set(changed)].filter(file=>(roots.some(root=>file.startsWith(root))||configs.includes(file))&&!/(^|\/)(AGENTS\.md|\.codex|\.Codex)(\/|$)|\.tsbuildinfo$/.test(file)).sort();
+const patterns=[/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,/\bgh[pousr]_[A-Za-z0-9_]{30,}\b/,/\bAKIA[0-9A-Z]{16}\b/,/\bsk-(?:proj-)?[A-Za-z0-9_-]{35,}\b/,/(?:token|password|secret|apiKey)\s*[:=]\s*['\"][A-Za-z0-9_-]{30,}['\"]/i];
+const flags=files.filter(file=>patterns.some(pattern=>pattern.test(fs.readFileSync(file,'utf8'))));
+fs.mkdirSync('.cache',{recursive:true});fs.writeFileSync('.cache/release-files.json',JSON.stringify(files,null,2));
+console.log(JSON.stringify({fileCount:files.length,secretScanFlags:flags,excluded:changed.filter(file=>!files.includes(file))}));if(flags.length)process.exitCode=1;

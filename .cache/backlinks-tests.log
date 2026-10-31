@@ -1,0 +1,43 @@
+✔ native Studio input preserves editing, reorder/remove callbacks, keys and read-only permissions (5.3401ms)
+✔ native validation targets malformed and duplicate URLs while optional fields stay optional (698.5634ms)
+✔ defensive mapping isolates malformed records, keeps meaningful URLs and renders localized safe links (14.77ms)
+✔ every page schema has backlinks, site-wide defaults cannot supply public links (970.767ms)
+✔ published singleton and collection queries carry backlinks through readers in both locales and refresh without static fallback (1601.288ms)
+(node:25688) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/article-model.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ published Contact refresh and recipient mapping retain the 60-second cache contract without leaking drafts (193.4371ms)
+✔ all seven actual queries exclude drafts, releases and pending approval (8.9822ms)
+✔ actual doctor validator accepts target assets, rejects source/foreign URLs and retains optional portrait fallback (16.6161ms)
+✔ real server readers forward published-cache policy and retain fallback on absent, invalid or failed reads (47.3899ms)
+✔ the actual page reader keeps published 60-second revalidation and forwards replacement banners (6.6552ms)
+(node:15612) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/lib/seo/metadata.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ keyword checks report missing placements and good lengths (24.1226ms)
+✔ keyword checks ask for a keyword and preview text is truncated (1.2576ms)
+✔ page SEO resolves the visitor locale and rejects foreign images and canonicals (6.7642ms)
+✔ metadata without editor SEO is unchanged (0.5047ms)
+✔ metadata applies editor overrides for title, social, keywords, robots and canonical (0.3713ms)
+✔ site-wide social image is the fallback for pages without their own (0.4286ms)
+✔ sitemap adds CMS procedures and drops hidden or canonicalized pages (0.8986ms)
+✔ procedure JSON-LD lists only the visible FAQs and links to the clinic (0.506ms)
+✔ doctor JSON-LD extends the clinic-level Physician node and articles credit the clinic (0.587ms)
+(node:27636) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/lib/seo/routes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ builds canonical URLs with clean default-locale paths (1.9318ms)
+✔ builds hreflang alternates for every configured locale (1.4993ms)
+✔ enumerates all localized routes used by the sitemap (1.3328ms)
+✔ builds route-specific canonical and social metadata (0.7903ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9401.2452

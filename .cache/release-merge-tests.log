@@ -1,0 +1,52 @@
+(node:20120) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/schemaTypes/procedure.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the registered procedure schema compiles without schema problems (1.569ms)
+✔ actual approval rules reject missing/pending status and accept approved (2.2907ms)
+✔ English is required and nonblank while Marathi is optional in both value types (1.6809ms)
+✔ actual quick-fact rules enforce one to four entries (0.7507ms)
+✔ actual slug rule preserves the published URL and fails closed on lookup errors (1.6058ms)
+✔ approval is a manual status: editing content does not itself require reapproval (0.2421ms)
+✔ release-version slug validation looks up the published document identity (0.3471ms)
+(node:31580) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///D:/personal-projects/CMS-clients/ivfmaster/sanity/lib/site-content-mapping.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\D:\personal-projects\CMS-clients\ivfmaster\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ Cost of Waiting line popups expose independent desktop/mobile uploads and preserve existing text (1707.1884ms)
+✔ Cost of Waiting query, mapper and renderer preserve sparse slide positions and both viewport photos (1346.9717ms)
+✔ WhatsApp URLs preserve messages exactly and reject unavailable or malformed recipients (1.0975ms)
+✔ the actual Contact form submits published settings natively and offers an up-to-date retry without a legacy recipient (185.5013ms)
+✔ Team Values fixed editor and initial template preserve saved sources and existing singleton edits (10.3296ms)
+✔ Team Values native validation targets keyed localized fields without weakening approval (410.21ms)
+✔ Team Values real query, mapper and section preserve card order, optional text and published-only localization (41.093ms)
+✔ published clinic identity drives presentation, metadata and structured data in both locales (176.228ms)
+✔ hidden legacy Site Settings addresses do not block publication; active address and approval rules still apply (417.7287ms)
+✔ the actual Studio template pipeline initializes a pending-review canonical singleton (4.0989ms)
+✔ creation menus exclude arbitrary clinic settings documents while retaining ordinary types (0.2088ms)
+✔ singleton destructive actions remain excluded without changing publishing actions (0.2954ms)
+✔ Article and Procedure Delete appears in both menus without bypassing native safeguards (0.3153ms)
+✔ each existing procedure resolves its own complete body for editor fill without granting approval (1.0404ms)
+✔ editor fill preserves saved copy, blanks, nulls, arrays, keys and identity while filling missing localized fields (0.2969ms)
+✔ the real Studio structure exposes all four procedures with matching stored-record filters and creation templates (3.8122ms)
+✔ all reference page models are registered without replacing established target contracts (2.8832ms)
+✔ named Doctor entries open prefilled drafts or existing records without overwriting or duplicating them (11.8753ms)
+✔ Doctor copy action fills only empty qualification/practice lists from existing website sources (154.6823ms)
+✔ actual reference projections preserve target source copy and per-language fallback (371.2723ms)
+✔ malformed menu, rich copy, shared FAQ and foreign image data preserve safe fallbacks (89.078ms)
+✔ Studio hero fields require a native asset before publishing (0.3442ms)
+✔ actual published GROQ resolves both hero assets, crops, locale alt and replacements (92.3446ms)
+✔ CMS blanks, headline numbers and variable-length Home credentials beat code defaults (3.1654ms)
+✔ the actual Hero and Footer renderers use mapped CMS media and links (720.6544ms)
+✔ Footer validation identifies the exact keyed field and preserves approval and language requirements (1674.4936ms)
+✔ Footer mapper applies its own limits, retains valid siblings and never invents legal links (63.8347ms)
+✔ new procedure and article menu paths map in both languages without replacing CMS labels (127.3164ms)
+✔ an invalid page cannot replace valid CMS navigation and external links retain new-tab choice (0.6301ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14867.912

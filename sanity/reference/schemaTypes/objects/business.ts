@@ -335,26 +335,49 @@ export const navItem = defineType({
       description: 'Enter the menu name in English and Marathi.',
     }),
     defineField({
+      name: 'behavior', title: 'Menu behavior', type: 'string', initialValue: 'link',
+      hidden: ({ document }) => document?._type !== 'navigation',
+      options: { list: [{ title: 'Link to a page', value: 'link' }, { title: 'Dropdown only', value: 'dropdown' }], layout: 'radio' },
+      description: 'Dropdown only opens the destinations below. It does not need its own page or path. Existing items remain links until you change this option.',
+      validation: rule => rule.custom(value => value == null || value === 'link' || value === 'dropdown' || 'Choose Link to a page or Dropdown only.'),
+    }),
+    defineField({
       name: 'link',
       title: 'Destination',
       type: 'link',
+      hidden: ({ document, parent }) => document?._type === 'navigation' && parent?.behavior === 'dropdown',
       description: 'Choose Page on this site and enter its path, such as /contact. Use /procedures for the treatment dropdown.',
-      validation: (rule) => rule.required().custom((value, context) => {
+      validation: (rule) => rule.custom((value, context) => {
+        if (context.document?._type === 'navigation' && (context.parent as { behavior?: string } | undefined)?.behavior === 'dropdown') return true
+        if (!value) return 'Choose a destination, or select Dropdown only for a parent menu.'
         // Footer destinations validate at their individual inputs, without a second parent error.
         if (context.document?._type === 'footer') return true
         const link = value as { kind?: string; internalPath?: string; anchor?: string; externalUrl?: string } | undefined
-        if (!link) return true
+        if (!link) return 'Choose a destination, or select Dropdown only for a parent menu.'
         if (link.kind === 'external') return true // The link input validates the web address.
         if (link.kind === 'anchor' && link.anchor === 'faq') return true
         if (link.kind !== 'internal') return { message: 'Choose a website page, an external website, or the Home FAQ section.', paths: [['kind']] }
         return typeof link.internalPath === 'string' && isSiteMenuPath(link.internalPath) || { message: 'Enter a website page path, such as /contact or /procedures/ivf. Leave out /en and /mr.', paths: [['internalPath']] }
       }),
     }),
+    defineField({
+      name: 'children', title: 'Dropdown destinations (optional)', type: 'array',
+      hidden: ({ document }) => document?._type !== 'navigation',
+      description: 'Add the pages this menu opens, such as /news and /events. Choose Dropdown only above when the parent should open this list without navigating.',
+      of: [{ type: 'object', name: 'navDestination', fields: [
+        localized('label', { title: 'Label', translation: 'all' }),
+        defineField({ name: 'link', title: 'Destination', type: 'link', validation: rule => rule.required().custom(value => {
+          const link = value as { kind?: string; internalPath?: string } | undefined
+          return !link || link.kind === 'external' || link.kind === 'internal' && !!link.internalPath && isSiteMenuPath(link.internalPath) || 'Choose a valid website page or external HTTPS address.'
+        }) }),
+      ], preview: { select: { title: 'label.en', subtitle: 'link.internalPath' } } }],
+      validation: rule => rule.max(6).custom((value, context) => (context.parent as { behavior?: string } | undefined)?.behavior !== 'dropdown' || Array.isArray(value) && value.length > 0 || 'Add at least one destination for this dropdown.'),
+    }),
   ],
   preview: {
-    select: { label: 'label.mr', fallback: 'label.en', path: 'link.internalPath' },
-    prepare({ label, fallback, path }) {
-      return { title: label || fallback || 'Untitled', subtitle: path }
+    select: { label: 'label.mr', fallback: 'label.en', path: 'link.internalPath', behavior: 'behavior' },
+    prepare({ label, fallback, path, behavior }) {
+      return { title: label || fallback || 'Untitled', subtitle: behavior === 'dropdown' ? 'Dropdown only' : path }
     },
   },
 })
