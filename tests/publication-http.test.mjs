@@ -36,16 +36,23 @@ test('built publication routes render actual CMS projections, lifecycle CTAs, me
   assert.match(detail, /NewsArticle/); assert.match(detail, /datePublished/); assert.match(detail, /dateModified/)
   assert.match(detail, /https:\/\/i.ytimg.com\/vi\/M7lc1UVf-VE\/hqdefault.jpg/)
   assert.match(detail, /Load Instagram post/)
+  const edited = await get('/en/news'), fallback = await get('/en/events')
+  assert.match(edited, /<h1[^>]*>Clinical lectures<\/h1>/)
+  assert.match(edited, /Lectures for clinicians\./)
+  assert.match(edited, /<title>Clinical lecture archive/)
+  assert.match(edited, /name="keywords" content="IVF lectures"/)
+  assert.match(edited, /name="robots" content="noindex/)
+  assert.match(fallback, /<h1[^>]*>Speeches for Patients<\/h1>/)
   const upcoming = await get('/en/events'), past = await get('/en/events?view=past')
   assert.match(upcoming, /scheduled fertility conversation/); assert.match(upcoming, /postponed fertility conversation/)
   assert(!past.includes('scheduled fertility conversation')); assert.match(past, /held fertility conversation/)
   for (const status of ['scheduled', 'held', 'cancelled', 'postponed']) {
     const html = await get(`/en/events/fertility-conversation-${status}`)
-    const registration = html.includes('>Register for this event')
+    const registration = html.includes('>Register for this speech')
     assert.equal(registration, status === 'scheduled', status)
-    if (status === 'held') assert.match(html, /From the event/)
+    if (status === 'held') assert.match(html, /From the speech/)
     if (status === 'held') assert.match(html, /href="\/en\/events\?view=past"/)
-    if (status === 'cancelled') { assert.match(html, /EventCancelled/); assert.match(html, /This event has been cancelled. Registration is closed/); }
+    if (status === 'cancelled') { assert.match(html, /EventCancelled/); assert.match(html, /This speech has been cancelled. Registration is closed/); }
     if (status === 'postponed') { assert.match(html, /New date to be announced/); assert.match(html, /previousStartDate/) }
   }
   for (const path of ['/news', '/events', '/news/institutional-learning-0', '/events/fertility-conversation-held', '/educate-ivf', '/en/educate-ivf/pcos']) await get(path)

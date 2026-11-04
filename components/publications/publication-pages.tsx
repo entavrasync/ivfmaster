@@ -10,9 +10,11 @@ import { getSeoContext, getSiteContent } from '@/sanity/lib/site-content'
 import { resolveSiteChrome } from '@/sanity/lib/site-content-mapping'
 import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
 import { resolvePageSeo } from '@/sanity/lib/seo-mapping'
-import { eventLifecycle, localizePublication as localize, localizePublicationBody, type PublicationDocument, type EventDocument } from '@/sanity/lib/publication-model'
+import { eventLifecycle, localizePublication as localize, localizePublicationBody, publicationCopy, type PublicationDocument, type EventDocument } from '@/sanity/lib/publication-model'
 import { parsePublicationMedia } from '@/sanity/lib/publication-media'
 import { JsonLdScript } from '@/components/SEO/StructuredData'
+import { buildPageJsonLd } from '@/lib/seo/jsonLd'
+import { getTranslations } from 'next-intl/server'
 import { publicationLabels } from './copy'
 import { coverImages, mediaImages, publicationDate, publicationImage } from './publication-data'
 import { PublicationImage } from './publication-image'
@@ -30,6 +32,13 @@ export type PublicationParams = { params: Promise<{ locale: string; slug?: strin
 export type PublicationSearch = Promise<Record<string, string | string[] | undefined>>
 const localeFor = (locale: string) => locale === 'en' ? 'en' as const : 'mr' as const
 const pathFor = (kind: Kind) => kind === 'news' ? '/news' : '/events'
+const pageFor = (kind: Kind) => kind === 'news' ? 'medicalSpeeches' as const : 'patientSpeeches' as const
+/** The listing's CMS heading copy; empty or unapproved fields keep the website default. */
+async function listingCopy(kind: Kind, locale: 'en' | 'mr') {
+  const t = publicationLabels[locale], page = (await getSiteContent(locale))[pageFor(kind)]
+  const read = (value: unknown, fallback: string) => { const copy = publicationCopy.safeParse(value); return copy.success ? localize(copy.data, locale) : fallback }
+  return { eyebrow: read(page?.eyebrow, t.eyebrow), heading: read(page?.heading, kind === 'news' ? t.newsTitle : t.eventsTitle), intro: read(page?.intro, kind === 'news' ? t.newsIntro : t.eventsIntro) }
+}
 function visible(docs: PublicationDocument[], preview: boolean, now: number) {
   return docs.filter(doc => doc._type !== 'news' || preview || Date.parse(doc.publishedAt) <= now)
 }
@@ -45,17 +54,18 @@ async function PublicationLinks({ locale, current }: { locale: 'en' | 'mr'; curr
   return <nav aria-label={t.browse} className={styles.sectionNav}>{links.map(link => <Link key={link.key} href={link.href} aria-current={current === link.href ? 'page' : undefined} target={link.opensInNewTab ? '_blank' : undefined} rel={link.opensInNewTab ? 'noopener noreferrer' : undefined}>{link.label}</Link>)}</nav>
 }
 export async function publicationMetadata(kind: Kind, props: PublicationParams, search?: PublicationSearch): Promise<Metadata> {
-  const { locale: lang, slug } = await props.params, locale = localeFor(lang), t = publicationLabels[locale]
+  const { locale: lang, slug } = await props.params, locale = localeFor(lang)
   const result = await getPublications(kind), now = Date.now()
   const doc = slug ? visible(result.documents, result.preview, now).find(doc => doc.slug.current === slug) : undefined
   if (slug && !doc) return { title: 'Content unavailable', robots: { index: false, follow: true } }
-  const context = await getSeoContext(locale), seo = doc ? resolvePageSeo(doc.seo, locale) : undefined
+  const context = await getSeoContext(locale, doc ? undefined : pageFor(kind)), seo = doc ? resolvePageSeo(doc.seo, locale) : undefined
+  const copy = await listingCopy(kind, locale)
   const cover = doc ? coverImages(doc, locale)[0] : undefined
   const metadata = buildPageMetadata({ ...context, locale, path: pathFor(kind) + (slug ? `/${slug}` : ''),
-    title: doc ? localize(doc.title, locale) : kind === 'news' ? t.news : t.events,
-    description: doc ? localize(doc.summary, locale) : kind === 'news' ? t.newsIntro : t.eventsIntro,
+    title: doc ? localize(doc.title, locale) : copy.heading,
+    description: doc ? localize(doc.summary, locale) : copy.intro,
     type: kind === 'news' && doc ? 'article' : 'website', publishedTime: doc?._type === 'news' ? doc.publishedAt : undefined,
-    seo: doc ? { noIndex: false, noFollow: false, structuredData: true, ...(cover ? { ogImage: { url: cover.src, width: cover.width ?? 1200, height: cover.height ?? 675, alt: cover.alt } } : {}), ...seo } : undefined,
+    seo: doc ? { noIndex: false, noFollow: false, structuredData: true, ...(cover ? { ogImage: { url: cover.src, width: cover.width ?? 1200, height: cover.height ?? 675, alt: cover.alt } } : {}), ...seo } : context.seo,
   })
   if (doc?._type === 'news' && metadata.openGraph && 'type' in metadata.openGraph && metadata.openGraph.type === 'article') metadata.openGraph.modifiedTime = doc._updatedAt
   const query = search ? await search : {}
@@ -65,6 +75,7 @@ export async function publicationMetadata(kind: Kind, props: PublicationParams, 
 export async function PublicationListing({ kind, params, searchParams }: PublicationParams & { kind: Kind; searchParams: PublicationSearch }) {
   const { locale: lang } = await params, locale = localeFor(lang), t = publicationLabels[locale]
   const result = await getPublications(kind), query = await searchParams, now = Date.now()
+  const [copy, { seo }, nav] = await Promise.all([listingCopy(kind, locale), getSeoContext(locale, pageFor(kind)), getTranslations({ locale, namespace: 'Nav' })])
   const docs = visible(result.documents, result.preview, now)
   const category = typeof query.category === 'string' ? query.category : '', group = query.view === 'past' ? 'past' : 'upcoming'
   const categories = [...new Map(docs.filter(doc => doc.category).map(doc => [doc.category!.slug.current, doc.category!])).values()]
@@ -92,7 +103,7 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
   return <main id="main-content" className={`${styles.page} ${styles.listing}`}><div className={styles.container}>
     {result.preview && <PreviewBanner locale={locale} />}<EventRefresh boundary={boundaries.length ? Math.min(...boundaries) : null} />
     <header className={styles.masthead}>
-      <div className={styles.headingGroup}><p className={styles.journalLabel}>{t.eyebrow}</p><h1>{kind === 'news' ? t.newsTitle : t.eventsTitle}</h1><p className={styles.intro}>{kind === 'news' ? t.newsIntro : t.eventsIntro}</p></div>
+      <div className={styles.headingGroup}><p className={styles.journalLabel}>{copy.eyebrow}</p><h1>{copy.heading}</h1><p className={styles.intro}>{copy.intro}</p></div>
       <PublicationLinks locale={locale} current={pathFor(kind)} />
     </header>
     <div className={styles.toolbar}>
@@ -117,6 +128,8 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
           loadMoreLabel={t.loadMore} showLessLabel={t.showLess} showingLabel={t.showing} />
       </section>}
     </>}
+    <BacklinkReferences entries={seo?.backlinks} locale={locale} />
+    {!result.preview && seo?.structuredData !== false && <JsonLdScript data={buildPageJsonLd(locale, [{ name: nav('home'), path: '/' }, { name: copy.heading, path: pathFor(kind) }])} />}
   </div></main>
 }
 

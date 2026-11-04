@@ -8,7 +8,8 @@ import { newsFixture, eventFixture, newsCategory, eventCategory } from './public
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
-const records = [newsCategory, eventCategory, ...Object.entries(initial.singletons).map(([type, value]) => ({ ...value, _id: type, _type: type, reviewStatus: 'approved' })),
+const speechesPage = { _id: 'medicalSpeechesPage', _type: 'medicalSpeechesPage', reviewStatus: 'approved', heading: { en: 'Clinical lectures' }, intro: { en: 'Lectures for clinicians.' }, seo: { metaTitle: { en: 'Clinical lecture archive' }, focusKeyword: 'IVF lectures', noIndex: true, visibilityReason: 'Fixture' } }
+const records = [speechesPage, newsCategory, eventCategory, ...Object.entries(initial.singletons).map(([type, value]) => ({ ...value, _id: type, _type: type, reviewStatus: 'approved' })),
   ...Object.entries(initial.legacy).map(([type, value]) => ({ ...value, _id: type, _type: type, reviewStatus: 'approved' })),
   ...Array.from({ length: 14 }, (_, i) => ({ ...newsFixture, _id: `fixture-news-${i}`, slug: { current: `institutional-learning-${i}` },
     title: { en: i === 0 ? 'Local fixture: a new chapter in learning, collaboration and compassionate fertility care' : `Local fixture: institutional update ${i}` },

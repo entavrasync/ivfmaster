@@ -72,8 +72,8 @@ function slugField(type: 'news' | 'event' | 'publicationCategory') {
   })
 }
 export const publicationCategory = defineType({
-  name: 'publicationCategory', title: 'News & event category', type: 'document', icon: Tags,
-  fields: [copy('title', 'Category name'), slugField('publicationCategory'), defineField({ name: 'scope', title: 'Use for', type: 'string', options: { list: [{ title: 'News', value: 'news' }, { title: 'Events', value: 'event' }], layout: 'radio' }, validation: rule => rule.required() })],
+  name: 'publicationCategory', title: 'Speech category', type: 'document', icon: Tags,
+  fields: [copy('title', 'Category name'), slugField('publicationCategory'), defineField({ name: 'scope', title: 'Use for', type: 'string', options: { list: [{ title: 'Medical professionals', value: 'news' }, { title: 'Patients', value: 'event' }], layout: 'radio' }, validation: rule => rule.required() })],
   preview: { select: { title: 'title.en', subtitle: 'scope' } },
 })
 function fields(type: 'news' | 'event') {
@@ -87,7 +87,7 @@ function fields(type: 'news' | 'event') {
     }) }),
     defineField({ name: 'featured', title: 'Featured', type: 'boolean', initialValue: false, group: 'identity', description: 'The most recent featured item leads the page; additional featured items remain in the archive.' }),
     { ...copy('summary', 'Summary', true, true), group: 'content' },
-    defineField({ name: 'body', title: type === 'news' ? 'Story' : 'Event description', type: 'publicationRichText', group: 'content', validation: rule => rule.required() }),
+    defineField({ name: 'body', title: 'Speech', type: 'publicationRichText', group: 'content', validation: rule => rule.required() }),
     defineField({ name: 'coverImage', title: 'Cover image (optional)', type: 'publicationImage', group: 'media' }),
     defineField({ name: 'media', title: 'Video & social posts', type: 'array', of: [defineArrayMember({ type: 'publicationMedia' })], group: 'media', validation: rule => rule.max(8) }),
     defineField({ name: 'seo', title: 'Search & social sharing', type: 'object', group: 'seo', fieldsets: SEO_FIELDSETS, description: 'Optional. Empty fields use the title, summary and cover.', fields: [copy('metaTitle', 'SEO title', false), copy('metaDescription', 'SEO description', false, true), ...seoAdvancedFields()] }),
@@ -103,27 +103,27 @@ function creditFields(type: 'news' | 'event') {
 }
 const groups = [{ name: 'identity', title: 'Title & approval', default: true }, { name: 'content', title: 'Content' }, { name: 'details', title: 'Dates & details' }, { name: 'media', title: 'Images & video' }, { name: 'seo', title: 'SEO' }]
 export const news = defineType({
-  name: 'news', title: 'News', type: 'document', icon: Newspaper, groups, initialValue: { reviewStatus: 'pendingReview' },
+  name: 'news', title: 'Speeches for Medical Professionals', type: 'document', icon: Newspaper, groups, initialValue: { reviewStatus: 'pendingReview' },
   fields: [...fields('news'),
-    defineField({ name: 'publishedAt', title: 'Publication date & time', type: 'datetime', group: 'details', description: 'For published news, use the actual publication time. Future-dated stories stay out of the public listing until this time.', validation: rule => rule.required() }),
+    defineField({ name: 'publishedAt', title: 'Publication date & time', type: 'datetime', group: 'details', description: 'Use the actual publication time. Future-dated speeches stay out of the public listing until this time.', validation: rule => rule.required() }),
     ...creditFields('news'),
   ], preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
 })
 export const event = defineType({
-  name: 'event', title: 'Events', type: 'document', icon: CalendarDays, groups,
+  name: 'event', title: 'Speeches for Patients', type: 'document', icon: CalendarDays, groups,
   initialValue: { reviewStatus: 'pendingReview', status: 'scheduled', timezone: 'Asia/Kolkata', attendanceMode: 'inPerson' },
   fields: [...fields('event'),
     defineField({ name: 'startAt', title: 'Start date & time', type: 'datetime', group: 'details', description: 'The date picker shows its selected timezone. Stored instants are absolute; choose the matching event timezone below.', validation: rule => rule.required() }),
     defineField({ name: 'endAt', title: 'End date & time', type: 'datetime', group: 'details', validation: rule => rule.required().custom((value, context) => !value || typeof context.document?.startAt !== 'string' || Date.parse(value) > Date.parse(context.document.startAt) || 'End time must be after start time.') }),
-    defineField({ name: 'timezone', title: 'Event timezone', type: 'string', group: 'details', description: 'Used for website dates. India: Asia/Kolkata. For overseas events, enter the venue’s IANA timezone.', validation: rule => rule.required().custom(value => !value || eventTimezone.safeParse(value).success || 'Enter an IANA timezone, for example Asia/Kolkata.') }),
-    defineField({ name: 'status', title: 'Event status', type: 'string', group: 'details', options: { list: [{ title: 'Scheduled', value: 'scheduled' }, { title: 'Held', value: 'held' }, { title: 'Cancelled', value: 'cancelled' }, { title: 'Postponed — new date pending', value: 'postponed' }] }, description: 'Past dates automatically move scheduled events to Past. Postponed keeps the original dates visible and disables registration. When new dates are confirmed, update both dates and restore Scheduled.', validation: rule => rule.required() }),
+    defineField({ name: 'timezone', title: 'Timezone', type: 'string', group: 'details', description: 'Used for website dates. India: Asia/Kolkata. For overseas events, enter the venue’s IANA timezone.', validation: rule => rule.required().custom(value => !value || eventTimezone.safeParse(value).success || 'Enter an IANA timezone, for example Asia/Kolkata.') }),
+    defineField({ name: 'status', title: 'Status', type: 'string', group: 'details', options: { list: [{ title: 'Scheduled', value: 'scheduled' }, { title: 'Held', value: 'held' }, { title: 'Cancelled', value: 'cancelled' }, { title: 'Postponed — new date pending', value: 'postponed' }] }, description: 'Past dates automatically move scheduled events to Past. Postponed keeps the original dates visible and disables registration. When new dates are confirmed, update both dates and restore Scheduled.', validation: rule => rule.required() }),
     defineField({ name: 'attendanceMode', title: 'How to attend', type: 'string', group: 'details', options: { list: [{ title: 'At a venue', value: 'inPerson' }, { title: 'Online', value: 'online' }, { title: 'Venue and online', value: 'hybrid' }] }, validation: rule => rule.required() }),
     { ...copy('venue', 'Venue name and address', false, true), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'online' || !!(value as { en?: string } | undefined)?.en?.trim() || 'Enter the venue name and full address in English.') },
-    { ...linkUrl('onlineUrl', 'Online event destination'), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'inPerson' && !value || safeWebUrl.safeParse(value).success || 'Enter the HTTPS destination for attending online.') },
+    { ...linkUrl('onlineUrl', 'Online destination'), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'inPerson' && !value || safeWebUrl.safeParse(value).success || 'Enter the HTTPS destination for attending online.') },
     { ...linkUrl('registrationUrl', 'Registration link (optional)'), group: 'details' },
     ...creditFields('event'),
-    defineField({ name: 'recap', title: 'Event recap (optional)', type: 'publicationRichText', group: 'content', description: 'Displayed after the event is held or its end time passes.' }),
-    defineField({ name: 'gallery', title: 'Event gallery (optional)', type: 'array', group: 'media', of: [defineArrayMember({ type: 'publicationImage' })], validation: rule => rule.max(20) }),
+    defineField({ name: 'recap', title: 'Recap (optional)', type: 'publicationRichText', group: 'content', description: 'Displayed after the speech is held or its end time passes.' }),
+    defineField({ name: 'gallery', title: 'Gallery (optional)', type: 'array', group: 'media', of: [defineArrayMember({ type: 'publicationImage' })], validation: rule => rule.max(20) }),
     defineField({ name: 'recordingUrl', title: 'Recording (optional YouTube or Instagram link)', type: 'url', group: 'media', validation: rule => rule.custom(value => !value || !!parsePublicationMedia(value) || 'Use a supported YouTube or Instagram URL.') }),
   ], preview: { select: { title: 'title.en', subtitle: 'startAt', media: 'coverImage' } },
 })

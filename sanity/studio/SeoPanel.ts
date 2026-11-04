@@ -21,6 +21,8 @@ type DocumentValue = Record<string, unknown> & { _type?: string; slug?: { curren
 
 const ROUTES: Record<string, (slug?: string) => string | null> = {
   educationPage: () => '/educate-ivf',
+  medicalSpeechesPage: () => '/news',
+  patientSpeechesPage: () => '/events',
   procedure: (slug) => slug ? `/procedures/${slug}` : null,
   article: (slug) => slug ? `/educate-ivf/${slug}` : null,
   doctor: (slug) => slug ? `/team/${slug}` : null,
@@ -37,8 +39,8 @@ const pick = (value: unknown, locale: 'en' | 'mr'): string => {
 function fallbacks(doc: DocumentValue, locale: 'en' | 'mr') {
   const name = pick(doc.name, locale), fullName = pick(doc.fullName, locale)
   return {
-    title: doc._type === 'procedure' && name ? `${name} — ${fullName}` : pick(doc.title, locale) || name,
-    description: pick(doc.oneLiner, locale) || pick(doc.excerpt, locale) || pick(doc.metaDescription, locale) || pick(doc.description, locale),
+    title: doc._type === 'procedure' && name ? `${name} — ${fullName}` : pick(doc.title, locale) || name || pick(doc.heading, locale),
+    description: pick(doc.oneLiner, locale) || pick(doc.excerpt, locale) || pick(doc.metaDescription, locale) || pick(doc.description, locale) || pick(doc.intro, locale),
     body: pick(doc.heroDescription, locale) || pick(doc.excerpt, locale) || pick(doc.intro, locale),
   }
 }

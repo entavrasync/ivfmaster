@@ -68,6 +68,19 @@ test('events share the news editing structure and keep their credit and sources'
   assert.equal(resolved.relatedLinks[0].url, 'https://www.ivfmaster.in/about')
 })
 
+test('both speech pages offer an editable heading and the shared SEO object', () => {
+  for (const name of ['medicalSpeechesPage', 'patientSpeechesPage']) {
+    const page = schema.get(name), fields = Object.fromEntries(page.fields.map(field => [field.name, field.type.name]))
+
+    assert.equal(fields.heading, 'localizedString', name)
+    assert.equal(fields.intro, 'localizedText', name)
+    assert.equal(fields.seo, 'seo', name)
+    assert.equal(page.initialValue().reviewStatus, 'pendingReview', name)
+  }
+  assert.equal(schema.get('medicalSpeechesPage').initialValue().heading.en, 'Speeches for Medical Professionals')
+  assert.equal(schema.get('patientSpeechesPage').initialValue().heading.en, 'Speeches for Patients')
+})
+
 test('published addresses remain stable and optional SEO/author fields can be cleared', async () => {
   const original = nativeClient.fetch
   try {

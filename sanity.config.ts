@@ -143,7 +143,7 @@ export default defineConfig({
       ]),
     ),
     S.divider(),
-    ...(['news', 'event', 'publicationCategory'] as const).map(type => S.documentTypeListItem(type).title(type === 'news' ? 'News — publish updates' : type === 'event' ? 'Events — upcoming & past' : 'News & event categories')),
+    ...(['news', 'event', 'publicationCategory'] as const).map(type => S.documentTypeListItem(type).title(type === 'news' ? 'Speeches for Medical Professionals' : type === 'event' ? 'Speeches for Patients' : 'Speech categories')),
     ...S.documentTypeListItems().filter((item) => !['clinicSettings', 'clinicAvailability', 'procedure', 'article', 'doctor', 'news', 'event', 'publicationCategory'].includes(item.getId() ?? '') && !SINGLETON_TYPES.has(item.getId() ?? '') && !LEGACY_TYPES.has(item.getId() ?? '')),
   ]) }), publicationPresentation],
   schema: { types: schemaTypes, templates: (prev) => [
