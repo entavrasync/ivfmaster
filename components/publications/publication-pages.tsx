@@ -74,11 +74,11 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
   const page = Math.min(pageCount, Math.max(1, parsed))
   const eligibleLead = filtered.filter(doc => doc._type === 'news' || group === 'upcoming' && doc.status === 'scheduled')
   const selectedLead = !category ? eligibleLead.find(doc => doc.featured) ?? eligibleLead[0] : undefined
-  const lead = page === 1 ? selectedLead : undefined
   const ordered = selectedLead ? [selectedLead, ...filtered.filter(doc => doc._id !== selectedLead._id)] : filtered
   const slice = ordered.slice((page - 1) * 12, page * 12)
-  const spotlight = kind === 'news' && page === 1 && !category ? slice.slice(0, 3) : []
-  const remaining = kind === 'news' ? slice.filter(doc => !spotlight.some(item => item._id === doc._id)) : lead ? slice.filter(doc => doc._id !== lead._id) : slice
+  const spotlight = page === 1 && !category ? slice.slice(0, 3) : []
+  const remaining = slice.filter(doc => !spotlight.some(item => item._id === doc._id))
+  const card = (doc: PublicationDocument, variant: 'lead' | 'brief' | 'archive') => doc._type === 'news' ? <NewsCard key={doc._id} doc={doc} locale={locale} variant={variant} /> : <EventCard key={doc._id} event={doc} locale={locale} now={now} variant={variant} />
   const href = (changes: { category?: string; view?: string; page?: number }) => {
     const values = { category, view: kind === 'event' ? group : '', page: 1, ...changes }, query = new URLSearchParams()
     if (values.category) query.set('category', values.category)
@@ -109,13 +109,12 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
       <div><h2>{emptyTitle}</h2><p>{result.error ? t.errorBody : category ? t.noCategoryBody : t.emptyBody}</p>{category ? <Link href={href({ category: '' })} className={styles.emptyAction}>{t.clear}</Link> : kind === 'event' && !result.error && <Link href={href({ view: group === 'past' ? 'upcoming' : 'past' })} className={styles.emptyAction}>{group === 'past' ? t.viewUpcoming : t.viewPast}<ArrowRight size={16} /></Link>}</div>
     </div> : <>
       {spotlight.length > 0 && <section aria-label={t.featured} className={styles.newsSpotlight} data-single={spotlight.length === 1}>
-        {spotlight[0]._type === 'news' && <NewsCard doc={spotlight[0]} locale={locale} variant="lead" />}
-        {spotlight.length > 1 && <div className={styles.newsRail}>{spotlight.slice(1).map(doc => doc._type === 'news' && <NewsCard key={doc._id} doc={doc} locale={locale} variant="brief" />)}</div>}
+        {card(spotlight[0], 'lead')}
+        {spotlight.length > 1 && <div className={styles.newsRail}>{spotlight.slice(1).map(doc => card(doc, 'brief'))}</div>}
       </section>}
-      {kind === 'event' && lead?._type === 'event' && <section aria-label={t.featured}><EventCard event={lead} locale={locale} now={now} featured /></section>}
-      {remaining.length > 0 && <section className={kind === 'news' ? styles.archive : styles.agenda} aria-label={kind === 'news' ? t.latest : t[group]}>
-        <div className={styles.sectionHeading}><h2>{kind === 'news' ? spotlight.length ? t.moreNews : t.allNews : t[group]}</h2></div>
-        <div className={kind === 'news' ? styles.archiveGrid : undefined}>{remaining.map(doc => doc._type === 'news' ? <NewsCard key={doc._id} doc={doc} locale={locale} variant="archive" /> : <EventCard key={doc._id} event={doc} locale={locale} now={now} />)}</div>
+      {remaining.length > 0 && <section className={styles.archive} aria-label={kind === 'news' ? t.latest : t[group]}>
+        <div className={styles.sectionHeading}><h2>{kind === 'news' ? spotlight.length ? t.moreNews : t.allNews : spotlight.length ? t.moreEvents : t[group]}</h2></div>
+        <div className={styles.archiveGrid}>{remaining.map(doc => card(doc, 'archive'))}</div>
       </section>}
       {pageCount > 1 && <nav aria-label={t.pagination} className={styles.pagination}>{page > 1 ? <Link href={href({ page: page - 1 })}><ArrowLeft size={14} />{t.previous}</Link> : <span />}<span>{t.page} {page} {t.of} {pageCount}</span>{page < pageCount ? <Link href={href({ page: page + 1 })}>{t.next}<ArrowRight size={14} /></Link> : <span />}</nav>}
     </>}
@@ -156,6 +155,7 @@ export async function PublicationDetail({ kind, params }: PublicationParams & { 
     ...(doc.status !== 'postponed' ? { startDate: doc.startAt, endDate: doc.endAt } : { previousStartDate: doc.startAt }),
     ...(lifecycle?.state !== 'held' ? { eventStatus: `https://schema.org/${doc.status === 'cancelled' ? 'EventCancelled' : doc.status === 'postponed' ? 'EventPostponed' : 'EventScheduled'}` } : {}),
     eventAttendanceMode: `https://schema.org/${doc.attendanceMode === 'online' ? 'OnlineEventAttendanceMode' : doc.attendanceMode === 'hybrid' ? 'MixedEventAttendanceMode' : 'OfflineEventAttendanceMode'}`,
+    ...(doc.author && doc.authorKind ? { organizer: { '@type': doc.authorKind, name: localize(doc.author, locale) } } : {}),
     location: [...(doc.attendanceMode !== 'online' && doc.venue ? [{ '@type': 'Place', name: localize(doc.venue, locale), address: localize(doc.venue, locale) }] : []), ...(doc.attendanceMode !== 'inPerson' && doc.onlineUrl ? [{ '@type': 'VirtualLocation', url: doc.onlineUrl }] : [])],
     ...(images[0] ? { image: images[0].src } : {}),
   }
@@ -165,17 +165,14 @@ export async function PublicationDetail({ kind, params }: PublicationParams & { 
     <header className={styles.detailHeader}>
       <div className={styles.detailLabels}>{doc.category && <Link className={styles.category} href={`${pathFor(kind)}?category=${doc.category.slug.current}${lifecycle?.group === 'past' ? '&view=past' : ''}`}>{localize(doc.category.title, locale)}</Link>}{doc._type === 'event' && <EventStatus event={doc} locale={locale} now={now} />}</div>
       <h1>{title}</h1><p className={styles.detailSummary}>{summary}</p>
-      {doc._type === 'news' && <div className={styles.byline}><time dateTime={doc.publishedAt}>{publicationDate(doc.publishedAt, locale)}</time>{doc.author && <span>{localize(doc.author, locale)}</span>}<span>{t.updated} <time dateTime={doc._updatedAt}>{publicationDate(doc._updatedAt, locale)}</time></span></div>}
+      {doc._type === 'news' ? <div className={styles.byline}><time dateTime={doc.publishedAt}>{publicationDate(doc.publishedAt, locale)}</time>{doc.author && <span>{localize(doc.author, locale)}</span>}<span>{t.updated} <time dateTime={doc._updatedAt}>{publicationDate(doc._updatedAt, locale)}</time></span></div> : doc.author && <div className={styles.byline}><span>{localize(doc.author, locale)}</span></div>}
     </header>
-    {doc._type === 'event' ? <div className={styles.eventOverview} data-image={images.length > 0}>
-      <EventInformation doc={doc} locale={locale} now={now} />
-      {images.length > 0 && <PublicationImage images={images} priority className={styles.detailImage} sizes="(min-width: 1000px) 700px, 100vw" />}
-    </div> : images.length > 0 && <PublicationImage images={images} priority className={styles.detailImage} sizes="(min-width: 1280px) 1040px, 100vw" />}
+    {images.length > 0 && <PublicationImage images={images} priority className={styles.detailImage} sizes="(min-width: 1280px) 1040px, 100vw" />}
     <div className={styles.detailGrid}><div className={styles.articleBody}>
-      {doc._type === 'event' && <h2 className={styles.bodyHeading}>{t.aboutEvent}</h2>}
+      {doc._type === 'event' && <><EventInformation doc={doc} locale={locale} now={now} /><h2 className={styles.bodyHeading}>{t.aboutEvent}</h2></>}
       <PublicationRichText blocks={localizePublicationBody(doc.body, locale)} />
       {doc.media?.length ? <section className={styles.contentSection} aria-label={t.media}><h2>{t.media}</h2>{doc.media.map(item => { const source = parsePublicationMedia(item.url); return source && <MediaPreview key={item._key} source={source} images={mediaImages(item.url, item.thumbnail, locale)} locale={locale} /> })}</section> : null}
-      {doc._type === 'news' && !!doc.relatedLinks?.length && <section className={styles.contentSection}><h2>{t.sources}</h2><ul className={styles.sourceLinks}>{doc.relatedLinks.map(link => <li key={link._key}><a href={link.url}>{localize(link.label, locale)} ↗</a></li>)}</ul></section>}
+      {!!doc.relatedLinks?.length && <section className={styles.contentSection}><h2>{t.sources}</h2><ul className={styles.sourceLinks}>{doc.relatedLinks.map(link => <li key={link._key}><a href={link.url}>{localize(link.label, locale)} ↗</a></li>)}</ul></section>}
       {doc._type === 'event' && lifecycle?.group === 'past' && <>
         {doc.recap && <section id="event-recap" className={styles.contentSection}><h2>{t.recap}</h2><PublicationRichText blocks={localizePublicationBody(doc.recap, locale)} /></section>}
         {doc.recordingUrl && (() => { const source = parsePublicationMedia(doc.recordingUrl); return source && <section id="event-recording" className={styles.contentSection}><h2>{t.recording}</h2><MediaPreview source={source} images={mediaImages(doc.recordingUrl, null, locale)} locale={locale} /></section> })()}

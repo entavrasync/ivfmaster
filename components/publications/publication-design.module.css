@@ -35,7 +35,7 @@
 .storyTitle, .briefTitle { font-family: var(--font-display); font-weight: 500; letter-spacing: -.025em; color: #203151; overflow-wrap: anywhere; text-wrap: pretty; }
 .storyTitle { font-size: 30px; line-height: 1.25; margin: 9px 0 12px; }
 .briefTitle { font-size: 23px; line-height: 1.3; margin: 7px 0 9px; }
-.storyLink:hover .storyTitle, .storyLink:hover .briefTitle, .eventLink:hover .briefTitle { color: #365c9b; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.storyLink:hover .storyTitle, .storyLink:hover .briefTitle { color: #365c9b; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .excerpt { color: #586477; font-size: 14px; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .storyMeta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 15px; color: #627087; font-size: 12px; margin-top: 20px; }
 .readLink { display: inline-flex; align-items: center; gap: 12px; color: var(--color-navy); font-size: 13px; font-weight: 600; }
@@ -55,19 +55,9 @@
 .archiveImage { aspect-ratio: 1; border-radius: 8px; }
 .archiveRow .briefTitle { font-size: 22px; }
 .archiveRow .storyMeta { margin-top: 14px; }
-.eventFeature { border: 1px solid #cdd7e7; border-radius: 12px; background: #f0f4fa; overflow: hidden; }
-.eventLink { display: grid; grid-template-columns: 72px minmax(0,1fr); gap: 24px; padding: 26px 0; border-radius: 10px; }
-.eventFeature .eventLink { padding: 26px; }
-.eventFeature[data-image=true] .eventLink { grid-template-columns: 72px minmax(0,1fr) 260px; align-items: start; }
-.eventFeatureImage { align-self: center; aspect-ratio: 4/3; border-radius: 8px; }
-.eventCardContent { min-width: 0; }
 .eventCardLabels { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-.eventFeature .briefTitle { font-size: 28px; margin-block: 12px; }
-.eventCardContent > .readLink { margin-top: 18px; }
-.dateTile { width: 72px; padding: 11px 5px; text-align: center; background: #fff; color: #263e68; border: 1px solid #d1dae8; border-radius: 9px; }
-.dateTile strong { display: block; font-family: var(--font-display); font-size: 34px; font-weight: 500; line-height: 1.1; }
-.dateTile span { display: block; font-size: 10px; line-height: 1.4; font-weight: 600; margin-top: 6px; }
-.datePending { display: flex; align-items: center; flex-direction: column; padding-block: 16px; color: #7a5c27; }
+.eventCardLabels + h2 { margin-top: 10px; }
+.eventCardLabels ~ .eventDates { margin-top: 12px; }
 .status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid #d6dfea; border-radius: 5px; background: #edf2fa; color: #355787; font-size: 11px; line-height: 1.4; font-weight: 600; }
 .status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .status[data-state=inProgress] { color: #28654d; background: #e9f5ef; border-color: #c8e4d7; }
@@ -78,10 +68,6 @@
 .eventDates p + p { margin-top: 2px; }
 .previousDate { color: #677184; font-size: 12px; margin-top: 5px; }
 .previousDate > span { font-size: 11px; }
-.agenda { margin-top: 28px; }
-.eventRow { border-bottom: 1px solid #dfe2e8; }
-.eventRow .briefTitle { margin-top: 10px; font-size: 25px; }
-.eventRowFoot { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 28px; margin-top: 14px; }
 .attendance { display: inline-flex; align-items: center; gap: 7px; color: #52617a; font-size: 13px; }
 .empty { display: flex; align-items: start; justify-content: center; gap: 22px; border: 1px solid #dfe3eb; border-radius: 12px; padding: 48px 32px; background: #fff; }
 .emptyIcon { color: #5573a5; padding: 13px; border-radius: 10px; background: #edf2fa; }
@@ -101,12 +87,7 @@
 .detailGrid { display: grid; grid-template-columns: minmax(0,740px); justify-content: center; }
 .articleBody { min-width: 0; }
 .bodyHeading { font-family: var(--font-display); font-size: 30px; line-height: 1.3; font-weight: 500; margin-bottom: 22px; }
-.eventOverview { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(300px,1fr); gap: 30px; align-items: start; margin-bottom: 40px; }
-.eventOverview .detailImage { grid-column: 1; grid-row: 1; width: 100%; margin: 0; }
-.eventOverview .detailFacts { grid-column: 2; grid-row: 1; }
-.eventOverview[data-image=false] { grid-template-columns: minmax(0,960px); justify-content: center; }
-.eventOverview[data-image=false] .detailFacts { grid-column: 1; }
-.detailFacts { border: 1px solid #d2dbe9; border-radius: 12px; background: #fff; padding: 25px; }
+.detailFacts { border: 1px solid #d2dbe9; border-radius: 12px; background: #fff; padding: 25px; margin-bottom: 38px; }
 .detailFacts h2 { font-family: var(--font-display); font-size: 24px; font-weight: 500; margin-bottom: 18px; }
 .fact { padding-bottom: 17px; margin-bottom: 17px; border-bottom: 1px solid #e2e6ed; }
 .factLabel { display: flex; align-items: center; gap: 9px; color: #405a82; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
@@ -132,9 +113,6 @@
   .newsSpotlight { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 24px; }
   .newsBrief .storyLink { grid-template-columns: minmax(0,1fr) 80px; gap: 14px; }
   .newsBrief .briefTitle { font-size: 22px; }
-  .eventFeature[data-image=true] .eventLink { grid-template-columns: 64px minmax(0,1fr) 220px; gap: 20px; }
-  .eventFeature .dateTile { width: 64px; }
-  .eventOverview { grid-template-columns: minmax(0,1fr) minmax(300px,1fr); gap: 24px; }
 }
 @media (max-width: 760px) {
   .page { padding: 116px 20px 76px; }
@@ -164,20 +142,9 @@
   .archiveRow .excerpt { font-size: 13px; }
   .storyMeta { font-size: 11px; margin-top: 14px; }
   .readLink { font-size: 12px; }
-  .eventFeature .eventLink, .eventFeature[data-image=true] .eventLink { grid-template-columns: 1fr; gap: 14px; padding: 20px; }
-  .eventFeature .dateTile { display: none; }
-  .eventFeatureImage { display: none; }
-  .eventFeature .briefTitle { font-size: 26px; }
-  .eventLink { grid-template-columns: 54px minmax(0,1fr); gap: 16px; padding-block: 22px; }
-  .eventRow .dateTile { width: 54px; padding: 10px 3px; }
-  .dateTile strong { font-size: 29px; }
-  .dateTile span { font-size: 9px; }
-  .eventRow .briefTitle { font-size: 23px; }
   .eventCardLabels .category { font-size: 10px; }
-  .eventRowFoot { gap: 10px; margin-top: 12px; }
   .eventDates { font-size: 12px; }
   .attendance { font-size: 12px; }
-  .agenda { margin-top: 24px; }
   .empty { padding: 28px 20px; gap: 14px; }
   .emptyIcon { padding: 10px; }
   .empty h2 { font-size: 23px; }
@@ -189,9 +156,6 @@
   .detailLabels { margin-bottom: 14px; }
   .byline { font-size: 11px; gap: 10px 16px; }
   .detailImage { aspect-ratio: 16/9; margin-bottom: 28px; }
-  .eventOverview, .eventOverview[data-image=false] { grid-template-columns: 1fr; gap: 24px; margin-bottom: 30px; }
-  .eventOverview .detailFacts { grid-column: 1; grid-row: 1; }
-  .eventOverview .detailImage { grid-column: 1; grid-row: 2; }
   .detailFacts { padding: 22px; }
   .bodyHeading { font-size: 27px; }
 }

@@ -86,11 +86,19 @@ function fields(type: 'news' | 'event') {
       try { return await context.getClient({ apiVersion }).withConfig({ perspective: 'published' }).fetch<boolean>('count(*[_id == $id && _type == "publicationCategory" && scope == $scope]) == 1', { id: value._ref, scope: type }) || 'Choose a published category for this content type.' } catch { return 'Could not verify the category. Check your connection.' }
     }) }),
     defineField({ name: 'featured', title: 'Featured', type: 'boolean', initialValue: false, group: 'identity', description: 'The most recent featured item leads the page; additional featured items remain in the archive.' }),
-    { ...copy('summary', type === 'news' ? 'Summary' : 'Short event description', true, true), group: 'content' },
+    { ...copy('summary', 'Summary', true, true), group: 'content' },
     defineField({ name: 'body', title: type === 'news' ? 'Story' : 'Event description', type: 'publicationRichText', group: 'content', validation: rule => rule.required() }),
-    defineField({ name: 'coverImage', title: type === 'news' ? 'Cover image (optional)' : 'Poster or cover image (optional)', type: 'publicationImage', group: 'media' }),
+    defineField({ name: 'coverImage', title: 'Cover image (optional)', type: 'publicationImage', group: 'media' }),
     defineField({ name: 'media', title: 'Video & social posts', type: 'array', of: [defineArrayMember({ type: 'publicationMedia' })], group: 'media', validation: rule => rule.max(8) }),
     defineField({ name: 'seo', title: 'Search & social sharing', type: 'object', group: 'seo', fieldsets: SEO_FIELDSETS, description: 'Optional. Empty fields use the title, summary and cover.', fields: [copy('metaTitle', 'SEO title', false), copy('metaDescription', 'SEO description', false, true), ...seoAdvancedFields()] }),
+  ]
+}
+/** Credit and source fields shared by news and events, shown under Dates & details. */
+function creditFields(type: 'news' | 'event') {
+  return [
+    { ...copy('author', type === 'news' ? 'Credited author or organization' : 'Credited host or organization', false), group: 'details' },
+    defineField({ name: 'authorKind', title: 'Credit type', type: 'string', group: 'details', options: { list: [{ title: 'Person', value: 'Person' }, { title: 'Organization', value: 'Organization' }] }, hidden: ({ document }) => !(document?.author as { en?: string } | undefined)?.en?.trim(), validation: rule => rule.custom((value, context) => !(context.document?.author as { en?: string } | undefined)?.en?.trim() || value === 'Person' || value === 'Organization' || 'Choose whether the credit is a person or organization.') }),
+    defineField({ name: 'relatedLinks', title: 'Sources & related links (optional)', type: 'array', group: 'details', of: [defineArrayMember({ type: 'object', fields: [copy('label', 'Link label'), linkUrl('url', 'Web address', true)] })], validation: rule => rule.max(8) }),
   ]
 }
 const groups = [{ name: 'identity', title: 'Title & approval', default: true }, { name: 'content', title: 'Content' }, { name: 'details', title: 'Dates & details' }, { name: 'media', title: 'Images & video' }, { name: 'seo', title: 'SEO' }]
@@ -98,9 +106,7 @@ export const news = defineType({
   name: 'news', title: 'News', type: 'document', icon: Newspaper, groups, initialValue: { reviewStatus: 'pendingReview' },
   fields: [...fields('news'),
     defineField({ name: 'publishedAt', title: 'Publication date & time', type: 'datetime', group: 'details', description: 'For published news, use the actual publication time. Future-dated stories stay out of the public listing until this time.', validation: rule => rule.required() }),
-    { ...copy('author', 'Credited author or organization', false), group: 'details' },
-    defineField({ name: 'authorKind', title: 'Credit type', type: 'string', group: 'details', options: { list: [{ title: 'Person', value: 'Person' }, { title: 'Organization', value: 'Organization' }] }, hidden: ({ document }) => !(document?.author as { en?: string } | undefined)?.en?.trim(), validation: rule => rule.custom((value, context) => !(context.document?.author as { en?: string } | undefined)?.en?.trim() || value === 'Person' || value === 'Organization' || 'Choose whether the credited author is a person or organization.') }),
-    defineField({ name: 'relatedLinks', title: 'Sources & related links (optional)', type: 'array', group: 'details', of: [defineArrayMember({ type: 'object', fields: [copy('label', 'Link label'), linkUrl('url', 'Web address', true)] })], validation: rule => rule.max(8) }),
+    ...creditFields('news'),
   ], preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
 })
 export const event = defineType({
@@ -115,8 +121,9 @@ export const event = defineType({
     { ...copy('venue', 'Venue name and address', false, true), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'online' || !!(value as { en?: string } | undefined)?.en?.trim() || 'Enter the venue name and full address in English.') },
     { ...linkUrl('onlineUrl', 'Online event destination'), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'inPerson' && !value || safeWebUrl.safeParse(value).success || 'Enter the HTTPS destination for attending online.') },
     { ...linkUrl('registrationUrl', 'Registration link (optional)'), group: 'details' },
+    ...creditFields('event'),
     defineField({ name: 'recap', title: 'Event recap (optional)', type: 'publicationRichText', group: 'content', description: 'Displayed after the event is held or its end time passes.' }),
     defineField({ name: 'gallery', title: 'Event gallery (optional)', type: 'array', group: 'media', of: [defineArrayMember({ type: 'publicationImage' })], validation: rule => rule.max(20) }),
     defineField({ name: 'recordingUrl', title: 'Recording (optional YouTube or Instagram link)', type: 'url', group: 'media', validation: rule => rule.custom(value => !value || !!parsePublicationMedia(value) || 'Use a supported YouTube or Instagram URL.') }),
-  ], preview: { select: { title: 'title.en', subtitle: 'status', media: 'coverImage' } },
+  ], preview: { select: { title: 'title.en', subtitle: 'startAt', media: 'coverImage' } },
 })
