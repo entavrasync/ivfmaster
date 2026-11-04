@@ -167,5 +167,5 @@ test('the actual page reader keeps published 60-second revalidation and forwards
     const updated = await getSiteContent(locale)
     assert.match(resolveSiteChrome(null, updated.home).hero.desktop.image.src, /replacement-100x100/)
   }
-  assert.deepEqual([...new Set(tags)].sort(), ['homePage', 'aboutPage', 'teamPage', 'proceduresPage', 'siteGlobals', 'contactPage', 'educationPage'].sort())
+  assert.deepEqual([...new Set(tags)].sort(), ['homePage', 'aboutPage', 'teamPage', 'proceduresPage', 'siteGlobals', 'contactPage', 'educationPage', 'medicalSpeechesPage', 'patientSpeechesPage'].sort())
 })

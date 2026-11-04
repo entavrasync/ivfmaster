@@ -20,6 +20,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const path = `/${doc._type === 'news' ? 'news' : 'events'}/${doc.slug.current}`
     return [{ url: buildAbsoluteUrl(buildLocalizedPath(locale, path)), lastModified: new Date(doc._updatedAt), alternates: { languages: getLocalizedAlternates(path) } }]
   }))
-  const indexes = ['/news', '/events'].flatMap(path => routing.locales.map(locale => ({ url: buildAbsoluteUrl(buildLocalizedPath(locale, path)), alternates: { languages: getLocalizedAlternates(path) } })))
+  const indexes = ['/news', '/events'].filter(path => !overrides.excludedPaths?.has(path)).flatMap(path => routing.locales.map(locale => ({ url: buildAbsoluteUrl(buildLocalizedPath(locale, path)), alternates: { languages: getLocalizedAlternates(path) } })))
   return [...existing, ...indexes, ...entries]
 }

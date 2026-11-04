@@ -16,19 +16,21 @@ export const getSiteContent = cache(async (locale: string) => {
     try { return await client.fetch<unknown>(query, { locale }, { cache: 'force-cache', next: { revalidate: 60, tags: [tag] } }) }
     catch { console.error(`[${tag}] CMS read failed; retaining existing website content.`); return null }
   }
-  const [home, about, team, procedures, globals, contact, education] = await Promise.all([
+  const [home, about, team, procedures, globals, contact, education, medicalSpeeches, patientSpeeches] = await Promise.all([
     read(homePageQuery, 'homePage'), read(aboutPageQuery, 'aboutPage'), read(teamPageQuery, 'teamPage'),
     read(proceduresHubQuery, 'proceduresPage'), read(globalsQuery, 'siteGlobals'),
     read(contactPageQuery, 'contactPage'),
     read(`*[_type == "educationPage" && _id == "educationPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{${SEO_RAW_PROJECTION}}`, 'educationPage'),
+    read(`*[_type == "medicalSpeechesPage" && _id == "medicalSpeechesPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{eyebrow{en,mr},heading{en,mr},intro{en,mr},${SEO_RAW_PROJECTION}}`, 'medicalSpeechesPage'),
+    read(`*[_type == "patientSpeechesPage" && _id == "patientSpeechesPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{eyebrow{en,mr},heading{en,mr},intro{en,mr},${SEO_RAW_PROJECTION}}`, 'patientSpeechesPage'),
   ])
   if (home && (!resolveSiteImage(at(home, 'hero.desktopImage')) || !resolveSiteImage(at(home, 'hero.mobileImage')))) {
     console.error('[homePage] Published hero is missing a valid desktop or mobile banner. Upload both images and publish Home page; no local artwork will be substituted.')
   }
-  return { home: record(home), about: record(about), team: record(record(team)?.page), procedures: record(record(procedures)?.page), globals: record(globals), contact: record(contact), education: record(education) }
+  return { home: record(home), about: record(about), team: record(record(team)?.page), procedures: record(record(procedures)?.page), globals: record(globals), contact: record(contact), education: record(education), medicalSpeeches: record(medicalSpeeches), patientSpeeches: record(patientSpeeches) }
 })
 
-type SeoPage = 'home' | 'about' | 'team' | 'procedures' | 'contact' | 'education'
+type SeoPage = 'home' | 'about' | 'team' | 'procedures' | 'contact' | 'education' | 'medicalSpeeches' | 'patientSpeeches'
 
 /** A page singleton's SEO plus the site-wide defaults, ready to spread into `buildPageMetadata`. */
 export async function getSeoContext(locale: string, page?: SeoPage): Promise<{ seo?: PageSeo; fallbackSeo?: PageSeo; siteName?: string }> {

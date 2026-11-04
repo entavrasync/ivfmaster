@@ -30,6 +30,8 @@ export interface SingletonDefinition {
 
 export const SINGLETONS = [
   { id: 'educationPage', type: 'educationPage', title: 'IVF education page' },
+  { id: 'medicalSpeechesPage', type: 'medicalSpeechesPage', title: 'Speeches for Medical Professionals page' },
+  { id: 'patientSpeechesPage', type: 'patientSpeechesPage', title: 'Speeches for Patients page' },
   {
     id: 'siteSettings',
     type: 'siteSettings',

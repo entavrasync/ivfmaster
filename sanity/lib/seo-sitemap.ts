@@ -3,7 +3,7 @@ import 'server-only'
 import type { SitemapOverrides } from '../../lib/seo/sitemap'
 import { client } from './client'
 
-const PAGE_PATHS: Record<string, string> = { homePage: '/', aboutPage: '/about', teamPage: '/team', proceduresPage: '/procedures', contactPage: '/contact', educationPage: '/educate-ivf' }
+const PAGE_PATHS: Record<string, string> = { homePage: '/', aboutPage: '/about', teamPage: '/team', proceduresPage: '/procedures', contactPage: '/contact', educationPage: '/educate-ivf', medicalSpeechesPage: '/news', patientSpeechesPage: '/events' }
 const COLLECTION_PATHS: Record<string, string> = { procedure: '/procedures/', article: '/educate-ivf/', doctor: '/team/' }
 
 const sitemapQuery = `{

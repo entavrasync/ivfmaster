@@ -34,13 +34,17 @@ const common = {
   coverImage: z.unknown().optional(), featured: z.boolean().nullish(),
   media: z.array(media).nullish().catch(null), seo: z.unknown().optional(),
 }
-export const newsDocument = z.object({
-  ...common, _type: z.literal('news'), publishedAt: z.iso.datetime({ offset: true }),
+const creditShape = {
   author: optionalCopy,
   authorKind: z.enum(['Person', 'Organization']).nullish(),
   relatedLinks: z.array(z.object({ _key: z.string(), label: publicationCopy, url: safeWebUrl })).nullish().catch(null),
+}
+export const newsDocument = z.object({
+  ...common, _type: z.literal('news'), publishedAt: z.iso.datetime({ offset: true }),
+  ...creditShape,
 })
 export const eventDocument = z.object({
+  ...creditShape,
   ...common, _type: z.literal('event'),
   startAt: z.iso.datetime({ offset: true }), endAt: z.iso.datetime({ offset: true }), timezone: eventTimezone,
   status: z.enum(['scheduled', 'held', 'cancelled', 'postponed']),
