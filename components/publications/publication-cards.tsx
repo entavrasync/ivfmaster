@@ -1,6 +1,7 @@
-import { ArrowRight, MapPin, Video } from 'lucide-react'
+import { ArrowRight, Clock3, MapPin, Video } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { eventLifecycle, localizePublication as localize, type EventDocument, type NewsDocument } from '@/sanity/lib/publication-model'
+import { parsePublicationMedia } from '@/sanity/lib/publication-media'
 import { coverImages, publicationDate } from './publication-data'
 import { PublicationImage } from './publication-image'
 import { publicationLabels } from './copy'
@@ -10,6 +11,7 @@ type Locale = 'en' | 'mr'
 type CardVariant = 'lead' | 'brief' | 'archive'
 // News and events share one card system, so both listings keep the same structure.
 const cardClasses = { lead: { card: styles.newsLead, image: styles.leadImage }, brief: { card: styles.newsBrief, image: styles.briefImage }, archive: { card: styles.archiveRow, image: styles.archiveImage } }
+const imageSizes = (variant: CardVariant) => variant === 'lead' ? '(min-width: 1200px) 632px, (min-width: 900px) 55vw, 100vw' : '(min-width: 640px) 160px, 96px'
 export function EventStatus({ event, locale, now }: { event: EventDocument; locale: Locale; now: number }) {
   const state = eventLifecycle(event, now).state
   return <span className={styles.status} data-state={state}>{publicationLabels[locale][state]}</span>
@@ -30,32 +32,59 @@ export function EventDates({ event, locale }: { event: EventDocument; locale: Lo
   </div>
 }
 function NewsMeta({ doc, locale }: { doc: NewsDocument; locale: Locale }) {
-  return <div className={styles.storyMeta}><time dateTime={doc.publishedAt}>{publicationDate(doc.publishedAt, locale)}</time><span className={styles.readLink}>{publicationLabels[locale].read}<ArrowRight size={15} aria-hidden="true" /></span></div>
+  const author = doc.author ? localize(doc.author, locale) : ''
+  return <div className={styles.storyMeta}>
+    <div className={styles.storyProvenance}>
+      {author && <span className={styles.storyAuthor}>{author}</span>}
+      <time dateTime={doc.publishedAt}>{publicationDate(doc.publishedAt, locale)}</time>
+    </div>
+    <span className={styles.readLink}>{publicationLabels[locale].read}<ArrowRight size={15} aria-hidden="true" /></span>
+  </div>
 }
 export function NewsCard({ doc, locale, variant }: { doc: NewsDocument; locale: Locale; variant: CardVariant }) {
   const title = localize(doc.title, locale), images = coverImages(doc, locale), href = `/news/${doc.slug.current}`
-  return <article className={cardClasses[variant].card} data-image={images.length > 0}><Link href={href} className={styles.storyLink} aria-labelledby={`story-${doc._id}`}>
-    {images.length > 0 && <PublicationImage images={images} priority={variant === 'lead'} className={cardClasses[variant].image} sizes={variant === 'lead' ? '(min-width: 760px) 650px, 100vw' : '128px'} />}
-    <div className={variant === 'lead' ? styles.newsLeadText : undefined}>
-      {doc.category && <span className={styles.category}>{localize(doc.category.title, locale)}</span>}
-      <h2 id={`story-${doc._id}`} className={variant === 'lead' ? styles.storyTitle : styles.briefTitle}>{title}</h2>
-      <p className={styles.excerpt}>{localize(doc.summary, locale)}</p>
-      <NewsMeta doc={doc} locale={locale} />
-    </div>
-  </Link></article>
+  return <article className={cardClasses[variant].card} data-image={images.length > 0}>
+    <Link href={href} className={styles.storyLink} aria-labelledby={`story-${doc._id}`}>
+      {images.length > 0 && <PublicationImage images={images} priority={variant === 'lead'} className={cardClasses[variant].image} sizes={imageSizes(variant)} />}
+      <div className={variant === 'lead' ? styles.newsLeadText : styles.storyContent}>
+        {doc.category && <span className={styles.category}>{localize(doc.category.title, locale)}</span>}
+        <h2 id={`story-${doc._id}`} className={variant === 'lead' ? styles.storyTitle : styles.briefTitle}>{title}</h2>
+        <p className={styles.excerpt}>{localize(doc.summary, locale)}</p>
+        <NewsMeta doc={doc} locale={locale} />
+      </div>
+    </Link>
+  </article>
 }
 export function EventCard({ event, locale, now, variant }: { event: EventDocument; locale: Locale; now: number; variant: CardVariant }) {
-  const t = publicationLabels[locale], href = `/events/${event.slug.current}`, images = coverImages(event, locale)
+  const t = publicationLabels[locale], images = coverImages(event, locale)
   const mode = event.attendanceMode === 'online' ? t.online : event.attendanceMode === 'hybrid' ? t.hybrid : t.inPerson
   const ModeIcon = event.attendanceMode === 'online' ? Video : MapPin
-  return <article className={cardClasses[variant].card} data-image={images.length > 0}><Link href={href} className={styles.storyLink} aria-labelledby={`event-${event._id}`}>
-    {images.length > 0 && <PublicationImage images={images} priority={variant === 'lead'} className={cardClasses[variant].image} sizes={variant === 'lead' ? '(min-width: 760px) 650px, 100vw' : '128px'} />}
-    <div className={variant === 'lead' ? styles.newsLeadText : undefined}>
-      <div className={styles.eventCardLabels}><EventStatus event={event} locale={locale} now={now} />{event.category && <span className={styles.category}>{localize(event.category.title, locale)}</span>}</div>
-      <h2 id={`event-${event._id}`} className={variant === 'lead' ? styles.storyTitle : styles.briefTitle}>{localize(event.title, locale)}</h2>
-      <p className={styles.excerpt}>{localize(event.summary, locale)}</p>
-      <EventDates event={event} locale={locale} />
-      <div className={styles.storyMeta}><span className={styles.attendance}><ModeIcon size={15} aria-hidden="true" />{mode}</span><span className={styles.readLink}>{t.details}<ArrowRight size={15} aria-hidden="true" /></span></div>
-    </div>
-  </Link></article>
+  const venue = event.attendanceMode !== 'online' && event.venue ? localize(event.venue, locale) : ''
+  const hasRecording = eventLifecycle(event, now).state === 'held' && event.recordingUrl && parsePublicationMedia(event.recordingUrl)
+  const href = `/events/${event.slug.current}${hasRecording ? '#event-recording' : ''}`
+  return <article className={cardClasses[variant].card} data-image={images.length > 0}>
+    <Link href={href} className={styles.storyLink} aria-labelledby={`event-${event._id}`}>
+      {images.length > 0 && <PublicationImage images={images} priority={variant === 'lead'} className={cardClasses[variant].image} sizes={imageSizes(variant)} />}
+      <div className={variant === 'lead' ? styles.newsLeadText : styles.storyContent}>
+        <div className={styles.eventCardLabels}>
+          <EventStatus event={event} locale={locale} now={now} />
+          {event.category && <span className={styles.category}>{localize(event.category.title, locale)}</span>}
+        </div>
+        <h2 id={`event-${event._id}`} className={variant === 'lead' ? styles.storyTitle : styles.briefTitle}>{localize(event.title, locale)}</h2>
+        <p className={styles.excerpt}>{localize(event.summary, locale)}</p>
+        <div className={styles.eventRowFoot}>
+          <div className={styles.eventFact}>
+            <span className={styles.eventFactLabel}><Clock3 size={15} aria-hidden="true" />{t.dates}</span>
+            <EventDates event={event} locale={locale} />
+          </div>
+          <div className={styles.eventFact}>
+            <span className={styles.eventFactLabel}><ModeIcon size={15} aria-hidden="true" />{t.location}</span>
+            <p className={styles.eventVenue}>{venue || mode}</p>
+            {venue && <span className={styles.attendance}>{mode}</span>}
+          </div>
+        </div>
+        <div className={styles.storyMeta}><span className={styles.readLink}>{hasRecording ? t.recording : t.details}<ArrowRight size={15} aria-hidden="true" /></span></div>
+      </div>
+    </Link>
+  </article>
 }

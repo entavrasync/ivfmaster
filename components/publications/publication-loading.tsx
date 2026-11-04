@@ -1,3 +1,23 @@
+import styles from './publication-design.module.css'
+
 export function PublicationLoading() {
-  return <main aria-busy="true" aria-label="Loading" className="mx-auto max-w-7xl px-6 pb-24 pt-44"><div className="mb-8 h-4 w-32 rounded bg-taupe/40" /><div className="h-20 w-3/4 rounded-2xl bg-lavender" /><div className="mt-12 h-80 rounded-3xl bg-lavender/60 motion-safe:animate-pulse" /></main>
+  return <main aria-busy="true" aria-label="Loading" className={`${styles.page} ${styles.listing}`}>
+    <div className={styles.container} aria-hidden="true">
+      <div className={styles.loadingHeading}>
+        <span className={`${styles.loadingBlock} ${styles.loadingEyebrow}`} />
+        <span className={`${styles.loadingBlock} ${styles.loadingTitle}`} />
+        <span className={`${styles.loadingBlock} ${styles.loadingIntro}`} />
+      </div>
+      <div className={styles.loadingToolbar} />
+      <div className={styles.loadingFeature}>
+        <span className={`${styles.loadingBlock} ${styles.loadingArt}`} />
+        <div className={styles.loadingCopy}>
+          <span className={`${styles.loadingBlock} ${styles.loadingEyebrow}`} />
+          <span className={styles.loadingBlock} />
+          <span className={styles.loadingBlock} />
+          <span className={`${styles.loadingBlock} ${styles.loadingIntro}`} />
+        </div>
+      </div>
+    </div>
+  </main>
 }
