@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
+import { isSpeechesUnavailable } from '../lib/speeches-availability.ts'
 
 import nextTestingServer from 'next/experimental/testing/server.js'
 
@@ -82,6 +83,7 @@ const proxyModule = { exports: {} }
 new Function('require', 'module', 'exports', compiled)((id: string) => {
   if (id === 'next-intl/middleware') return { default: () => (request: { headers: Headers }) => request.headers }
   if (id === './i18n/routing') return { routing: {} }
+  if (id === './lib/speeches-availability') return { isSpeechesUnavailable }
   throw new Error('Unexpected dependency: ' + id)
 }, proxyModule, proxyModule.exports)
 const invoke = (path: string) => Reflect.get(proxyModule.exports, 'default')({ nextUrl: new URL('http://localhost:3002' + path), headers: new Headers({ 'x-ivf-missing-route': 'true' }) })
@@ -90,7 +92,17 @@ test('unknown menu URLs skip CMS layout work, while new CMS content routes remai
   for (const path of ['/shop', '/en/shop', '/unknown/deeper']) {
     assert.equal(invoke(path).get('x-ivf-missing-route'), 'true', path)
   }
-  for (const path of ['/', '/en', '/about', '/en/contact', '/procedures/new-cms-procedure', '/en/educate-ivf/new-cms-article', '/team/gorakh-mandrupkar', '/news', '/en/news/new-story', '/events', '/en/events/new-event']) {
+  for (const path of ['/', '/en', '/about', '/en/contact', '/procedures/new-cms-procedure', '/en/educate-ivf/new-cms-article', '/team/gorakh-mandrupkar']) {
     assert.equal(invoke(path).get('x-ivf-missing-route'), 'false', path)
   }
+})
+
+test('temporarily blocks Speeches indexes and details in both locales without affecting other routes', () => {
+  for (const prefix of ['', '/en', '/mr']) for (const section of ['/news', '/events']) for (const suffix of ['', '/', '/a-speech', '/a-speech?view=past', '/a.speech']) {
+    const response = invoke(prefix + section + suffix)
+    assert.equal(response.status, 404)
+    assert.equal(response.headers.get('cache-control'), 'no-store')
+    assert.equal(response.headers.get('x-robots-tag'), 'noindex')
+  }
+  for (const path of ['/newsletter', '/en/events-other', '/educate-ivf', '/ivfmaster-studio/structure/news']) assert.equal(isSpeechesUnavailable(path), false, path)
 })

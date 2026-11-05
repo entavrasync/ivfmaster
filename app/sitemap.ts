@@ -7,6 +7,7 @@ import { getPublications } from '@/sanity/lib/publications'
 import { resolvePageSeo } from '@/sanity/lib/seo-mapping'
 import { routing } from '@/i18n/routing'
 import { buildAbsoluteUrl, buildLocalizedPath, getLocalizedAlternates } from '@/lib/seo/routes'
+import { isSpeechesUnavailable } from '@/lib/speeches-availability'
 
 export const revalidate = 60
 
@@ -21,5 +22,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [{ url: buildAbsoluteUrl(buildLocalizedPath(locale, path)), lastModified: new Date(doc._updatedAt), alternates: { languages: getLocalizedAlternates(path) } }]
   }))
   const indexes = ['/news', '/events'].filter(path => !overrides.excludedPaths?.has(path)).flatMap(path => routing.locales.map(locale => ({ url: buildAbsoluteUrl(buildLocalizedPath(locale, path)), alternates: { languages: getLocalizedAlternates(path) } })))
-  return [...existing, ...indexes, ...entries]
+  return [...existing, ...indexes, ...entries].filter(entry => !isSpeechesUnavailable(new URL(entry.url).pathname))
 }

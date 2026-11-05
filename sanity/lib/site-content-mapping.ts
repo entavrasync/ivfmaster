@@ -6,6 +6,7 @@ import { createImageUrlBuilder } from '@sanity/image-url'
 import { projectId, dataset } from '../project'
 import type { StaticImageData } from 'next/image'
 import { CONTACT_FIELDS } from '../reference/queries/contact'
+import { isSpeechesUnavailable } from '../../lib/speeches-availability'
 
 const object = z.record(z.string(), z.unknown())
 export function record(value: unknown): Record<string, unknown> | null {
@@ -62,6 +63,7 @@ function menuItems(input: unknown, maximum = 7, allowChildren = false): SiteNavi
       continue
     }
     const path = kind === 'external' ? at(value, 'link.externalUrl') : kind === 'anchor' && at(value, 'link.anchor') === 'faq' ? '/#faq' : at(value, 'link.internalPath')
+    if (typeof path === 'string' && isSpeechesUnavailable(path)) continue
     if (!label || typeof path !== 'string' || !(kind === 'external' ? /^https?:\/\//.test(path) && z.url().safeParse(path).success : isSiteMenuPath(path)) || !['internal', 'anchor', 'external'].includes(String(kind))) continue
     const key = ({ '/': 'home', '/educate-ivf': 'educateIVF', '/procedures': 'procedures', '/about': 'about', '/team': 'team', '/contact': 'contact' } as Record<string, string>)[path] ?? plain(at(value, '_key')) ?? `cms-${index}`
     if (!items.some(item => item.href === path)) items.push({ key, href: path, label, ...(children ? { children } : {}), ...(kind === 'external' ? { opensInNewTab: at(value, 'link.opensInNewTab') === true } : {}) })

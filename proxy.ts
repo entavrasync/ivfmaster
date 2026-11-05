@@ -1,6 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 import type { NextRequest } from 'next/server';
+import { isSpeechesUnavailable } from './lib/speeches-availability';
 
 // Intercepts every non-static request.
 // For the default locale (mr): rewrites /about → /mr/about internally (URL stays clean).
@@ -9,6 +10,9 @@ import type { NextRequest } from 'next/server';
 const localize = createMiddleware(routing);
 
 export default function proxy(request: NextRequest) {
+  if (isSpeechesUnavailable(request.nextUrl.pathname)) {
+    return new Response('Not found', { status: 404, headers: { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
+  }
   const path = request.nextUrl.pathname.replace(/^\/(en|mr)(?=\/|$)/, '').replace(/\/$/, '') || '/';
   const pageExists = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/news', '/events'].includes(path)
     || /^\/(procedures|educate-ivf|team|news|events)\/[^/]+$/.test(path);
@@ -23,5 +27,8 @@ export default function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     '/((?!_next/|api(?:/|$)|ivfmaster-studio(?:/|$)|favicon\\.ico|.*\\..*).*)',
+    '/news/:path*', '/events/:path*',
+    '/en/news/:path*', '/en/events/:path*',
+    '/mr/news/:path*', '/mr/events/:path*',
   ],
 };

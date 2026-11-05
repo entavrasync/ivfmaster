@@ -203,8 +203,7 @@ test('CMS nested navigation passes actual projection/mapping and stays within on
     { _key: 'education', label: { en: 'Articles' }, link: { kind: 'internal', internalPath: '/educate-ivf' } },
   ] }] }
   const mapped = resolveSiteChrome(await evaluate(globalsQuery, [navigation], { locale: 'mr' })).navigation
-  assert.equal(mapped[0].label, 'बातम्या आणि कार्यक्रम')
-  assert.deepEqual(mapped[0].children.map(item => item.href), ['/news', '/events', '/educate-ivf'])
+  assert.equal(mapped, null, 'The temporarily disabled Speeches destination is hidden without changing the CMS document')
 })
 
 test('dropdown-only headers publish without a destination and ignore retained hidden paths', async () => {
@@ -219,10 +218,10 @@ test('dropdown-only headers publish without a destination and ignore retained hi
     dropdown.link = stale
     assert.deepEqual(await validate(doc), [], JSON.stringify(stale))
   }
-  const mapped = resolveSiteChrome(await evaluate(globalsQuery, [doc], { locale: 'en' })).navigation.at(-1)
-  assert.equal(mapped.behavior, 'dropdown')
-  assert.equal(mapped.href, undefined)
-  assert.deepEqual(mapped.children.map(item => item.href), ['/news', '/events'])
+  const mapped = resolveSiteChrome(await evaluate(globalsQuery, [doc], { locale: 'en' })).navigation
+  assert.equal(mapped.some(item => item.key === dropdown._key), false, 'Hide empty Speeches dropdowns during the temporary hold')
+  dropdown.children.push({ _key: 'education', _type: 'navDestination', label: { en: 'Articles', mr: 'लेख' }, link: { kind: 'internal', internalPath: '/educate-ivf' } })
+  assert.deepEqual(resolveSiteChrome(await evaluate(globalsQuery, [doc], { locale: 'en' })).navigation.at(-1).children.map(item => item.href), ['/educate-ivf'])
   dropdown.children = []
   assert((await validate(doc)).some(marker => marker.path.at(-1) === 'children'))
   dropdown.children = [{ _key: 'invalid', label: { en: 'Invalid', mr: 'चुकीचा' }, link: { kind: 'internal', internalPath: '/news-events' } }]
