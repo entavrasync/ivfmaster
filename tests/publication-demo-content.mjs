@@ -63,7 +63,7 @@ export function createPublicationDemo({ assets = [], now = Date.now() } = {}) {
       ...(entry.bullets ? [{ heading: 'At a glance' }, ...entry.bullets.map(bullet => ({ bullet }))] : []), ...(entry.closing ? [entry.closing] : [])]
     return { _id: `drafts.${randomUUID()}`, _type: 'news', reviewStatus: 'pendingReview', title: localized(entry.title, entry.mr),
       slug: slug(`demo-news-${String(index + 1).padStart(2, '0')}`), category: categoryReference(categories[entry.category]),
-      summary: localized(entry.summary, entry.summaryMr), publishedAt: dateAt(-days[index], 5, 0).toISOString(), featured: [0, 4, 10].includes(index),
+      summary: localized(entry.summary, entry.summaryMr), publishedAt: dateAt(-days[index], 5, 0).toISOString(), featured: [0, 4, 10].includes(index), ...([0, 4, 10].includes(index) ? { featuredPosition: [0, 4, 10].indexOf(index) + 1 } : {}),
       body: richText(content, entry.marathiBody), ...(cover ? { coverImage: cover } : {}),
       ...(index % 3 === 0 ? { author: localized('IVFMaster editorial preview', 'IVFMaster संपादकीय पूर्वावलोकन'), authorKind: 'Organization' } : {}),
       ...(entry.media ? { media: [{ _type: 'publicationMedia', _key: 'source', url: mediaSource[entry.media], ...(![6, 14].includes(index) && image('media-fallback') ? { thumbnail: image('media-fallback') } : {}) }] } : {}),
@@ -81,7 +81,7 @@ export function createPublicationDemo({ assets = [], now = Date.now() } = {}) {
     return { _id: `drafts.${randomUUID()}`, _type: 'event', reviewStatus: 'pendingReview', title: localized(entry.title, entry.mr),
       slug: slug(`demo-event-${String(index + 1).padStart(2, '0')}`), category: categoryReference(categories[3 + entry.category]),
       summary: localized(entry.summary, entry.summaryMr), body: richText(english, marathi),
-      publishedAt: dateAt(-(index * 3 + 1), 5, 0).toISOString(), featured: index === 0,
+      publishedAt: dateAt(-(index * 3 + 1), 5, 0).toISOString(), featured: index === 0, ...(index === 0 ? { featuredPosition: 1 } : {}),
       ...(cover ? { coverImage: cover } : {}),
       ...(index % 4 === 0 ? { author: localized('IVFMaster editorial preview', 'IVFMaster संपादकीय पूर्वावलोकन'), authorKind: 'Organization' } : {}),
       ...([0, 9, 12].includes(index) ? { media: [{ _type: 'publicationMedia', _key: 'source', url: 'https://youtu.be/M7lc1UVf-VE' }] } : {}),

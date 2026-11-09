@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { localizePublication as localize, type PublicationDocument } from '@/sanity/lib/publication-model'
-import { coverImages, publicationDate } from './publication-data'
+import { coverImages, featuredImages, publicationDate } from './publication-data'
 import { PublicationImage } from './publication-image'
 import { publicationLabels } from './copy'
 import styles from './publication-design.module.css'
@@ -22,7 +22,8 @@ function NewsMeta({ doc, locale }: { doc: PublicationDocument; locale: Locale })
   </div>
 }
 export function NewsCard({ doc, basePath, locale, variant }: { doc: PublicationDocument; basePath: string; locale: Locale; variant: CardVariant }) {
-  const title = localize(doc.title, locale), images = coverImages(doc, locale), href = `${basePath}/${doc.slug.current}`
+  const title = localize(doc.title, locale), href = `${basePath}/${doc.slug.current}`
+  const images = variant === 'lead' ? featuredImages(doc, locale) : coverImages(doc, locale)
   return <article className={cardClasses[variant].card} data-image={images.length > 0}>
     <Link href={href} className={styles.storyLink} aria-labelledby={`story-${doc._id}`}>
       {images.length > 0 && <PublicationImage images={images} priority={variant === 'lead'} className={cardClasses[variant].image} sizes={imageSizes(variant)} />}

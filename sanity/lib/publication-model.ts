@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { parsePublicationMedia } from './publication-media.ts'
 
+/** Maximum featured speeches per speech type; also the number of top cards on a listing. */
+export const FEATURED_LIMIT = 3
 export const publicationSlug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(96)
 export const publicationCopy = z.object({ en: z.string().trim().min(1), mr: z.string().nullish() })
 const optionalCopy = publicationCopy.nullish().catch(null)
@@ -29,6 +31,7 @@ const common = {
   title: publicationCopy, slug: z.object({ current: publicationSlug }),
   summary: publicationCopy, body: publicationBody, category: category.nullish(),
   coverImage: z.unknown().optional(), featured: z.boolean().nullish(),
+  featuredPosition: z.number().int().min(1).max(FEATURED_LIMIT).nullish().catch(null),
   media: z.array(media).nullish().catch(null), seo: z.unknown().optional(),
 }
 const creditShape = {

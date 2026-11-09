@@ -1,7 +1,7 @@
 import { CalendarDays, Newspaper, Tags } from 'lucide-react'
-import { defineArrayMember, defineField, defineType, getPublishedId } from 'sanity'
+import { defineArrayMember, defineField, defineType, getPublishedId, type PreviewConfig } from 'sanity'
 import { approvalField } from './editorial-fields'
-import { publicationSlug, safeWebUrl } from '../lib/publication-model'
+import { FEATURED_LIMIT, publicationSlug, safeWebUrl } from '../lib/publication-model'
 import { parsePublicationMedia } from '../lib/publication-media'
 import { apiVersion } from '../project'
 import { OptionalImageInput } from '../reference/schemaTypes/shared/fields'
@@ -85,7 +85,8 @@ function fields(type: 'news' | 'event') {
       if (!value?._ref) return true
       try { return await context.getClient({ apiVersion }).withConfig({ perspective: 'published' }).fetch<boolean>('count(*[_id == $id && _type == "publicationCategory" && scope == $scope]) == 1', { id: value._ref, scope: type }) || 'Choose a published category for this content type.' } catch { return 'Could not verify the category. Check your connection.' }
     }) }),
-    defineField({ name: 'featured', title: 'Featured', type: 'boolean', initialValue: false, group: 'identity', description: 'The most recent featured item leads the page; additional featured items remain in the archive.' }),
+    defineField({ name: 'featured', title: 'Featured', type: 'boolean', initialValue: false, group: 'identity', description: `Show this speech in the top cards. Up to ${FEATURED_LIMIT} speeches of this type can be featured; empty top slots show the newest speeches.` }),
+    featuredPositionField(type),
     { ...copy('summary', 'Summary', true, true), group: 'content' },
     defineField({ name: 'body', title: 'Speech', type: 'publicationRichText', group: 'content', validation: rule => rule.required() }),
     defineField({ name: 'coverImage', title: 'Cover image (optional)', type: 'publicationImage', group: 'media' }),
@@ -93,6 +94,39 @@ function fields(type: 'news' | 'event') {
     defineField({ name: 'seo', title: 'Search & social sharing', type: 'object', group: 'seo', fieldsets: SEO_FIELDSETS, description: 'Optional. Empty fields use the title, summary and cover.', fields: [copy('metaTitle', 'SEO title', false), copy('metaDescription', 'SEO description', false, true), ...seoAdvancedFields()] }),
   ]
 }
+/** Featured order for the top cards. Unique per speech type, so at most FEATURED_LIMIT can be featured. */
+function featuredPositionField(type: 'news' | 'event') {
+  return defineField({ name: 'featuredPosition', title: 'Featured position', type: 'number', group: 'identity',
+    description: 'Position 1 is the large blue card; 2 and 3 are the cards beside it.',
+    options: { list: Array.from({ length: FEATURED_LIMIT }, (_, i) => ({ title: String(i + 1), value: i + 1 })), layout: 'radio', direction: 'horizontal' },
+    hidden: ({ document }) => document?.featured !== true,
+    validation: rule => rule.custom(async (value, context) => {
+      if (context.document?.featured !== true) return true
+      if (typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > FEATURED_LIMIT) return `Choose a featured position from 1 to ${FEATURED_LIMIT}.`
+      const id = context.document._id
+      if (!id) return true
+      try {
+        const reader = context.getClient({ apiVersion }).withConfig({ perspective: 'published', useCdn: false })
+        const others = await reader.fetch<{ title: string | null; position: number | null }[]>('*[_type == $type && featured == true && _id != $id]{ "title": title.en, "position": featuredPosition }', { type, id: getPublishedId(id) })
+        const taken = others.find(other => other.position === value)
+        if (taken) return `Position ${value} is already used by “${taken.title ?? 'another speech'}”. Choose another position, or unfeature that speech first.`
+        if (others.length >= FEATURED_LIMIT) return `${FEATURED_LIMIT} speeches are already featured. Unfeature one before featuring this speech.`
+        return true
+      } catch { return 'Could not check the other featured speeches. Check your connection and retry.' }
+    }),
+  })
+}
+const speechPreview: PreviewConfig<{ title: string; date: string; featured: string; position: string; media: string }> = {
+  select: { title: 'title.en', date: 'publishedAt', featured: 'featured', position: 'featuredPosition', media: 'coverImage' },
+  prepare: ({ title, date, featured, position, media }) => ({
+    title: typeof title === 'string' ? title : 'Untitled speech', media,
+    subtitle: [featured === true && typeof position === 'number' ? `Featured #${position}` : '', typeof date === 'string' ? date.slice(0, 10) : ''].filter(Boolean).join(' · '),
+  }),
+}
+const speechOrderings = [
+  { title: 'Featured position', name: 'featuredPosition', by: [{ field: 'featured', direction: 'desc' as const }, { field: 'featuredPosition', direction: 'asc' as const }, { field: 'publishedAt', direction: 'desc' as const }] },
+  { title: 'Newest first', name: 'publishedAtDesc', by: [{ field: 'publishedAt', direction: 'desc' as const }] },
+]
 function publishedAtField() {
   return defineField({ name: 'publishedAt', title: 'Publication date & time', type: 'datetime', group: 'details', description: 'Use the actual publication time. Future-dated speeches stay out of the public listing until this time.', validation: rule => rule.required() })
 }
@@ -107,11 +141,10 @@ function creditFields() {
 const groups = [{ name: 'identity', title: 'Title & approval', default: true }, { name: 'content', title: 'Content' }, { name: 'details', title: 'Dates & details' }, { name: 'media', title: 'Images & video' }, { name: 'seo', title: 'SEO' }]
 export const news = defineType({
   name: 'news', title: 'Speeches for Medical Professionals', type: 'document', icon: Newspaper, groups, initialValue: { reviewStatus: 'pendingReview' },
-  fields: [...fields('news'), publishedAtField(), ...creditFields()], preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
+  fields: [...fields('news'), publishedAtField(), ...creditFields()], orderings: speechOrderings, preview: speechPreview,
 })
 /** Patient speeches use exactly the medical-speech form; only the stored type and category scope differ. */
 export const event = defineType({
   name: 'event', title: 'Speeches for Patients', type: 'document', icon: CalendarDays, groups, initialValue: { reviewStatus: 'pendingReview' },
-  fields: [...fields('event'), publishedAtField(), ...creditFields()],
-  preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
+  fields: [...fields('event'), publishedAtField(), ...creditFields()], orderings: speechOrderings, preview: speechPreview,
 })

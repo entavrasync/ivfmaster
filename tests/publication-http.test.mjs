@@ -27,6 +27,8 @@ test('built speech routes render actual CMS projections, metadata, legacy redire
   assert.equal((first.match(/<article\b/g) ?? []).length, 14, 'All stories are loaded for progressive disclosure')
   assert.equal((first.match(/<div(?=[^>]*data-publication-item=)[^>]*hidden=""/g) ?? []).length, 9, 'Only five stories are initially visible, including featured stories')
   assert.match(first, />Load more</)
+  // The featured fixture has a YouTube link but no cover, so its card shows the video's HD frame.
+  assert.match(first, /<article[^>]*data-image="true"[^>]*>(?:(?!<\/article>).)*i\.ytimg\.com\/vi\/M7lc1UVf-VE\/maxresdefault\.jpg/s)
   assert.equal((second.match(/<article\b/g) ?? []).length, 14, 'Legacy page URLs still render the complete list')
   assert.match(second, /noindex, follow/)
   assert.match(first, /https:\/\/www.ivfmaster.in\/en\/speeches\/medical-professionals/)

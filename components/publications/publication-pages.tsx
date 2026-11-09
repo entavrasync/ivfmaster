@@ -25,7 +25,7 @@ import { EventRefresh } from './event-refresh'
 import { NewsCard } from './publication-cards'
 import { CategoryFilter } from './category-filter'
 import { LoadMoreList } from './load-more-list'
-import { orderPublications } from './listing-order'
+import { orderPublications, spotlightPublications } from './listing-order'
 import styles from './publication-design.module.css'
 
 type Kind = SpeechKind
@@ -84,10 +84,8 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
   const categories = [...new Map(docs.filter(doc => doc.category).map(doc => [doc.category!.slug.current, doc.category!])).values()]
     .sort((a, b) => localize(a.title, locale).localeCompare(localize(b.title, locale), locale))
   const filtered = orderPublications(docs.filter(doc => !category || doc.category?.slug.current === category))
-  const lead = !category ? filtered.find(doc => doc.featured) ?? filtered[0] : undefined
-  const ordered = lead ? [lead, ...filtered.filter(doc => doc._id !== lead._id)] : filtered
-  const spotlight = !category ? ordered.slice(0, 3) : []
-  const remaining = ordered.filter(doc => !spotlight.some(item => item._id === doc._id))
+  const spotlight = !category ? spotlightPublications(filtered) : [], lead = spotlight[0]
+  const remaining = filtered.filter(doc => !spotlight.some(item => item._id === doc._id))
   const card = (doc: PublicationDocument, variant: 'lead' | 'brief' | 'archive') => <NewsCard key={doc._id} doc={doc} basePath={pathFor(kind)} locale={locale} variant={variant} />
   const href = (nextCategory: string) => pathFor(kind) + (nextCategory ? `?${new URLSearchParams({ category: nextCategory })}` : '')
   const boundaries = docs.flatMap(doc => Date.parse(doc.publishedAt) > now ? [Date.parse(doc.publishedAt)] : [])

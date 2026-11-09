@@ -11,7 +11,7 @@ import { resolveSiteChrome } from '../sanity/lib/site-content-mapping.ts'
 import { resolveSiteImage } from '../sanity/lib/site-content-mapping.ts'
 import { blocks, newsFixture, eventFixture, newsCategory, eventCategory } from './publication-fixtures.mjs'
 import { createPublicationDemo, mockArtwork } from './publication-demo-content.mjs'
-import { orderPublications } from '../components/publications/listing-order.ts'
+import { orderPublications, spotlightPublications } from '../components/publications/listing-order.ts'
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
@@ -19,7 +19,9 @@ const schema = createSchema({ name: 'publication-workflow', types: config.schema
 const evaluate = async (source, dataset, params) => (await groq.evaluate(groq.parse(source), { dataset, params })).get()
 const project = async (dataset, type = 'news', preview = false) => evaluate(publicationsQuery, dataset, { type, preview })
 const dataset = [newsCategory, eventCategory, newsFixture, eventFixture]
-const nativeClient = { withConfig() { return this }, fetch: async (source, params) => source.startsWith('!defined') ? true : source.includes('publicationCategory') ? [newsCategory, eventCategory].some(item => item._id === params.id && item.scope === params.scope) : source.startsWith('count') ? false : null }
+// Other published featured speeches, as `{ title, position }`, returned to the featured-position check.
+let featuredOthers = []
+const nativeClient = { withConfig() { return this }, fetch: async (source, params) => source.includes('featured == true') ? featuredOthers : source.startsWith('!defined') ? true : source.includes('publicationCategory') ? [newsCategory, eventCategory].some(item => item._id === params.id && item.scope === params.scope) : source.startsWith('count') ? false : null }
 const validate = async doc => (await validateDocument({ document: doc, workspace: { schema }, getClient: () => nativeClient, getDocumentExists: async () => true })).filter(marker => marker.level === 'error')
 
 test('native Studio models validate complete speeches/categories and field-specific editorial errors', async () => {
@@ -111,6 +113,40 @@ test('patient speech readers drop retired event fields from stored documents', a
 
   assert.equal(resolved.publishedAt, eventFixture.publishedAt)
   for (const field of ['startAt', 'status', 'venue', 'registrationUrl']) assert.equal(field in resolved, false, field)
+})
+
+test('Studio allows at most three featured speeches, each with its own position', async () => {
+  const positionErrors = async (doc, others) => {
+    featuredOthers = others
+    try { return (await validate(doc)).filter(error => error.path[0] === 'featuredPosition').map(error => error.message) } finally { featuredOthers = [] }
+  }
+
+  const missing = await positionErrors({ ...newsFixture, featuredPosition: undefined }, [])
+  const taken = await positionErrors({ ...newsFixture, featuredPosition: 2 }, [{ title: 'Earlier speech', position: 2 }])
+  const full = await positionErrors({ ...newsFixture, featuredPosition: 3 }, [1, 2, 3].map(position => ({ title: `Speech ${position}`, position: position === 3 ? null : position })))
+  const free = await positionErrors({ ...newsFixture, featuredPosition: 3 }, [{ title: 'One', position: 1 }, { title: 'Two', position: 2 }])
+  const notFeatured = await positionErrors({ ...newsFixture, featured: false, featuredPosition: undefined }, [1, 2, 3].map(position => ({ title: 'x', position })))
+
+  assert.match(missing[0], /Choose a featured position from 1 to 3/)
+  assert.match(taken[0], /Position 2 is already used by “Earlier speech”/)
+  assert.match(full[0], /3 speeches are already featured/)
+  assert.deepEqual(free, [])
+  assert.deepEqual(notFeatured, [])
+})
+
+test('top cards follow featured positions, then fill empty slots with the newest speeches', async () => {
+  const [base] = resolvePublications(await project(dataset))
+  const doc = (id, publishedAt, featuredPosition) => ({ ...base, _id: id, publishedAt, featured: featuredPosition != null, featuredPosition })
+  const ordered = orderPublications([
+    doc('newest', '2026-10-30T00:00:00Z'), doc('second-pick', '2026-10-01T00:00:00Z', 2),
+    doc('first-pick', '2026-09-01T00:00:00Z', 1), doc('older', '2026-08-01T00:00:00Z'),
+  ])
+
+  const twoFeatured = spotlightPublications(ordered).map(item => item._id)
+  const noneFeatured = spotlightPublications(ordered.map(item => ({ ...item, featured: false }))).map(item => item._id)
+
+  assert.deepEqual(twoFeatured, ['first-pick', 'second-pick', 'newest'])
+  assert.deepEqual(noneFeatured, ['newest', 'second-pick', 'first-pick'])
 })
 
 test('speech listings order newest first by absolute publication time without mutating cached records', async () => {

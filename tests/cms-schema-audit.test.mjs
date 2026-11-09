@@ -30,7 +30,7 @@ const query = async (source, dataset, locale = 'en') => (await groq.evaluate(gro
 const schema = createSchema({ name: 'whole-cms-audit', types: config.schema.types })
 const photo = { _type: 'image', asset: { _type: 'reference', _ref: 'image-audit-1800x1200-jpg' }, alt: { en: 'Local image fixture' }, crop: { left: .1, right: .1, top: .1, bottom: .1 }, hotspot: { x: .7, y: .4, width: .2, height: .2 } }
 const asset = { _id: photo.asset._ref, _type: 'sanity.imageAsset', url: 'https://cdn.sanity.io/images/4k9zwr7s/production/audit-1800x1200.jpg', metadata: { dimensions: { width: 1800, height: 1200 } } }
-const client = { withConfig() { return this }, fetch: async (source, params) => source.includes('sanity.imageAsset') ? { ...asset, _id: params.id } : source.includes('_type == "publicationCategory"') || source.trim().startsWith('!defined') ? true : null }
+const client = { withConfig() { return this }, fetch: async (source, params) => source.includes('featured == true') ? [] : source.includes('sanity.imageAsset') ? { ...asset, _id: params.id } : source.includes('_type == "publicationCategory"') || source.trim().startsWith('!defined') ? true : null }
 const validate = async document => (await validateDocument({ document, workspace: { schema }, getClient: () => client, getDocumentExists: async () => true })).filter(marker => marker.level === 'error')
 const approved = (type, value, id = type) => ({ ...structuredClone(value), _id: id, _type: type, reviewStatus: 'approved' })
 

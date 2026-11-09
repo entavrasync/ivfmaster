@@ -23,6 +23,22 @@ export function coverImages(doc: PublicationDocument, locale: 'en' | 'mr') {
   // their media block rather than becoming an unrelated full-width cover.
   return publicationImage(doc.coverImage, locale)
 }
+/**
+ * Featured-card artwork: the editorial cover, otherwise the speech's own first video/post preview.
+ * The HD YouTube frame is tried first; `PublicationImage` falls back when it does not exist.
+ * Alt text is empty because the card title already names the speech.
+ */
+export function featuredImages(doc: PublicationDocument, locale: 'en' | 'mr'): PublicationImageValue[] {
+  const cover = coverImages(doc, locale)
+  if (cover.length) return cover
+  for (const item of doc.media ?? []) {
+    const source = parsePublicationMedia(item.url)
+    const hd = source?.provider === 'youtube' ? [{ src: `https://i.ytimg.com/vi/${source.id}/maxresdefault.jpg`, alt: '', width: 1280, height: 720 }] : []
+    const images = [...hd, ...mediaImages(item.url, item.thumbnail, locale).map(image => ({ ...image, alt: '' }))]
+    if (images.length) return images
+  }
+  return []
+}
 export function publicationDate(value: string, locale: string, timezone = 'Asia/Kolkata', includeTime = false) {
   return new Intl.DateTimeFormat(locale === 'mr' ? 'mr-IN' : 'en-IN', { timeZone: timezone, day: 'numeric', month: 'long', year: 'numeric', ...(includeTime ? { hour: 'numeric', minute: '2-digit' } as const : {}) }).format(new Date(value))
 }
