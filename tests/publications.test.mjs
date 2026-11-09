@@ -3,7 +3,7 @@ import test from 'node:test'
 import { createRequire, registerHooks } from 'node:module'
 import { createSchema, validateDocument } from 'sanity'
 import config from '../sanity.config.ts'
-import { eventLifecycle, localizePublication, localizePublicationBody, resolvePublications } from '../sanity/lib/publication-model.ts'
+import { localizePublication, localizePublicationBody, resolvePublications } from '../sanity/lib/publication-model.ts'
 import { parsePublicationMedia, youtubeThumbnail } from '../sanity/lib/publication-media.ts'
 import { publicationsQuery } from '../sanity/lib/publication-query.ts'
 import { globalsQuery } from '../sanity/reference/queries/globals.ts'
@@ -22,16 +22,15 @@ const dataset = [newsCategory, eventCategory, newsFixture, eventFixture]
 const nativeClient = { withConfig() { return this }, fetch: async (source, params) => source.startsWith('!defined') ? true : source.includes('publicationCategory') ? [newsCategory, eventCategory].some(item => item._id === params.id && item.scope === params.scope) : source.startsWith('count') ? false : null }
 const validate = async doc => (await validateDocument({ document: doc, workspace: { schema }, getClient: () => nativeClient, getDocumentExists: async () => true })).filter(marker => marker.level === 'error')
 
-test('native Studio models validate complete stories/events/categories and field-specific editorial errors', async () => {
+test('native Studio models validate complete speeches/categories and field-specific editorial errors', async () => {
   assert.deepEqual(schema._validation, [])
   for (const doc of dataset) assert.deepEqual(await validate(doc), [], doc._type)
-  const invalid = { ...eventFixture, endAt: eventFixture.startAt, reviewStatus: 'pendingReview', venue: { en: '' }, timezone: 'not/a/timezone' }
-  const paths = (await validate(invalid)).map(marker => marker.path.join('.'))
-  for (const field of ['endAt', 'reviewStatus', 'venue', 'timezone']) assert(paths.some(path => path.startsWith(field)), field)
-  const newsErrors = await validate({ ...newsFixture, title: { en: ' ' }, summary: undefined, body: { en: [] } })
-  for (const field of ['title', 'summary', 'body']) assert(newsErrors.some(error => error.path[0] === field), field)
-  assert((await validate({ ...eventFixture, attendanceMode: 'online', venue: undefined, onlineUrl: 'javascript:alert(1)' })).some(error => error.path[0] === 'onlineUrl'))
+  for (const fixture of [newsFixture, eventFixture]) {
+    const errors = await validate({ ...fixture, title: { en: ' ' }, summary: undefined, body: { en: [] }, publishedAt: undefined, reviewStatus: 'pendingReview' })
+    for (const field of ['title', 'summary', 'body', 'publishedAt', 'reviewStatus']) assert(errors.some(error => error.path[0] === field), `${fixture._type}: ${field}`)
+  }
   assert((await validate({ ...newsFixture, category: { _type: 'reference', _ref: eventCategory._id } })).some(error => error.path[0] === 'category'))
+  assert((await validate({ ...eventFixture, category: { _type: 'reference', _ref: newsCategory._id } })).some(error => error.path[0] === 'category'))
 })
 
 test('actual GROQ and runtime readers isolate drafts, approvals, invalid siblings and duplicate URLs', async () => {
@@ -54,13 +53,12 @@ test('localized copy and body fall back to English without changing Article cont
   assert.deepEqual(localizePublicationBody({ en: blocks }, 'mr'), blocks)
 })
 
-test('events share the news editing structure and keep their credit and sources', async () => {
+test('patient speeches use exactly the medical-speech form and keep their credit and sources', async () => {
   const news = schema.get('news'), event = schema.get('event')
-  const fieldNames = type => type.fields.map(field => field.name)
-  const shared = fieldNames(news).filter(name => name !== 'publishedAt')
+  const fields = type => type.fields.map(field => [field.name, field.type.name, field.group])
 
+  assert.deepEqual(fields(event), fields(news))
   assert.deepEqual(event.groups.map(group => group.name), news.groups.map(group => group.name))
-  for (const name of shared) assert(fieldNames(event).includes(name), name)
   const credited = { ...eventFixture, author: { en: 'IVFMaster' }, authorKind: 'Organization', relatedLinks: [{ _key: 'source', label: { en: 'Programme' }, url: 'https://www.ivfmaster.in/about' }] }
   assert.deepEqual(await validate(credited), [])
   const [resolved] = resolvePublications(await project([eventCategory, credited], 'event'))
@@ -106,39 +104,31 @@ test('actual media projection retains native fallback assets, replacement and re
   assert.equal(await image(), null)
 })
 
-test('events move at absolute boundaries and statuses suppress registration consistently', () => {
-  const event = { ...eventFixture, startAt: '2026-10-27T10:00:00+05:30', endAt: '2026-10-27T11:00:00+05:30' }
-  assert.equal(eventLifecycle(event, Date.parse('2026-10-27T04:29:59Z')).state, 'scheduled')
-  assert.equal(eventLifecycle(event, Date.parse('2026-10-27T04:30:00Z')).state, 'inProgress')
-  assert.equal(eventLifecycle(event, Date.parse('2026-10-27T05:30:00Z')).group, 'past')
-  assert.equal(eventLifecycle(event, Date.parse('2026-10-27T05:30:00Z')).canRegister, false)
-  for (const status of ['cancelled', 'held', 'postponed']) assert.equal(eventLifecycle({ ...event, status }, 0).canRegister, false)
-  assert.equal(eventLifecycle({ ...event, status: 'held' }, 0).group, 'past')
-  assert.equal(eventLifecycle({ ...event, status: 'postponed' }, Date.parse('2040-01-01T00:00:00Z')).group, 'upcoming')
-  assert.equal(eventLifecycle({ ...event, status: 'cancelled' }, Date.parse(event.endAt)).group, 'past')
-  // A daylight-saving transition is still two absolute instants, not local string comparison.
-  assert.equal(eventLifecycle({ ...event, startAt: '2026-11-01T01:30:00-04:00', endAt: '2026-11-01T01:30:00-05:00' }, Date.parse('2026-11-01T06:00:00Z')).state, 'inProgress')
+test('patient speech readers drop retired event fields from stored documents', async () => {
+  const legacy = { ...eventFixture, startAt: '2030-11-01T04:30:00Z', status: 'scheduled', venue: { en: 'Old venue' }, registrationUrl: 'https://example.com/register' }
+
+  const [resolved] = resolvePublications(await project([eventCategory, legacy], 'event'))
+
+  assert.equal(resolved.publishedAt, eventFixture.publishedAt)
+  for (const field of ['startAt', 'status', 'venue', 'registrationUrl']) assert.equal(field in resolved, false, field)
 })
 
-test('event discovery prioritizes attendable sessions and orders absolute dates across timezones', async () => {
+test('speech listings order newest first by absolute publication time without mutating cached records', async () => {
   const [base] = resolvePublications(await project(dataset, 'event'))
-  const now = Date.parse('2026-10-27T05:00:00Z')
-  const events = [
-    { ...base, _id: 'postponed', status: 'postponed', startAt: '2026-01-01T09:00:00Z' },
-    { ...base, _id: 'cancelled', status: 'cancelled', startAt: '2026-10-28T09:00:00Z' },
-    { ...base, _id: 'later', status: 'scheduled', startAt: '2026-10-29T09:00:00+01:00' },
-    { ...base, _id: 'earlier', status: 'scheduled', startAt: '2026-10-29T10:00:00+05:30' },
-    { ...base, _id: 'live', status: 'scheduled', startAt: '2026-10-27T04:30:00Z', endAt: '2026-10-27T06:00:00Z' },
+  const speeches = [
+    { ...base, _id: 'older', publishedAt: '2026-10-26T11:00:00+05:30' },
+    { ...base, _id: 'newer', publishedAt: '2026-10-26T09:00:00Z' },
+    { ...base, _id: 'b-tie', publishedAt: '2026-10-20T00:00:00Z' },
+    { ...base, _id: 'a-tie', publishedAt: '2026-10-20T00:00:00Z' },
   ]
-  assert.deepEqual(orderPublications(events, 'upcoming', now).map(doc => doc._id), ['live', 'earlier', 'later', 'cancelled', 'postponed'])
-  assert.equal(events[0]._id, 'postponed', 'Sorting must not mutate cached CMS records')
-  assert.deepEqual(orderPublications([
-    { ...base, _id: 'older', endAt: '2026-10-26T11:00:00+05:30' },
-    { ...base, _id: 'newer', endAt: '2026-10-26T09:00:00Z' },
-  ], 'past', now).map(doc => doc._id), ['newer', 'older'])
+
+  const ordered = orderPublications(speeches).map(doc => doc._id)
+
+  assert.deepEqual(ordered, ['newer', 'older', 'a-tie', 'b-tie'])
+  assert.equal(speeches[0]._id, 'older', 'Sorting must not mutate cached CMS records')
 })
 
-test('expanded editorial demo covers three categories per type and pagination-sized event lifecycles', async () => {
+test('expanded editorial demo covers three categories per speech type', async () => {
   const now = Date.parse('2026-10-27T06:00:00Z'), demo = createPublicationDemo({ now })
   const published = demo.documents.map(doc => ({ ...doc, _id: doc._id.slice(7), _updatedAt: new Date(now).toISOString(), reviewStatus: 'approved' }))
   const news = resolvePublications(await project(published, 'news'))
@@ -147,9 +137,8 @@ test('expanded editorial demo covers three categories per type and pagination-si
   assert.equal(events.length, 28)
   assert.equal(new Set(news.map(doc => doc.category.slug.current)).size, 3)
   assert.equal(new Set(events.map(doc => doc.category.slug.current)).size, 3)
-  assert.equal(events.filter(doc => eventLifecycle(doc, now).group === 'upcoming').length, 14)
-  assert.equal(events.filter(doc => eventLifecycle(doc, now).group === 'past').length, 14)
-  for (const state of ['scheduled', 'inProgress', 'held', 'cancelled', 'postponed']) assert(events.some(doc => eventLifecycle(doc, now).state === state), state)
+  assert(events.every(doc => Date.parse(doc.publishedAt) < now), 'Demo patient speeches are already published')
+  assert(events.some(doc => doc.media?.some(item => item.url.includes('youtu.be'))))
   assert(news.some(doc => doc.media?.some(item => item.url.includes('instagram'))))
   assert(news.some(doc => doc.media?.some(item => item.url.includes('youtu.be'))))
 })
@@ -177,8 +166,6 @@ test('all enriched mock documents pass native Studio validation when approved lo
   assert.equal(stories.filter(doc => doc.body.mr).length, 4)
   assert(stories.some(doc => !doc.coverImage && !doc.media && !doc.author))
   assert(stories.some(doc => doc.body.en.some(block => block.listItem === 'bullet')))
-  assert(demo.events.some(doc => doc.timezone === 'America/New_York'))
-  assert(demo.events.some(doc => doc.recap && doc.gallery && doc.recordingUrl))
   const media = demo.news.flatMap(doc => doc.media ?? [])
   for (const form of ['watch?', 'youtu.be/', '/shorts/', '/live/', 'instagram.com/']) assert(media.some(item => item.url.includes(form)), form)
   assert(media.some(item => !item.thumbnail))
@@ -203,7 +190,8 @@ test('CMS nested navigation passes actual projection/mapping and stays within on
     { _key: 'education', label: { en: 'Articles' }, link: { kind: 'internal', internalPath: '/educate-ivf' } },
   ] }] }
   const mapped = resolveSiteChrome(await evaluate(globalsQuery, [navigation], { locale: 'mr' })).navigation
-  assert.equal(mapped, null, 'The temporarily disabled Speeches destination is hidden without changing the CMS document')
+  assert.equal(mapped[0].href, '/speeches/medical-professionals', 'Published pre-rename paths map to the current address')
+  assert.deepEqual(mapped[0].children.map(item => item.href), ['/speeches/medical-professionals', '/speeches/patients', '/educate-ivf'])
 })
 
 test('dropdown-only headers publish without a destination and ignore retained hidden paths', async () => {
@@ -219,9 +207,10 @@ test('dropdown-only headers publish without a destination and ignore retained hi
     assert.deepEqual(await validate(doc), [], JSON.stringify(stale))
   }
   const mapped = resolveSiteChrome(await evaluate(globalsQuery, [doc], { locale: 'en' })).navigation
-  assert.equal(mapped.some(item => item.key === dropdown._key), false, 'Hide empty Speeches dropdowns during the temporary hold')
-  dropdown.children.push({ _key: 'education', _type: 'navDestination', label: { en: 'Articles', mr: 'लेख' }, link: { kind: 'internal', internalPath: '/educate-ivf' } })
-  assert.deepEqual(resolveSiteChrome(await evaluate(globalsQuery, [doc], { locale: 'en' })).navigation.at(-1).children.map(item => item.href), ['/educate-ivf'])
+  assert.deepEqual(mapped.find(item => item.key === dropdown._key).children.map(item => item.href), ['/speeches/medical-professionals', '/speeches/patients'])
+  dropdown.children = [{ _key: 'patients', _type: 'navDestination', label: { en: 'For Patients', mr: 'रुग्णांसाठी' }, link: { kind: 'internal', internalPath: '/speeches/patients' } }]
+  assert.deepEqual(await validate(doc), [], 'Current speech paths validate in Studio')
+  assert.deepEqual(resolveSiteChrome(await evaluate(globalsQuery, [doc], { locale: 'en' })).navigation.at(-1).children.map(item => item.href), ['/speeches/patients'])
   dropdown.children = []
   assert((await validate(doc)).some(marker => marker.path.at(-1) === 'children'))
   dropdown.children = [{ _key: 'invalid', label: { en: 'Invalid', mr: 'चुकीचा' }, link: { kind: 'internal', internalPath: '/news-events' } }]

@@ -2,6 +2,7 @@ import { createElement as h } from 'react'
 import { useFormValue, type ObjectInputProps } from 'sanity'
 
 import { siteConfig } from '../../config/site'
+import { SPEECH_PATHS } from '../../lib/speeches-availability'
 import { runSeoChecks, truncateForPreview, SEO_DESCRIPTION_RANGE, SEO_TITLE_RANGE } from '../lib/seo-checks'
 
 // Written with createElement rather than JSX so schema modules that import it stay
@@ -21,8 +22,8 @@ type DocumentValue = Record<string, unknown> & { _type?: string; slug?: { curren
 
 const ROUTES: Record<string, (slug?: string) => string | null> = {
   educationPage: () => '/educate-ivf',
-  medicalSpeechesPage: () => '/news',
-  patientSpeechesPage: () => '/events',
+  medicalSpeechesPage: () => SPEECH_PATHS.news,
+  patientSpeechesPage: () => SPEECH_PATHS.event,
   procedure: (slug) => slug ? `/procedures/${slug}` : null,
   article: (slug) => slug ? `/educate-ivf/${slug}` : null,
   doctor: (slug) => slug ? `/team/${slug}` : null,

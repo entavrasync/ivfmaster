@@ -16,10 +16,11 @@ const records = [speechesPage, newsCategory, eventCategory, ...Object.entries(in
     featured: i === 0, publishedAt: `2026-10-${String(26 - i).padStart(2, '0')}T06:30:00Z`,
     media: i === 0 ? [{ _key: 'video', url: 'https://youtu.be/M7lc1UVf-VE' }, { _key: 'instagram', url: 'https://www.instagram.com/p/BsOGulcndj-/' }] : [],
   })),
-  ...['scheduled', 'held', 'cancelled', 'postponed'].map(status => ({ ...eventFixture, _id: `fixture-event-${status}`, slug: { current: `fertility-conversation-${status}` },
-    title: { en: `Local fixture: ${status} fertility conversation` }, featured: status === 'scheduled', status,
-    recap: status === 'held' ? newsFixture.body : undefined,
-    recordingUrl: status === 'held' ? 'https://youtu.be/M7lc1UVf-VE' : undefined,
+  // Patient speeches; the last one is future-dated and must stay hidden until its publication time.
+  ...['first', 'second', 'third', 'future'].map((name, i) => ({ ...eventFixture, _id: `fixture-event-${name}`, slug: { current: `fertility-conversation-${name}` },
+    title: { en: `Local fixture: ${name} patient speech` }, featured: name === 'first',
+    publishedAt: name === 'future' ? '2099-01-01T06:30:00Z' : `2026-10-${String(25 - i).padStart(2, '0')}T06:30:00Z`,
+    media: name === 'first' ? [{ _key: 'video', url: 'https://youtu.be/M7lc1UVf-VE' }] : [],
   })),
 ]
 if (process.env.PUBLICATION_VISUAL_REVIEW === '1') {
@@ -37,9 +38,10 @@ if (process.env.PUBLICATION_VISUAL_REVIEW === '1') {
 const navigation = records.find(record => record._id === 'navigation')
 if (navigation) navigation.items = [
   ...navigation.items.filter(item => item.link?.internalPath !== '/contact').slice(0, 4),
-  { _key: 'news-events', behavior: 'dropdown', label: { en: 'News & Events', mr: 'बातम्या आणि कार्यक्रम' }, link: { kind: 'internal', internalPath: '/news-events' }, children: [
-    { _key: 'news', label: { en: 'News', mr: 'बातम्या' }, link: { kind: 'internal', internalPath: '/news' } },
-    { _key: 'events', label: { en: 'Events', mr: 'कार्यक्रम' }, link: { kind: 'internal', internalPath: '/events' } },
+  { _key: 'news-events', behavior: 'dropdown', label: { en: 'Speeches', mr: 'भाषणे' }, link: { kind: 'internal', internalPath: '/news-events' }, children: [
+    // The pre-rename path mirrors the published Navigation and covers the legacy-path normaliser.
+    { _key: 'news', label: { en: 'For Medical Professionals', mr: 'वैद्यकीय व्यावसायिकांसाठी' }, link: { kind: 'internal', internalPath: '/news' } },
+    { _key: 'events', label: { en: 'For Patients', mr: 'रुग्णांसाठी' }, link: { kind: 'internal', internalPath: '/speeches/patients' } },
     { _key: 'education', label: { en: 'Educational Articles', mr: 'शैक्षणिक लेख' }, link: { kind: 'internal', internalPath: '/educate-ivf' } },
   ] },
 ]

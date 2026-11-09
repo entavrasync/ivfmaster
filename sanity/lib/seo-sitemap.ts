@@ -1,9 +1,10 @@
 import 'server-only'
 
 import type { SitemapOverrides } from '../../lib/seo/sitemap'
+import { SPEECH_PATHS } from '../../lib/speeches-availability'
 import { client } from './client'
 
-const PAGE_PATHS: Record<string, string> = { homePage: '/', aboutPage: '/about', teamPage: '/team', proceduresPage: '/procedures', contactPage: '/contact', educationPage: '/educate-ivf', medicalSpeechesPage: '/news', patientSpeechesPage: '/events' }
+const PAGE_PATHS: Record<string, string> = { homePage: '/', aboutPage: '/about', teamPage: '/team', proceduresPage: '/procedures', contactPage: '/contact', educationPage: '/educate-ivf', medicalSpeechesPage: SPEECH_PATHS.news, patientSpeechesPage: SPEECH_PATHS.event }
 const COLLECTION_PATHS: Record<string, string> = { procedure: '/procedures/', article: '/educate-ivf/', doctor: '/team/' }
 
 const sitemapQuery = `{

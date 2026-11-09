@@ -1,7 +1,7 @@
 import { CalendarDays, Newspaper, Tags } from 'lucide-react'
 import { defineArrayMember, defineField, defineType, getPublishedId } from 'sanity'
 import { approvalField } from './editorial-fields'
-import { publicationSlug, eventTimezone, safeWebUrl } from '../lib/publication-model'
+import { publicationSlug, safeWebUrl } from '../lib/publication-model'
 import { parsePublicationMedia } from '../lib/publication-media'
 import { apiVersion } from '../project'
 import { OptionalImageInput } from '../reference/schemaTypes/shared/fields'
@@ -93,10 +93,13 @@ function fields(type: 'news' | 'event') {
     defineField({ name: 'seo', title: 'Search & social sharing', type: 'object', group: 'seo', fieldsets: SEO_FIELDSETS, description: 'Optional. Empty fields use the title, summary and cover.', fields: [copy('metaTitle', 'SEO title', false), copy('metaDescription', 'SEO description', false, true), ...seoAdvancedFields()] }),
   ]
 }
-/** Credit and source fields shared by news and events, shown under Dates & details. */
-function creditFields(type: 'news' | 'event') {
+function publishedAtField() {
+  return defineField({ name: 'publishedAt', title: 'Publication date & time', type: 'datetime', group: 'details', description: 'Use the actual publication time. Future-dated speeches stay out of the public listing until this time.', validation: rule => rule.required() })
+}
+/** Credit and source fields shared by both speech types, shown under Dates & details. */
+function creditFields() {
   return [
-    { ...copy('author', type === 'news' ? 'Credited author or organization' : 'Credited host or organization', false), group: 'details' },
+    { ...copy('author', 'Credited speaker or organization', false), group: 'details' },
     defineField({ name: 'authorKind', title: 'Credit type', type: 'string', group: 'details', options: { list: [{ title: 'Person', value: 'Person' }, { title: 'Organization', value: 'Organization' }] }, hidden: ({ document }) => !(document?.author as { en?: string } | undefined)?.en?.trim(), validation: rule => rule.custom((value, context) => !(context.document?.author as { en?: string } | undefined)?.en?.trim() || value === 'Person' || value === 'Organization' || 'Choose whether the credit is a person or organization.') }),
     defineField({ name: 'relatedLinks', title: 'Sources & related links (optional)', type: 'array', group: 'details', of: [defineArrayMember({ type: 'object', fields: [copy('label', 'Link label'), linkUrl('url', 'Web address', true)] })], validation: rule => rule.max(8) }),
   ]
@@ -104,26 +107,11 @@ function creditFields(type: 'news' | 'event') {
 const groups = [{ name: 'identity', title: 'Title & approval', default: true }, { name: 'content', title: 'Content' }, { name: 'details', title: 'Dates & details' }, { name: 'media', title: 'Images & video' }, { name: 'seo', title: 'SEO' }]
 export const news = defineType({
   name: 'news', title: 'Speeches for Medical Professionals', type: 'document', icon: Newspaper, groups, initialValue: { reviewStatus: 'pendingReview' },
-  fields: [...fields('news'),
-    defineField({ name: 'publishedAt', title: 'Publication date & time', type: 'datetime', group: 'details', description: 'Use the actual publication time. Future-dated speeches stay out of the public listing until this time.', validation: rule => rule.required() }),
-    ...creditFields('news'),
-  ], preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
+  fields: [...fields('news'), publishedAtField(), ...creditFields()], preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
 })
+/** Patient speeches use exactly the medical-speech form; only the stored type and category scope differ. */
 export const event = defineType({
-  name: 'event', title: 'Speeches for Patients', type: 'document', icon: CalendarDays, groups,
-  initialValue: { reviewStatus: 'pendingReview', status: 'scheduled', timezone: 'Asia/Kolkata', attendanceMode: 'inPerson' },
-  fields: [...fields('event'),
-    defineField({ name: 'startAt', title: 'Start date & time', type: 'datetime', group: 'details', description: 'The date picker shows its selected timezone. Stored instants are absolute; choose the matching event timezone below.', validation: rule => rule.required() }),
-    defineField({ name: 'endAt', title: 'End date & time', type: 'datetime', group: 'details', validation: rule => rule.required().custom((value, context) => !value || typeof context.document?.startAt !== 'string' || Date.parse(value) > Date.parse(context.document.startAt) || 'End time must be after start time.') }),
-    defineField({ name: 'timezone', title: 'Timezone', type: 'string', group: 'details', description: 'Used for website dates. India: Asia/Kolkata. For overseas events, enter the venue’s IANA timezone.', validation: rule => rule.required().custom(value => !value || eventTimezone.safeParse(value).success || 'Enter an IANA timezone, for example Asia/Kolkata.') }),
-    defineField({ name: 'status', title: 'Status', type: 'string', group: 'details', options: { list: [{ title: 'Scheduled', value: 'scheduled' }, { title: 'Held', value: 'held' }, { title: 'Cancelled', value: 'cancelled' }, { title: 'Postponed — new date pending', value: 'postponed' }] }, description: 'Past dates automatically move scheduled events to Past. Postponed keeps the original dates visible and disables registration. When new dates are confirmed, update both dates and restore Scheduled.', validation: rule => rule.required() }),
-    defineField({ name: 'attendanceMode', title: 'How to attend', type: 'string', group: 'details', options: { list: [{ title: 'At a venue', value: 'inPerson' }, { title: 'Online', value: 'online' }, { title: 'Venue and online', value: 'hybrid' }] }, validation: rule => rule.required() }),
-    { ...copy('venue', 'Venue name and address', false, true), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'online' || !!(value as { en?: string } | undefined)?.en?.trim() || 'Enter the venue name and full address in English.') },
-    { ...linkUrl('onlineUrl', 'Online destination'), group: 'details', validation: (rule: import('sanity').Rule) => rule.custom((value, context) => context.document?.attendanceMode === 'inPerson' && !value || safeWebUrl.safeParse(value).success || 'Enter the HTTPS destination for attending online.') },
-    { ...linkUrl('registrationUrl', 'Registration link (optional)'), group: 'details' },
-    ...creditFields('event'),
-    defineField({ name: 'recap', title: 'Recap (optional)', type: 'publicationRichText', group: 'content', description: 'Displayed after the speech is held or its end time passes.' }),
-    defineField({ name: 'gallery', title: 'Gallery (optional)', type: 'array', group: 'media', of: [defineArrayMember({ type: 'publicationImage' })], validation: rule => rule.max(20) }),
-    defineField({ name: 'recordingUrl', title: 'Recording (optional YouTube or Instagram link)', type: 'url', group: 'media', validation: rule => rule.custom(value => !value || !!parsePublicationMedia(value) || 'Use a supported YouTube or Instagram URL.') }),
-  ], preview: { select: { title: 'title.en', subtitle: 'startAt', media: 'coverImage' } },
+  name: 'event', title: 'Speeches for Patients', type: 'document', icon: CalendarDays, groups, initialValue: { reviewStatus: 'pendingReview' },
+  fields: [...fields('event'), publishedAtField(), ...creditFields()],
+  preview: { select: { title: 'title.en', subtitle: 'publishedAt', media: 'coverImage' } },
 })

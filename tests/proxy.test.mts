@@ -97,12 +97,19 @@ test('unknown menu URLs skip CMS layout work, while new CMS content routes remai
   }
 })
 
-test('temporarily blocks Speeches indexes and details in both locales without affecting other routes', () => {
-  for (const prefix of ['', '/en', '/mr']) for (const section of ['/news', '/events']) for (const suffix of ['', '/', '/a-speech', '/a-speech?view=past', '/a.speech']) {
-    const response = invoke(prefix + section + suffix)
-    assert.equal(response.status, 404)
-    assert.equal(response.headers.get('cache-control'), 'no-store')
-    assert.equal(response.headers.get('x-robots-tag'), 'noindex')
+test('serves both speech indexes and details in both locales once Speeches are enabled', () => {
+  for (const prefix of ['', '/en', '/mr']) for (const section of ['/speeches/medical-professionals', '/speeches/patients']) for (const suffix of ['', '/', '/a-speech']) {
+    const path = prefix + section + suffix
+
+    const headers = invoke(path)
+
+    assert.equal(isSpeechesUnavailable(path), false, path)
+    assert.equal(headers.get('x-ivf-missing-route'), 'false', path)
   }
-  for (const path of ['/newsletter', '/en/events-other', '/educate-ivf', '/ivfmaster-studio/structure/news']) assert.equal(isSpeechesUnavailable(path), false, path)
+})
+
+test('treats retired and unknown speech paths as missing routes', () => {
+  for (const path of ['/news', '/en/events/a-speech', '/speeches', '/speeches/other', '/speeches/patients/a/b']) {
+    assert.equal(invoke(path).get('x-ivf-missing-route'), 'true', path)
+  }
 })

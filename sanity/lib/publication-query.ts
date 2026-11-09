@@ -8,6 +8,5 @@ export const publicationsQuery = defineQuery(`*[_type == $type && !(_id in path(
   "category": category->{_id,title,slug,scope},
   "coverImage": coverImage${PUBLICATION_IMAGE},
   media[]{_key,url,"thumbnail": thumbnail${PUBLICATION_IMAGE}},
-  publishedAt,author,authorKind,relatedLinks,startAt,endAt,timezone,status,attendanceMode,venue,onlineUrl,registrationUrl,recap,
-  "gallery": gallery[]${PUBLICATION_IMAGE},recordingUrl,${SEO_RAW_PROJECTION}
+  publishedAt,author,authorKind,relatedLinks,${SEO_RAW_PROJECTION}
 }`)

@@ -8,9 +8,6 @@ export const safeWebUrl = z.url().refine(value => {
   const url = new URL(value)
   return url.protocol === 'https:' && !url.username && !url.password
 }, 'Use a complete HTTPS web address.')
-export const eventTimezone = z.string().refine(value => {
-  try { new Intl.DateTimeFormat('en', { timeZone: value }); return true } catch { return false }
-}, 'Enter an IANA timezone, for example Asia/Kolkata.')
 
 const span = z.object({ _type: z.literal('span'), _key: z.string(), text: z.string(), marks: z.array(z.string()).default([]) })
 export const publicationBlock = z.object({
@@ -39,24 +36,10 @@ const creditShape = {
   authorKind: z.enum(['Person', 'Organization']).nullish(),
   relatedLinks: z.array(z.object({ _key: z.string(), label: publicationCopy, url: safeWebUrl })).nullish().catch(null),
 }
-export const newsDocument = z.object({
-  ...common, _type: z.literal('news'), publishedAt: z.iso.datetime({ offset: true }),
-  ...creditShape,
-})
-export const eventDocument = z.object({
-  ...creditShape,
-  ...common, _type: z.literal('event'),
-  startAt: z.iso.datetime({ offset: true }), endAt: z.iso.datetime({ offset: true }), timezone: eventTimezone,
-  status: z.enum(['scheduled', 'held', 'cancelled', 'postponed']),
-  attendanceMode: z.enum(['inPerson', 'online', 'hybrid']),
-  venue: optionalCopy, onlineUrl: safeWebUrl.nullish().catch(null), registrationUrl: safeWebUrl.nullish().catch(null),
-  recap: publicationBody.nullish(), gallery: z.array(z.unknown()).nullish(),
-  recordingUrl: z.string().refine(value => !!parsePublicationMedia(value)).nullish(),
-}).superRefine((value, context) => {
-  if (Date.parse(value.endAt) <= Date.parse(value.startAt)) context.addIssue({ code: 'custom', path: ['endAt'], message: 'End time must be after start time.' })
-  if (value.attendanceMode !== 'online' && !value.venue) context.addIssue({ code: 'custom', path: ['venue'], message: 'Add the venue name and address.' })
-  if (value.attendanceMode !== 'inPerson' && !value.onlineUrl) context.addIssue({ code: 'custom', path: ['onlineUrl'], message: 'Add the online event destination.' })
-})
+// Medical (`news`) and patient (`event`) speeches share one shape; only the stored type differs.
+const speechShape = { ...common, publishedAt: z.iso.datetime({ offset: true }), ...creditShape }
+export const newsDocument = z.object({ ...speechShape, _type: z.literal('news') })
+export const eventDocument = z.object({ ...speechShape, _type: z.literal('event') })
 export type NewsDocument = z.infer<typeof newsDocument>
 export type EventDocument = z.infer<typeof eventDocument>
 export type PublicationDocument = NewsDocument | EventDocument
@@ -66,17 +49,6 @@ export function localizePublication(value: z.infer<typeof publicationCopy>, loca
 }
 export function localizePublicationBody(value: z.infer<typeof publicationBody>, locale: string): PublicationBlock[] {
   return locale === 'mr' && value.mr?.length ? value.mr : value.en
-}
-
-export function eventLifecycle(event: Pick<EventDocument, 'status' | 'startAt' | 'endAt'>, now = Date.now()): { group: 'past' | 'upcoming'; state: EventDocument['status'] | 'inProgress'; canRegister: boolean; nextBoundary: number | null } {
-  const past = event.status === 'held' || (event.status !== 'postponed' && now >= Date.parse(event.endAt))
-  return {
-    group: past ? 'past' as const : 'upcoming' as const,
-    state: event.status === 'scheduled' ? past ? 'held' : now >= Date.parse(event.startAt) ? 'inProgress' : 'scheduled' : event.status,
-    canRegister: event.status === 'scheduled' && !past,
-    nextBoundary: event.status !== 'scheduled' && event.status !== 'cancelled' ? null
-      : now < Date.parse(event.startAt) ? Date.parse(event.startAt) : now < Date.parse(event.endAt) ? Date.parse(event.endAt) : null,
-  }
 }
 
 /** Quarantine invalid/duplicate URLs rather than choosing an arbitrary document. */

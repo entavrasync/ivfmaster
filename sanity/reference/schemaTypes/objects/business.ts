@@ -363,7 +363,7 @@ export const navItem = defineType({
     defineField({
       name: 'children', title: 'Dropdown destinations (optional)', type: 'array',
       hidden: ({ document }) => document?._type !== 'navigation',
-      description: 'Add the pages this menu opens, such as /news and /events. Choose Dropdown only above when the parent should open this list without navigating.',
+      description: 'Add the pages this menu opens, such as /speeches/medical-professionals and /speeches/patients. Choose Dropdown only above when the parent should open this list without navigating.',
       of: [{ type: 'object', name: 'navDestination', fields: [
         localized('label', { title: 'Label', translation: 'all' }),
         defineField({ name: 'link', title: 'Destination', type: 'link', validation: rule => rule.required().custom(value => {

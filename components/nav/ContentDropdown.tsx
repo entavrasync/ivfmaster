@@ -46,7 +46,7 @@ export function ContentDropdown({ item, mobile = false, onNavigate, isHovered = 
       {!mobile && active && <motion.span layoutId="nav-active-bar" className={styles.activeBar} transition={{ type: 'spring', stiffness: 400, damping: 40 }} />}
     </div>
     <ul id={id} hidden={!open} className={styles.panel}>
-      {item.children?.map(child => { const Icon = child.href === '/events' ? CalendarDays : child.href === '/educate-ivf' ? BookOpen : Newspaper; return <li key={child.key}><Link href={child.href} aria-current={matches(child.href) ? 'page' : undefined}
+      {item.children?.map(child => { const Icon = child.href === '/speeches/patients' ? CalendarDays : child.href === '/educate-ivf' ? BookOpen : Newspaper; return <li key={child.key}><Link href={child.href} aria-current={matches(child.href) ? 'page' : undefined}
         target={child.opensInNewTab ? '_blank' : undefined} rel={child.opensInNewTab ? 'noopener noreferrer' : undefined}
         onClick={() => { setOpen(false); onNavigate?.() }} className={styles.destination}><span className={styles.icon}><Icon size={17} aria-hidden="true" /></span><span>{child.label}</span><ArrowRight size={14} className={styles.arrow} aria-hidden="true" /></Link></li> })}
     </ul>
