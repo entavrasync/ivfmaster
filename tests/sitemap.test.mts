@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
 import { siteConfig } from '../config/site.ts'
@@ -34,6 +35,14 @@ test('new CMS article addresses appear in both locales without duplicates and re
   for (const locale of routing.locales) assert.equal(entries.filter((entry) => entry.url === localizedUrl(locale, '/educate-ivf/new-article')).length, 1)
   assert.equal(entries.some((entry) => entry.url.includes('hidden-article')), false)
   assert.equal(new Set(entries.map((entry) => entry.url)).size, entries.length)
+})
+
+// Route segment config is read statically by Next.js, so the exported source is the contract.
+test('sitemap renders per request so CMS publishes reach it without a deploy', async () => {
+  const source = await readFile(new URL('../app/sitemap.ts', import.meta.url), 'utf8')
+
+  assert.match(source, /^export const dynamic = 'force-dynamic'$/m)
+  assert.doesNotMatch(source, /^export const revalidate\b/m, 'revalidate made Vercel serve a deploy-time static file')
 })
 
 async function getSitemapEntries() {
