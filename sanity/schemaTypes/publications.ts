@@ -91,7 +91,7 @@ function fields(type: 'news' | 'event') {
     defineField({ name: 'body', title: 'Speech', type: 'publicationRichText', group: 'content', validation: rule => rule.required() }),
     defineField({ name: 'coverImage', title: 'Cover image (optional)', type: 'publicationImage', group: 'media' }),
     defineField({ name: 'media', title: 'Video & social posts', type: 'array', of: [defineArrayMember({ type: 'publicationMedia' })], group: 'media', validation: rule => rule.max(8) }),
-    defineField({ name: 'seo', title: 'Search & social sharing', type: 'object', group: 'seo', fieldsets: SEO_FIELDSETS, description: 'Optional. Empty fields use the title, summary and cover.', fields: [copy('metaTitle', 'SEO title', false), copy('metaDescription', 'SEO description', false, true), ...seoAdvancedFields()] }),
+    defineField({ name: 'seo', title: 'Search & social sharing', type: 'object', group: 'seo', fieldsets: SEO_FIELDSETS, description: 'Optional. Empty fields use the title, summary and cover.' + (type === 'event' ? ' Write for patients and families: use the plain words they would search for, not clinical terms.' : ''), fields: [copy('metaTitle', 'SEO title', false), copy('metaDescription', 'SEO description', false, true), ...seoAdvancedFields()] }),
   ]
 }
 /** Featured order for the top cards. Unique per speech type, so at most FEATURED_LIMIT can be featured. */

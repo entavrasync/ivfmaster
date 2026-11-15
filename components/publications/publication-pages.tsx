@@ -10,7 +10,7 @@ import { getPublications } from '@/sanity/lib/publications'
 import { getSeoContext, getSiteContent } from '@/sanity/lib/site-content'
 import { resolveSiteChrome } from '@/sanity/lib/site-content-mapping'
 import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
-import { resolvePageSeo } from '@/sanity/lib/seo-mapping'
+import { resolvePageSeo, type PageSeo } from '@/sanity/lib/seo-mapping'
 import { localizePublication as localize, localizePublicationBody, publicationCopy, type PublicationDocument } from '@/sanity/lib/publication-model'
 import { parsePublicationMedia } from '@/sanity/lib/publication-media'
 import { JsonLdScript } from '@/components/SEO/StructuredData'
@@ -26,6 +26,7 @@ import { NewsCard } from './publication-cards'
 import { CategoryFilter } from './category-filter'
 import { LoadMoreList } from './load-more-list'
 import { orderPublications, spotlightPublications } from './listing-order'
+import { audienceJsonLd, searchDefaults } from './speech-audience'
 import styles from './publication-design.module.css'
 
 type Kind = SpeechKind
@@ -39,7 +40,12 @@ const speechPaths: readonly string[] = Object.values(SPEECH_PATHS)
 async function listingCopy(kind: Kind, locale: 'en' | 'mr') {
   const t = publicationLabels[locale], page = (await getSiteContent(locale))[pageFor(kind)]
   const read = (value: unknown, fallback: string) => { const copy = publicationCopy.safeParse(value); return copy.success ? localize(copy.data, locale) : fallback }
-  return { eyebrow: read(page?.eyebrow, t.eyebrow), heading: read(page?.heading, kind === 'news' ? t.newsTitle : t.eventsTitle), intro: read(page?.intro, kind === 'news' ? t.newsIntro : t.eventsIntro) }
+  return { eyebrow: read(page?.eyebrow, t.eyebrow), heading: read(page?.heading, kind === 'news' ? t.newsTitle : t.eventsTitle), intro: read(page?.intro, kind === 'news' ? t.newsIntro : t.eventsIntro), introFromCms: publicationCopy.safeParse(page?.intro).success }
+}
+/** Audience keywords fill in only when the editor set none. */
+function withAudienceKeywords(seo: PageSeo | undefined, keywords: readonly string[] | undefined): PageSeo | undefined {
+  if (seo?.keywords?.length || !keywords?.length) return seo
+  return { noIndex: false, noFollow: false, structuredData: true, ...seo, keywords }
 }
 /** Future-dated speeches stay out of public pages until their publication time. */
 function visible(docs: PublicationDocument[], preview: boolean, now: number) {
@@ -62,18 +68,25 @@ export async function publicationMetadata(kind: Kind, props: PublicationParams, 
   const doc = slug ? visible(result.documents, result.preview, now).find(doc => doc.slug.current === slug) : undefined
   if (slug && !doc) return { title: 'Content unavailable', robots: { index: false, follow: true } }
   const context = await getSeoContext(locale, doc ? undefined : pageFor(kind)), seo = doc ? resolvePageSeo(doc.seo, locale) : undefined
-  const copy = await listingCopy(kind, locale)
+  const copy = await listingCopy(kind, locale), audience = searchDefaults(kind, locale)
   const cover = doc ? coverImages(doc, locale)[0] : undefined
   const metadata = buildPageMetadata({ ...context, locale, path: pathFor(kind) + (slug ? `/${slug}` : ''),
     title: doc ? localize(doc.title, locale) : copy.heading,
-    description: doc ? localize(doc.summary, locale) : copy.intro,
+    // An editor's listing introduction is the search description; otherwise the audience default.
+    description: doc ? localize(doc.summary, locale) : copy.introFromCms ? copy.intro : audience?.description ?? copy.intro,
     type: doc ? 'article' : 'website', publishedTime: doc?.publishedAt,
-    seo: doc ? { noIndex: false, noFollow: false, structuredData: true, ...(cover ? { ogImage: { url: cover.src, width: cover.width ?? 1200, height: cover.height ?? 675, alt: cover.alt } } : {}), ...seo } : context.seo,
+    seo: withAudienceKeywords(doc ? { noIndex: false, noFollow: false, structuredData: true, ...(cover ? { ogImage: { url: cover.src, width: cover.width ?? 1200, height: cover.height ?? 675, alt: cover.alt } } : {}), ...seo } : context.seo, audience?.keywords),
   })
   if (doc && metadata.openGraph && 'type' in metadata.openGraph && metadata.openGraph.type === 'article') metadata.openGraph.modifiedTime = doc._updatedAt
   const query = search ? await search : {}
   if (result.preview || result.error || Object.keys(query).length) metadata.robots = { index: false, follow: !result.preview }
   return metadata
+}
+/** Breadcrumbs plus the listing as a CollectionPage marked with its audience. */
+function listingJsonLd(kind: Kind, locale: 'en' | 'mr', home: string, heading: string) {
+  const breadcrumbs = buildPageJsonLd(locale, [{ name: home, path: '/' }, { name: heading, path: pathFor(kind) }])
+  const url = buildAbsoluteUrl(buildLocalizedPath(locale, pathFor(kind)))
+  return { ...breadcrumbs, '@graph': [...breadcrumbs['@graph'], { '@type': 'CollectionPage', url, name: heading, inLanguage: locale, audience: audienceJsonLd(kind) }] }
 }
 export async function PublicationListing({ kind, params, searchParams }: PublicationParams & { kind: Kind; searchParams: PublicationSearch }) {
   const { locale: lang } = await params, locale = localeFor(lang), t = publicationLabels[locale]
@@ -120,7 +133,7 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
       </section>}
     </>}
     <BacklinkReferences entries={seo?.backlinks} locale={locale} />
-    {!result.preview && seo?.structuredData !== false && <JsonLdScript data={buildPageJsonLd(locale, [{ name: nav('home'), path: '/' }, { name: copy.heading, path: pathFor(kind) }])} />}
+    {!result.preview && seo?.structuredData !== false && <JsonLdScript data={listingJsonLd(kind, locale, nav('home'), copy.heading)} />}
   </div></main>
 }
 
@@ -134,7 +147,7 @@ export async function PublicationDetail({ kind, params }: PublicationParams & { 
   const seo = resolvePageSeo(doc.seo, locale), url = buildAbsoluteUrl(buildLocalizedPath(locale, `${pathFor(kind)}/${doc.slug.current}`))
   const jsonLd = {
     '@context': 'https://schema.org', '@type': 'NewsArticle', headline: title, description: summary, url,
-    datePublished: doc.publishedAt, dateModified: doc._updatedAt, inLanguage: locale,
+    datePublished: doc.publishedAt, dateModified: doc._updatedAt, inLanguage: locale, audience: audienceJsonLd(kind),
     ...(doc.author && doc.authorKind ? { author: { '@type': doc.authorKind, name: localize(doc.author, locale) } } : {}),
     ...(images[0] ? { image: images[0].src } : {}),
   }
