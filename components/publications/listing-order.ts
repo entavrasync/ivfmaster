@@ -1,13 +1,16 @@
-import { eventLifecycle, type PublicationDocument } from '../../sanity/lib/publication-model.ts'
+import { FEATURED_LIMIT, type PublicationDocument } from '../../sanity/lib/publication-model.ts'
 
-/** Dated, attendable events come before cancellations and dates still to be confirmed. */
-export function orderPublications(documents: PublicationDocument[], group: 'upcoming' | 'past', now: number) {
-  return [...documents].sort((a, b) => {
-    if (a._type === 'event' && b._type === 'event' && group === 'upcoming') {
-      const rank = (doc: typeof a) => eventLifecycle(doc, now).state === 'inProgress' ? 0 : doc.status === 'scheduled' ? 1 : doc.status === 'cancelled' ? 2 : 3
-      return rank(a) - rank(b) || Date.parse(a.startAt) - Date.parse(b.startAt) || a._id.localeCompare(b._id)
-    }
-    const date = (doc: PublicationDocument) => doc._type === 'news' ? doc.publishedAt : doc.endAt
-    return Date.parse(date(b)) - Date.parse(date(a)) || a._id.localeCompare(b._id)
-  })
+/** Newest speeches first; ties keep a stable order. Returns a copy so cached CMS records are not mutated. */
+export function orderPublications(documents: PublicationDocument[]) {
+  return [...documents].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt) || a._id.localeCompare(b._id))
+}
+
+/**
+ * The top cards: featured speeches by their CMS position (1 = large card), then the newest speeches
+ * fill any empty slots. Studio keeps positions unique, but published data is still bounded here.
+ */
+export function spotlightPublications(ordered: PublicationDocument[]) {
+  const position = (doc: PublicationDocument) => doc.featuredPosition ?? FEATURED_LIMIT + 1
+  const featured = ordered.filter(doc => doc.featured).sort((a, b) => position(a) - position(b)).slice(0, FEATURED_LIMIT)
+  return [...featured, ...ordered.filter(doc => !featured.includes(doc))].slice(0, FEATURED_LIMIT)
 }

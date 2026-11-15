@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-/** Refresh on the next start/end boundary, including after a suspended tab wakes. */
+/** Refresh when the next future-dated speech becomes public, including after a suspended tab wakes. */
 export function EventRefresh({ boundary }: { boundary: number | null }) {
   const router = useRouter()
   useEffect(() => {

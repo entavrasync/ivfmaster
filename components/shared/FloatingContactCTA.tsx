@@ -75,7 +75,7 @@ function StatusDot({ state, size = 8 }: Readonly<{ state: ClinicStatus['state'];
 
 export function FloatingContactCTA() {
   const pathname = usePathname()
-  const publicationPage = /^\/(news|events)(\/|$)/.test(pathname)
+  const publicationPage = /^\/speeches\/(medical-professionals|patients)(\/|$)/.test(pathname)
   const settings = useClinicSettings()
   const availability = useClinicAvailability()
   const reduced  = useReducedMotion()

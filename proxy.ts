@@ -14,8 +14,8 @@ export default function proxy(request: NextRequest) {
     return new Response('Not found', { status: 404, headers: { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
   }
   const path = request.nextUrl.pathname.replace(/^\/(en|mr)(?=\/|$)/, '').replace(/\/$/, '') || '/';
-  const pageExists = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/news', '/events'].includes(path)
-    || /^\/(procedures|educate-ivf|team|news|events)\/[^/]+$/.test(path);
+  const pageExists = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/speeches/medical-professionals', '/speeches/patients'].includes(path)
+    || /^\/(procedures|educate-ivf|team|speeches\/medical-professionals|speeches\/patients)\/[^/]+$/.test(path);
   // A menu entry cannot create a page. Unknown route shapes need no CMS lookup.
   // Always overwrite this header so a caller cannot select the lightweight layout.
   request.headers.set('x-ivf-missing-route', pageExists ? 'false' : 'true');
@@ -27,8 +27,7 @@ export default function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     '/((?!_next/|api(?:/|$)|ivfmaster-studio(?:/|$)|favicon\\.ico|.*\\..*).*)',
-    '/news/:path*', '/events/:path*',
-    '/en/news/:path*', '/en/events/:path*',
-    '/mr/news/:path*', '/mr/events/:path*',
+    // Also match dotted speech slugs, which the pattern above treats as files.
+    '/speeches/:path*', '/en/speeches/:path*', '/mr/speeches/:path*',
   ],
 };

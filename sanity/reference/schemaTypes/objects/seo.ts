@@ -8,6 +8,7 @@ import { defineImageField, localized } from '../shared/fields'
 import { PROCEDURES } from '../../../../lib/procedures'
 import { articleSlugs } from '../../../article-model'
 import { apiVersion } from '../../../project'
+import { SPEECH_PATHS } from '../../../../lib/speeches-availability'
 import { backlinksField } from '../../../schemaTypes/backlinks'
 
 /**
@@ -118,12 +119,12 @@ export function seoAdvancedFields(): FieldDefinition[] {
         try { url = new URL(value) } catch { return `Use a full HTTPS page address on ${siteConfig.url}.` }
         if (url.origin !== new URL(siteConfig.url).origin || url.search || url.hash || url.username || url.password) return `Use a page on ${siteConfig.url}, without query parameters or a fragment.`
         const path = url.pathname.replace(/\/+$/, '') || '/'
-        const staticPaths = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/news', '/events', '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map(item => '/procedures/' + item.slug), ...articleSlugs.map(slug => '/educate-ivf/' + slug)]
+        const staticPaths = ['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', SPEECH_PATHS.news, SPEECH_PATHS.event, '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map(item => '/procedures/' + item.slug), ...articleSlugs.map(slug => '/educate-ivf/' + slug)]
         if (staticPaths.includes(path)) return true
-        const route = /^\/(procedures|educate-ivf|news|events)\/([a-z0-9]+(?:-[a-z0-9]+)*)$/.exec(path)
+        const route = /^\/(procedures|educate-ivf|speeches\/medical-professionals|speeches\/patients)\/([a-z0-9]+(?:-[a-z0-9]+)*)$/.exec(path)
         if (!route) return 'Choose an existing website page and leave out /en or /mr.'
         try {
-          return await context.getClient({ apiVersion }).withConfig({ perspective: 'published' }).fetch<boolean>('defined(*[_type == $type && slug.current == $slug && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0])', { type: ({ procedures: 'procedure', 'educate-ivf': 'article', news: 'news', events: 'event' } as Record<string, string>)[route[1]], slug: route[2] }) || 'This page is not published. Choose an existing website page.'
+          return await context.getClient({ apiVersion }).withConfig({ perspective: 'published' }).fetch<boolean>('defined(*[_type == $type && slug.current == $slug && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0])', { type: ({ procedures: 'procedure', 'educate-ivf': 'article', 'speeches/medical-professionals': 'news', 'speeches/patients': 'event' } as Record<string, string>)[route[1]], slug: route[2] }) || 'This page is not published. Choose an existing website page.'
         } catch { return 'Could not verify the canonical page. Check access and retry.' }
       }),
     }),

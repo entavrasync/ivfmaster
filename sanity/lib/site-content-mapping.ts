@@ -6,7 +6,7 @@ import { createImageUrlBuilder } from '@sanity/image-url'
 import { projectId, dataset } from '../project'
 import type { StaticImageData } from 'next/image'
 import { CONTACT_FIELDS } from '../reference/queries/contact'
-import { isSpeechesUnavailable } from '../../lib/speeches-availability'
+import { currentSpeechPath, isSpeechesUnavailable, SPEECH_PATHS } from '../../lib/speeches-availability'
 
 const object = z.record(z.string(), z.unknown())
 export function record(value: unknown): Record<string, unknown> | null {
@@ -21,7 +21,12 @@ export function plain(value: unknown): string | undefined {
   return parsed.success ? parsed.data : undefined
 }
 const allowedRoutes = new Set(['/', '/about', '/team', '/contact', '/procedures', '/educate-ivf', '/team/gorakh-mandrupkar', '/team/saie-mandrupkar', ...PROCEDURES.map((item) => '/procedures/' + item.slug), ...articleSlugs.map((slug) => '/educate-ivf/' + slug)])
-export const isSiteMenuPath = (path: string) => allowedRoutes.has(path) || ['/news', '/events', '/#faq'].includes(path) || /^\/(procedures|educate-ivf|news|events)\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)
+const speechIndexes: readonly string[] = Object.values(SPEECH_PATHS)
+/** Accepts current paths and pre-rename speech paths, which `currentSpeechPath` maps to their new address. */
+export const isSiteMenuPath = (input: string) => {
+  const path = currentSpeechPath(input)
+  return allowedRoutes.has(path) || [...speechIndexes, '/#faq'].includes(path) || /^\/(procedures|educate-ivf|speeches\/medical-professionals|speeches\/patients)\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)
+}
 export type SiteMenuItem = { key: string; href: string; label: string; behavior?: 'link'; opensInNewTab?: boolean; children?: SiteMenuItem[] }
 export type SiteNavigationItem = SiteMenuItem | { key: string; label: string; behavior: 'dropdown'; children: SiteMenuItem[]; href?: never; opensInNewTab?: never }
 export type SiteImage = { image: StaticImageData; alt: string; position?: string }
@@ -62,7 +67,8 @@ function menuItems(input: unknown, maximum = 7, allowChildren = false): SiteNavi
       if (label && children?.length && !items.some(item => item.key === key)) items.push({ key, label, behavior: 'dropdown', children })
       continue
     }
-    const path = kind === 'external' ? at(value, 'link.externalUrl') : kind === 'anchor' && at(value, 'link.anchor') === 'faq' ? '/#faq' : at(value, 'link.internalPath')
+    const rawPath = kind === 'external' ? at(value, 'link.externalUrl') : kind === 'anchor' && at(value, 'link.anchor') === 'faq' ? '/#faq' : at(value, 'link.internalPath')
+    const path = kind === 'internal' && typeof rawPath === 'string' ? currentSpeechPath(rawPath) : rawPath
     if (typeof path === 'string' && isSpeechesUnavailable(path)) continue
     if (!label || typeof path !== 'string' || !(kind === 'external' ? /^https?:\/\//.test(path) && z.url().safeParse(path).success : isSiteMenuPath(path)) || !['internal', 'anchor', 'external'].includes(String(kind))) continue
     const key = ({ '/': 'home', '/educate-ivf': 'educateIVF', '/procedures': 'procedures', '/about': 'about', '/team': 'team', '/contact': 'contact' } as Record<string, string>)[path] ?? plain(at(value, '_key')) ?? `cms-${index}`
@@ -102,7 +108,7 @@ export function resolveSiteChrome(globals: unknown, home?: unknown, pages?: { pr
   const citation = at(citationLink, 'kind') === 'external' && typeof citationUrl === 'string' && /^https?:\/\//.test(citationUrl) && z.url().safeParse(citationUrl).success
     ? { href: citationUrl, opensInNewTab: at(citationLink, 'opensInNewTab') === true } : undefined
   const actions: Record<string, string> = {}
-  const action = (slot: string, value: unknown) => { const path = at(value, 'link.internalPath'); if (at(value, 'link.kind') === 'internal' && typeof path === 'string' && isSiteMenuPath(path)) actions[slot] = path }
+  const action = (slot: string, value: unknown) => { const path = at(value, 'link.internalPath'); if (at(value, 'link.kind') === 'internal' && typeof path === 'string' && isSiteMenuPath(path)) actions[slot] = currentSpeechPath(path) }
   for (const slot of ['hero.primaryCta', 'hero.secondaryCta', 'painCta.primary', 'whyTrust.closing.primary', 'costOfWaiting.closing.primary', 'understandingIvf.closing.primary', 'mythsFacts.closing.primary', 'finalCta.formCta']) action('home.' + slot, at(home, slot))
   action('nav.primary', at(globals, 'navigation.primaryCta'))
   action('procedures.closing', at(pages?.procedures, 'closing.primary'))
