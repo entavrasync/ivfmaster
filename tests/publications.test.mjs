@@ -12,6 +12,7 @@ import { resolveSiteImage } from '../sanity/lib/site-content-mapping.ts'
 import { blocks, newsFixture, eventFixture, newsCategory, eventCategory } from './publication-fixtures.mjs'
 import { createPublicationDemo, mockArtwork } from './publication-demo-content.mjs'
 import { orderPublications, spotlightPublications } from '../components/publications/listing-order.ts'
+import { featuredHolders } from '../sanity/studio/FeaturedSlots.ts'
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
@@ -66,6 +67,35 @@ test('patient speeches use exactly the medical-speech form and keep their credit
   const [resolved] = resolvePublications(await project([eventCategory, credited], 'event'))
   assert.equal(resolved.author.en, 'IVFMaster')
   assert.equal(resolved.relatedLinks[0].url, 'https://www.ivfmaster.in/about')
+})
+
+test('Studio names each speech audience in the form, Create menu, previews and categories', () => {
+  const news = schema.get('news'), event = schema.get('event'), category = schema.get('publicationCategory')
+  const subtitle = (type, value) => type.preview.prepare(value).subtitle
+
+  assert.equal(news.title, 'Speech for Medical Professionals')
+  assert.equal(event.title, 'Speech for Patients')
+  assert.notEqual(news.icon, event.icon)
+  assert.notEqual(news.components.input, event.components.input)
+  assert.equal(subtitle(event, { title: 'T', date: '2026-11-01T00:00:00Z', featured: true, position: 2 }), 'Patients · Featured #2 · 2026-11-01')
+  assert.equal(subtitle(news, { title: 'T', date: '2026-11-01T00:00:00Z' }), 'Medical professionals · 2026-11-01')
+  assert.equal(subtitle(category, { title: 'C', scope: 'event' }), 'For patients')
+  assert.equal(subtitle(category, { title: 'C', scope: 'news' }), 'For medical professionals')
+})
+
+test('featured-spot panel uses each speech’s latest edit and excludes the open speech', () => {
+  const rows = [
+    { _id: 'a', title: 'Live first', featured: true, featuredPosition: 1 },
+    { _id: 'b', title: 'Live second', featured: true, featuredPosition: 2 },
+    { _id: 'drafts.b', title: 'Live second', featured: false, featuredPosition: null },
+    { _id: 'drafts.c', title: 'New third', featured: true, featuredPosition: 3 },
+    { _id: 'self', title: 'Open speech', featured: true, featuredPosition: 2 },
+    { _id: 'd', title: 'Not featured', featured: false },
+  ]
+
+  const holders = featuredHolders(rows, 'self')
+
+  assert.deepEqual(holders.map(holder => [holder.id, holder.position, holder.live, holder.unpublishedChange]), [['a', 1, true, false], ['c', 3, false, true]])
 })
 
 test('both speech pages offer an editable heading and the shared SEO object', () => {
