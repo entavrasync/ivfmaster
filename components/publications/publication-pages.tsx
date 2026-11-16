@@ -10,7 +10,8 @@ import { getPublications } from '@/sanity/lib/publications'
 import { getSeoContext, getSiteContent } from '@/sanity/lib/site-content'
 import { resolveSiteChrome } from '@/sanity/lib/site-content-mapping'
 import { BacklinkReferences } from '@/components/SEO/BacklinkReferences'
-import { resolvePageSeo, type PageSeo } from '@/sanity/lib/seo-mapping'
+import { resolvePageSeo } from '@/sanity/lib/seo-mapping'
+import { siteConfig } from '@/config/site'
 import { localizePublication as localize, localizePublicationBody, publicationCopy, type PublicationDocument } from '@/sanity/lib/publication-model'
 import { parsePublicationMedia } from '@/sanity/lib/publication-media'
 import { JsonLdScript } from '@/components/SEO/StructuredData'
@@ -26,7 +27,7 @@ import { NewsCard } from './publication-cards'
 import { CategoryFilter } from './category-filter'
 import { LoadMoreList } from './load-more-list'
 import { orderPublications, spotlightPublications } from './listing-order'
-import { audienceJsonLd, searchDefaults } from './speech-audience'
+import { audienceJsonLd } from './speech-audience'
 import styles from './publication-design.module.css'
 
 type Kind = SpeechKind
@@ -36,16 +37,11 @@ const localeFor = (locale: string) => locale === 'en' ? 'en' as const : 'mr' as 
 const pathFor = (kind: Kind) => SPEECH_PATHS[kind]
 const pageFor = (kind: Kind) => kind === 'news' ? 'medicalSpeeches' as const : 'patientSpeeches' as const
 const speechPaths: readonly string[] = Object.values(SPEECH_PATHS)
-/** The listing's CMS heading copy; empty or unapproved fields keep the website default. */
+/** The listing's heading copy, from the approved CMS page only. Missing fields stay empty; there is no code fallback. */
 async function listingCopy(kind: Kind, locale: 'en' | 'mr') {
-  const t = publicationLabels[locale], page = (await getSiteContent(locale))[pageFor(kind)]
-  const read = (value: unknown, fallback: string) => { const copy = publicationCopy.safeParse(value); return copy.success ? localize(copy.data, locale) : fallback }
-  return { eyebrow: read(page?.eyebrow, t.eyebrow), heading: read(page?.heading, kind === 'news' ? t.newsTitle : t.eventsTitle), intro: read(page?.intro, kind === 'news' ? t.newsIntro : t.eventsIntro), introFromCms: publicationCopy.safeParse(page?.intro).success }
-}
-/** Audience keywords fill in only when the editor set none. */
-function withAudienceKeywords(seo: PageSeo | undefined, keywords: readonly string[] | undefined): PageSeo | undefined {
-  if (seo?.keywords?.length || !keywords?.length) return seo
-  return { noIndex: false, noFollow: false, structuredData: true, ...seo, keywords }
+  const page = (await getSiteContent(locale))[pageFor(kind)]
+  const read = (value: unknown) => { const copy = publicationCopy.safeParse(value); return copy.success ? localize(copy.data, locale) : undefined }
+  return { eyebrow: read(page?.eyebrow), heading: read(page?.heading), intro: read(page?.intro) }
 }
 /** Future-dated speeches stay out of public pages until their publication time. */
 function visible(docs: PublicationDocument[], preview: boolean, now: number) {
@@ -68,14 +64,14 @@ export async function publicationMetadata(kind: Kind, props: PublicationParams, 
   const doc = slug ? visible(result.documents, result.preview, now).find(doc => doc.slug.current === slug) : undefined
   if (slug && !doc) return { title: 'Content unavailable', robots: { index: false, follow: true } }
   const context = await getSeoContext(locale, doc ? undefined : pageFor(kind)), seo = doc ? resolvePageSeo(doc.seo, locale) : undefined
-  const copy = await listingCopy(kind, locale), audience = searchDefaults(kind, locale)
+  const copy = await listingCopy(kind, locale)
   const cover = doc ? coverImages(doc, locale)[0] : undefined
   const metadata = buildPageMetadata({ ...context, locale, path: pathFor(kind) + (slug ? `/${slug}` : ''),
-    title: doc ? localize(doc.title, locale) : copy.heading,
-    // An editor's listing introduction is the search description; otherwise the audience default.
-    description: doc ? localize(doc.summary, locale) : copy.introFromCms ? copy.intro : audience?.description ?? copy.intro,
+    // Listing SEO falls back to the CMS heading/intro, then the site name; speech text is never in code.
+    title: doc ? localize(doc.title, locale) : copy.heading ?? context.siteName ?? siteConfig.name,
+    description: doc ? localize(doc.summary, locale) : copy.intro ?? '',
     type: doc ? 'article' : 'website', publishedTime: doc?.publishedAt,
-    seo: withAudienceKeywords(doc ? { noIndex: false, noFollow: false, structuredData: true, ...(cover ? { ogImage: { url: cover.src, width: cover.width ?? 1200, height: cover.height ?? 675, alt: cover.alt } } : {}), ...seo } : context.seo, audience?.keywords),
+    seo: doc ? { noIndex: false, noFollow: false, structuredData: true, ...(cover ? { ogImage: { url: cover.src, width: cover.width ?? 1200, height: cover.height ?? 675, alt: cover.alt } } : {}), ...seo } : context.seo,
   })
   if (doc && metadata.openGraph && 'type' in metadata.openGraph && metadata.openGraph.type === 'article') metadata.openGraph.modifiedTime = doc._updatedAt
   const query = search ? await search : {}
@@ -108,7 +104,7 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
   return <main id="main-content" className={`${styles.page} ${styles.listing}`}><div className={styles.container}>
     {result.preview && <PreviewBanner locale={locale} />}<EventRefresh boundary={boundaries.length ? Math.min(...boundaries) : null} />
     <header className={styles.masthead}>
-      <div className={styles.headingGroup}><p className={styles.journalLabel}>{copy.eyebrow}</p><h1>{copy.heading}</h1><p className={styles.intro}>{copy.intro}</p></div>
+      <div className={styles.headingGroup}>{copy.eyebrow && <p className={styles.journalLabel}>{copy.eyebrow}</p>}{copy.heading && <h1>{copy.heading}</h1>}{copy.intro && <p className={styles.intro}>{copy.intro}</p>}</div>
       <PublicationLinks locale={locale} current={pathFor(kind)} />
     </header>
     <div className={styles.toolbar}>
@@ -133,7 +129,7 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
       </section>}
     </>}
     <BacklinkReferences entries={seo?.backlinks} locale={locale} />
-    {!result.preview && seo?.structuredData !== false && <JsonLdScript data={listingJsonLd(kind, locale, nav('home'), copy.heading)} />}
+    {!result.preview && seo?.structuredData !== false && copy.heading && <JsonLdScript data={listingJsonLd(kind, locale, nav('home'), copy.heading)} />}
   </div></main>
 }
 

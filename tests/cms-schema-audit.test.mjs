@@ -45,6 +45,8 @@ test('every registered document type has a native valid fixture and retains its 
     else if (type === 'event') documents.push(structuredClone(eventFixture))
     else if (type === 'publicationCategory') continue // Taxonomy has native Publish, without a clinical-content approval gate.
     else if (type === 'teamValues') documents.push(approved(type, teamValuesFromTrust(initial.singletons.aboutPage.trust)))
+    // Speech pages have no built-in copy, so their fixture supplies the one required field.
+    else if (type === 'medicalSpeechesPage' || type === 'patientSpeechesPage') documents.push(approved(type, { heading: { _type: 'localizedString', en: 'Local speech page fixture' } }))
     else if (type === 'faq') documents.push(approved(type, { question: { en: 'Local question fixture?' }, answer: { en: 'Local answer fixture.' }, order: 0, isPublished: true }))
     else if (type === 'testimonial') documents.push(approved(type, { quote: 'Local test quotation; no patient content or publication.', quoteLanguage: 'en', order: 0, consentOnFile: false, isPublished: false }))
     else {
