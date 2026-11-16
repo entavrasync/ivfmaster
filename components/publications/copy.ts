@@ -1,8 +1,7 @@
 export const publicationLabels = {
   en: {
-    education: 'Educational articles', eyebrow: 'IVFMaster speeches',
-    newsTitle: 'Speeches for Medical Professionals', newsIntro: 'Talks and perspectives from the IVFMaster care team for medical professionals.',
-    eventsTitle: 'Speeches for Patients', eventsIntro: 'Talks and conversations with the IVFMaster team for patients and families.',
+    // Interface labels only. Page headings, intros and search text come from the Speeches page documents in the CMS.
+    education: 'Educational articles',
     story: 'speech', stories: 'speeches', browse: 'Explore speeches',
     latest: 'Latest speeches', featured: 'In focus', all: 'All categories',
     read: 'View the speech',
@@ -19,9 +18,7 @@ export const publicationLabels = {
     noCategory: 'No results in this category.', noCategoryBody: 'Choose another category or clear the filter to see all results.',
   },
   mr: {
-    education: 'शैक्षणिक लेख', eyebrow: 'IVFMaster भाषणे',
-    newsTitle: 'वैद्यकीय व्यावसायिकांसाठी भाषणे', newsIntro: 'वैद्यकीय व्यावसायिकांसाठी IVFMaster च्या टीमची भाषणे आणि विचार.',
-    eventsTitle: 'रुग्णांसाठी भाषणे', eventsIntro: 'रुग्ण आणि कुटुंबीयांसाठी IVFMaster च्या टीमची भाषणे आणि संवाद.',
+    education: 'शैक्षणिक लेख',
     story: 'भाषण', stories: 'भाषणे', browse: 'भाषणे पहा',
     latest: 'नवीन भाषणे', featured: 'विशेष', all: 'सर्व विषय',
     read: 'भाषण पहा',

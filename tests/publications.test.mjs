@@ -105,10 +105,9 @@ test('both speech pages offer an editable heading and the shared SEO object', ()
     assert.equal(fields.heading, 'localizedString', name)
     assert.equal(fields.intro, 'localizedText', name)
     assert.equal(fields.seo, 'seo', name)
-    assert.equal(page.initialValue().reviewStatus, 'pendingReview', name)
+    // New pages start empty: the website has no built-in speech-page copy to prefill.
+    assert.deepEqual(page.initialValue(), { reviewStatus: 'pendingReview' }, name)
   }
-  assert.equal(schema.get('medicalSpeechesPage').initialValue().heading.en, 'Speeches for Medical Professionals')
-  assert.equal(schema.get('patientSpeechesPage').initialValue().heading.en, 'Speeches for Patients')
 })
 
 test('published addresses remain stable and optional SEO/author fields can be cleared', async () => {
