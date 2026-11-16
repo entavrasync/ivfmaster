@@ -9,7 +9,9 @@ import { routing } from '@/i18n/routing'
 import { buildAbsoluteUrl, buildLocalizedPath, getLocalizedAlternates } from '@/lib/seo/routes'
 import { isSpeechesUnavailable, SPEECH_PATHS } from '@/lib/speeches-availability'
 
-export const revalidate = 60
+// Render per request: with `revalidate`, Vercel served this metadata route as a static file frozen at
+// deploy time, so CMS publishes never reached the sitemap. CMS reads below keep their 60-second fetch cache.
+export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [overrides, { articles }, news, events] = await Promise.all([getSitemapOverrides(), getArticles('en'), getPublications('news', true), getPublications('event', true)])
