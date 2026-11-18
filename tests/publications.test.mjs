@@ -13,6 +13,7 @@ import { blocks, newsFixture, eventFixture, newsCategory, eventCategory } from '
 import { createPublicationDemo, mockArtwork } from './publication-demo-content.mjs'
 import { orderPublications, spotlightPublications } from '../components/publications/listing-order.ts'
 import { featuredHolders } from '../sanity/studio/FeaturedSlots.ts'
+import { categoryNameKey } from '../sanity/schemaTypes/publications.ts'
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
@@ -96,6 +97,36 @@ test('featured-spot panel uses each speech’s latest edit and excludes the open
   const holders = featuredHolders(rows, 'self')
 
   assert.deepEqual(holders.map(holder => [holder.id, holder.position, holder.live, holder.unpublishedChange]), [['a', 1, true, false], ['c', 3, false, true]])
+})
+
+test('category names are unique per audience and the audience is locked while other speeches use it', async () => {
+  const original = nativeClient.fetch
+  const category = { _id: 'drafts.cat-new', _type: 'publicationCategory', title: { en: 'Lecture  Series!' }, slug: { _type: 'slug', current: 'lecture-series-2' }, scope: 'news' }
+  try {
+    nativeClient.fetch = async (source, params) => source.includes('_type == "publicationCategory" && scope == $scope') ? [{ _id: 'cat-old', en: 'lecture series', mr: null }] : source.startsWith('count(*[_type in ["news", "event"]') ? 0 : original(source, params)
+    const duplicate = await validate(category)
+    nativeClient.fetch = async (source, params) => source.includes('_type == "publicationCategory" && scope == $scope') ? [{ _id: 'cat-old', en: 'Patient talks' }] : source.startsWith('count(*[_type in ["news", "event"]') ? 2 : original(source, params)
+    const audienceLocked = await validate(category)
+    nativeClient.fetch = async (source, params) => source.includes('_type == "publicationCategory" && scope == $scope') ? [] : source.startsWith('count(*[_type in ["news", "event"]') ? 0 : original(source, params)
+    const clean = await validate(category)
+
+    assert(duplicate.some(marker => marker.path[0] === 'title' && marker.message.includes('already has this name')), 'same name, case and punctuation ignored')
+    assert(audienceLocked.some(marker => marker.path[0] === 'scope' && marker.message.includes('2 speeches')))
+    assert.deepEqual(clean, [])
+  } finally { nativeClient.fetch = original }
+  assert.equal(categoryNameKey('  Lecture-Series @ Delhi '), categoryNameKey('lecture series delhi'))
+})
+
+test('categories are created for one audience; a speech only offers its own audience template', () => {
+  const templates = config.schema.templates([])
+  const options = ['publicationCategory', 'publicationCategory-news', 'publicationCategory-event', 'news'].map(templateId => ({ templateId }))
+  const offered = creationContext => config.document.newDocumentOptions(options, { creationContext }).map(option => option.templateId)
+
+  assert.deepEqual(templates.find(template => template.id === 'publicationCategory-news').value, { scope: 'news' })
+  assert.deepEqual(templates.find(template => template.id === 'publicationCategory-event').value, { scope: 'event' })
+  assert.deepEqual(offered({ type: 'global' }), ['publicationCategory-news', 'publicationCategory-event', 'news'])
+  assert.deepEqual(offered({ type: 'document', documentId: 'drafts.x', schemaType: 'event' }), ['publicationCategory-event', 'news'])
+  assert.deepEqual(offered({ type: 'document', documentId: 'drafts.y', schemaType: 'news' }), ['publicationCategory-news', 'news'])
 })
 
 test('both speech pages offer an editable heading and the shared SEO object', () => {

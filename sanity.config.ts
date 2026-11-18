@@ -2,7 +2,7 @@
 
 import { defineConfig, getPublishedId, useDocumentOperation, type DocumentActionComponent } from 'sanity'
 import { structureTool } from 'sanity/structure'
-import { Plus } from 'lucide-react'
+import { Plus, Tags } from 'lucide-react'
 import { z } from 'zod'
 import { schemaTypes } from './sanity/schemaTypes'
 import { projectId, dataset, apiVersion } from './sanity/project'
@@ -14,6 +14,18 @@ import { publicationPresentation } from './sanity/presentation'
 // Superseded by the page singletons and the shared Question type; schemas stay
 // registered so any stored documents remain readable, but editors no longer see them.
 const LEGACY_TYPES = new Set(['homeFaq', 'aboutInformation', 'facilityGallery', 'testimonial'])
+/** Speech categories are always created for one audience; the plain category template is never offered. */
+export const SPEECH_CATEGORY_LISTS = [
+  { scope: 'news', title: 'For medical professionals', template: 'Category for medical professionals' },
+  { scope: 'event', title: 'For patients', template: 'Category for patients' },
+] as const
+/** In a speech's Category field, only that speech's audience template is offered. */
+export function categoryTemplateAllowed(templateId: string, creationContext: { type: string; schemaType?: string }) {
+  if (templateId === 'publicationCategory') return false
+  const scope = /^publicationCategory-(news|event)$/.exec(templateId)?.[1]
+  if (!scope || creationContext.type !== 'document') return true
+  return creationContext.schemaType !== 'news' && creationContext.schemaType !== 'event' ? true : creationContext.schemaType === scope
+}
 
 // The website's current wording/facts per editable singleton. Approval is never filled in.
 const WEBSITE_VALUES: Record<string, Record<string, unknown>> = { clinicSettings: initialContent.legacy.clinicSettings, ...initialContent.singletons }
@@ -143,12 +155,26 @@ export default defineConfig({
       ]),
     ),
     S.divider(),
-    ...(['news', 'event', 'publicationCategory'] as const).map(type => S.documentTypeListItem(type).title(type === 'news' ? 'Speeches for Medical Professionals' : type === 'event' ? 'Speeches for Patients' : 'Speech categories')),
+    ...(['news', 'event'] as const).map(type => S.documentTypeListItem(type).title(type === 'news' ? 'Speeches for Medical Professionals' : 'Speeches for Patients')),
+    // One category list per audience, each creating categories with that audience preset.
+    S.listItem().id('publicationCategory').title('Speech categories').icon(Tags).child(S.list().id('speech-categories').title('Speech categories').items([
+      ...SPEECH_CATEGORY_LISTS.map(({ scope, title }) => S.listItem().id(`publicationCategory-${scope}`).title(title).icon(Tags).child(
+        S.documentList().id(`publicationCategory-${scope}`).title(title).schemaType('publicationCategory')
+          .filter('_type == "publicationCategory" && scope == $scope').params({ scope }).apiVersion(apiVersion)
+          // Sanity 5 re-infers templates on subsequent builder clones; set these last.
+          .initialValueTemplates([S.initialValueTemplateItem(`publicationCategory-${scope}`)]),
+      )),
+      S.listItem().id('publicationCategory-unassigned').title('Categories without an audience').icon(Tags).child(
+        S.documentList().id('publicationCategory-unassigned').title('Categories without an audience').schemaType('publicationCategory')
+          .filter('_type == "publicationCategory" && !defined(scope)').apiVersion(apiVersion).initialValueTemplates([]),
+      ),
+    ])),
     ...S.documentTypeListItems().filter((item) => !['clinicSettings', 'clinicAvailability', 'procedure', 'article', 'doctor', 'news', 'event', 'publicationCategory'].includes(item.getId() ?? '') && !SINGLETON_TYPES.has(item.getId() ?? '') && !LEGACY_TYPES.has(item.getId() ?? '')),
   ]) }), publicationPresentation],
   schema: { types: schemaTypes, templates: (prev) => [
     ...prev,
     { id: 'new-article', schemaType: 'article', title: 'Add new article', value: () => ({ reviewStatus: 'pendingReview' }) },
+    ...SPEECH_CATEGORY_LISTS.map(({ scope, template }) => ({ id: `publicationCategory-${scope}`, schemaType: 'publicationCategory', title: template, value: { scope } })),
     ...(['procedure', 'doctor', 'article'] as const).flatMap((schemaType) => {
       const entries = schemaType === 'procedure' ? initialContent.procedures : schemaType === 'doctor' ? initialContent.doctors : initialContent.articles
       return entries.map((entry) => ({ id: `${schemaType}-${entry.slug}`, schemaType, title: `${entry.title} — current website copy`, value: () => structuredClone(entry.value) }))
@@ -156,7 +182,8 @@ export default defineConfig({
   ] },
   document: {
     // The fixed-ID editor still needs its template to initialize a missing document.
-    newDocumentOptions: (prev) => prev.filter((option) => !['clinicSettings', 'clinicAvailability'].includes(option.templateId) && !SINGLETON_TYPES.has(option.templateId) && !LEGACY_TYPES.has(option.templateId)),
+    newDocumentOptions: (prev, context) => prev.filter((option) => !['clinicSettings', 'clinicAvailability'].includes(option.templateId) && !SINGLETON_TYPES.has(option.templateId) && !LEGACY_TYPES.has(option.templateId))
+      .filter((option) => categoryTemplateAllowed(option.templateId, context?.creationContext ?? { type: 'global' })),
     actions: (prev, context) => {
       if (context.schemaType === 'clinicAvailability') return [...prev.filter(action => action.action !== 'duplicate' && action.action !== 'delete'), RecordHoursConfirmationAction]
       if (context.schemaType === 'procedure' || context.schemaType === 'article') {

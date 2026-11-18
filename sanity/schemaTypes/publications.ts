@@ -73,9 +73,41 @@ function slugField(type: 'news' | 'event' | 'publicationCategory') {
     }),
   })
 }
+type CategoryDoc = { _id?: string; scope?: string; title?: { en?: string; mr?: string } }
+/** Case-, space- and punctuation-insensitive form used to spot two categories with the same name. */
+export const categoryNameKey = (value: unknown) => typeof value === 'string' ? value.normalize('NFKC').toLowerCase().replace(/[\s\p{P}]+/gu, ' ').trim() : ''
+
+/**
+ * Category names must be unique per audience, and the audience cannot change while speeches of
+ * that audience use the category. Drafts count too, so two editors cannot create the same name.
+ */
+async function validateCategory(doc: CategoryDoc | undefined, context: { getClient: (options: { apiVersion: string }) => { withConfig: (config: object) => { fetch: <T>(query: string, params: Record<string, unknown>) => Promise<T> } } }) {
+  if (!doc?._id || (doc.scope !== 'news' && doc.scope !== 'event')) return true
+  const id = getPublishedId(doc._id), en = categoryNameKey(doc.title?.en), mr = categoryNameKey(doc.title?.mr)
+  try {
+    const client = context.getClient({ apiVersion }).withConfig({ perspective: 'raw', useCdn: false })
+    const [others, usedElsewhere] = await Promise.all([
+      client.fetch<unknown>('*[_type == "publicationCategory" && scope == $scope && !(_id in [$id, "drafts." + $id]) && !(_id in path("versions.**"))]{_id, "en": title.en, "mr": title.mr}', { scope: doc.scope, id }),
+      client.fetch<unknown>('count(*[_type in ["news", "event"] && _type != $scope && references($id) && !(_id in path("versions.**"))])', { scope: doc.scope, id }),
+    ])
+    const markers: { message: string; paths: string[][] }[] = []
+    const audience = SPEECH_AUDIENCE[doc.scope].short.toLowerCase()
+    const clash = Array.isArray(others) ? others.find((other: { en?: unknown; mr?: unknown }) => (en && categoryNameKey(other.en) === en) || (mr && categoryNameKey(other.mr) === mr)) : undefined
+    if (clash) markers.push({ message: `A category for ${audience} already has this name. To put a speech in that category, open the speech and change its Category instead of renaming this one.`, paths: [['title']] })
+    const moved = typeof usedElsewhere === 'number' ? usedElsewhere : 0
+    if (moved > 0) markers.push({ message: `${moved} speech${moved === 1 ? '' : 'es'} for ${doc.scope === 'news' ? SPEECH_AUDIENCE.event.short.toLowerCase() : SPEECH_AUDIENCE.news.short.toLowerCase()} use this category. Move them to another category before changing who it is for.`, paths: [['scope']] })
+    return markers.length ? markers : true
+  } catch { return 'Could not check other categories. Check your connection and retry.' }
+}
+
 export const publicationCategory = defineType({
   name: 'publicationCategory', title: 'Speech category', type: 'document', icon: Tags,
-  fields: [copy('title', 'Category name'), slugField('publicationCategory'), defineField({ name: 'scope', title: 'Use for', type: 'string', description: 'Which speeches can use this category. Medical-professional and patient speeches each have their own categories.', options: { list: [{ title: SPEECH_AUDIENCE.news.short, value: 'news' }, { title: SPEECH_AUDIENCE.event.short, value: 'event' }], layout: 'radio' }, validation: rule => rule.required() })],
+  fields: [
+    { ...copy('title', 'Category name'), description: 'Shown in the website category filter. Each name can be used once per audience. Renaming changes the category for every speech in it; to move one speech, change the Category on that speech.' },
+    slugField('publicationCategory'),
+    defineField({ name: 'scope', title: 'Use for', type: 'string', description: 'Which speeches can use this category. Medical-professional and patient speeches each have their own categories. It cannot change while speeches of the other audience use it.', options: { list: [{ title: SPEECH_AUDIENCE.news.short, value: 'news' }, { title: SPEECH_AUDIENCE.event.short, value: 'event' }], layout: 'radio' }, validation: rule => rule.required() }),
+  ],
+  validation: rule => rule.custom((doc, context) => validateCategory(doc as CategoryDoc | undefined, context as Parameters<typeof validateCategory>[1])),
   preview: { select: { title: 'title.en', scope: 'scope' }, prepare: ({ title, scope }: { title?: string; scope?: string }) => ({
     title: title ?? 'Untitled category', subtitle: scope === 'news' || scope === 'event' ? `For ${SPEECH_AUDIENCE[scope].short.toLowerCase()}` : 'Choose who this category is for',
   }) },
@@ -85,7 +117,7 @@ function fields(type: 'news' | 'event') {
     { ...approvalField, group: 'identity' },
     { ...copy('title', 'Title'), group: 'identity' },
     { ...slugField(type), group: 'identity' },
-    defineField({ name: 'category', title: 'Category', type: 'reference', to: [{ type: 'publicationCategory' }], options: { filter: 'scope == $scope', filterParams: { scope: type } }, group: 'identity', description: `Only categories for ${SPEECH_AUDIENCE[type].short.toLowerCase()} are listed. Create and publish a category first. Delete is protected while this content references it; clear the reference to remove the category.`, validation: rule => rule.required().custom(async (value, context) => {
+    defineField({ name: 'category', title: 'Category', type: 'reference', to: [{ type: 'publicationCategory' }], options: { filter: 'scope == $scope', filterParams: { scope: type } }, group: 'identity', description: `Only categories for ${SPEECH_AUDIENCE[type].short.toLowerCase()} are listed. To move this speech to another category, choose it here. Create new makes a category for ${SPEECH_AUDIENCE[type].short.toLowerCase()}; publish it before publishing the speech. Delete is protected while this content references it; clear the reference to remove the category.`, validation: rule => rule.required().custom(async (value, context) => {
       if (!value?._ref) return true
       try { return await context.getClient({ apiVersion }).withConfig({ perspective: 'published' }).fetch<boolean>('count(*[_id == $id && _type == "publicationCategory" && scope == $scope]) == 1', { id: value._ref, scope: type }) || 'Choose a published category for this content type.' } catch { return 'Could not verify the category. Check your connection.' }
     }) }),
