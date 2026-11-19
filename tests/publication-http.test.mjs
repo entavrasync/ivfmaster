@@ -46,6 +46,11 @@ test('built speech routes render actual CMS projections, metadata, legacy redire
   assert.match(edited, /name="keywords" content="IVF lectures"/)
   assert.match(edited, /name="robots" content="noindex/)
   assert.match(edited, /"@type":"CollectionPage"[^<]*"audienceType":"Clinician"/)
+  // Labels from the medical page's CMS Labels tab; the patient page has none and keeps the defaults.
+  assert.match(edited, />Watch the lecture</)
+  assert.doesNotMatch(edited, />View the speech</)
+  assert.match(detail, />All lectures</, 'speech pages use their audience’s labels for the back link')
+  assert.match(withoutPage, />View the speech</)
   // No CMS page document: no heading, intro, search text or keywords come from code.
   assert(!/Speeches for Patients|patients and families|IVF speeches for patients/.test(withoutPage), 'Speech page copy is CMS-only')
   assert.doesNotMatch(withoutPage, /<h1\b/)

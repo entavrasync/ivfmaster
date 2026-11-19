@@ -28,6 +28,7 @@ import { CategoryFilter } from './category-filter'
 import { LoadMoreList } from './load-more-list'
 import { orderPublications, spotlightPublications } from './listing-order'
 import { audienceJsonLd } from './speech-audience'
+import { speechLabels } from './speech-labels'
 import styles from './publication-design.module.css'
 
 type Kind = SpeechKind
@@ -85,7 +86,7 @@ function listingJsonLd(kind: Kind, locale: 'en' | 'mr', home: string, heading: s
   return { ...breadcrumbs, '@graph': [...breadcrumbs['@graph'], { '@type': 'CollectionPage', url, name: heading, inLanguage: locale, audience: audienceJsonLd(kind) }] }
 }
 export async function PublicationListing({ kind, params, searchParams }: PublicationParams & { kind: Kind; searchParams: PublicationSearch }) {
-  const { locale: lang } = await params, locale = localeFor(lang), t = publicationLabels[locale]
+  const { locale: lang } = await params, locale = localeFor(lang), t = await speechLabels(kind, locale)
   const result = await getPublications(kind), query = await searchParams, now = Date.now()
   const [copy, { seo }, nav] = await Promise.all([listingCopy(kind, locale), getSeoContext(locale, pageFor(kind)), getTranslations({ locale, namespace: 'Nav' })])
   const docs = visible(result.documents, result.preview, now)
@@ -95,7 +96,7 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
   const filtered = orderPublications(docs.filter(doc => !category || doc.category?.slug.current === category))
   const spotlight = !category ? spotlightPublications(filtered) : [], lead = spotlight[0]
   const remaining = filtered.filter(doc => !spotlight.some(item => item._id === doc._id))
-  const card = (doc: PublicationDocument, variant: 'lead' | 'brief' | 'archive') => <NewsCard key={doc._id} doc={doc} basePath={pathFor(kind)} locale={locale} variant={variant} />
+  const card = (doc: PublicationDocument, variant: 'lead' | 'brief' | 'archive') => <NewsCard key={doc._id} doc={doc} basePath={pathFor(kind)} locale={locale} variant={variant} readLabel={t.read} />
   const href = (nextCategory: string) => pathFor(kind) + (nextCategory ? `?${new URLSearchParams({ category: nextCategory })}` : '')
   const boundaries = docs.flatMap(doc => Date.parse(doc.publishedAt) > now ? [Date.parse(doc.publishedAt)] : [])
   const filterOptions = [{ value: '', label: t.all, href: href('') }, ...categories.map(cat => ({ value: cat.slug.current, label: localize(cat.title, locale), href: href(cat.slug.current) }))]
@@ -134,7 +135,7 @@ export async function PublicationListing({ kind, params, searchParams }: Publica
 }
 
 export async function PublicationDetail({ kind, params }: PublicationParams & { kind: Kind }) {
-  const { locale: lang, slug } = await params, locale = localeFor(lang), t = publicationLabels[locale]
+  const { locale: lang, slug } = await params, locale = localeFor(lang), t = await speechLabels(kind, locale)
   const result = await getPublications(kind), now = Date.now()
   if (result.error) throw new Error('Publication content is temporarily unavailable')
   const doc = visible(result.documents, result.preview, now).find(doc => doc.slug.current === slug)
@@ -158,7 +159,7 @@ export async function PublicationDetail({ kind, params }: PublicationParams & { 
     {images.length > 0 && <PublicationImage images={images} priority className={styles.detailImage} sizes="(min-width: 1280px) 1040px, 100vw" />}
     <div className={styles.detailGrid}><div className={styles.articleBody}>
       <PublicationRichText blocks={localizePublicationBody(doc.body, locale)} />
-      {doc.media?.length ? <section className={styles.contentSection} aria-label={t.media}><h2>{t.media}</h2>{doc.media.map(item => { const source = parsePublicationMedia(item.url); return source && <MediaPreview key={item._key} source={source} images={mediaImages(item.url, item.thumbnail, locale)} locale={locale} /> })}</section> : null}
+      {doc.media?.length ? <section className={styles.contentSection} aria-label={t.media}><h2>{t.media}</h2>{doc.media.map(item => { const source = parsePublicationMedia(item.url); return source && <MediaPreview key={item._key} source={source} images={mediaImages(item.url, item.thumbnail, locale)} locale={locale} labels={{ play: t.play, loadInstagram: t.loadInstagram, openSource: t.openSource, unavailable: t.unavailable }} /> })}</section> : null}
       {!!doc.relatedLinks?.length && <section className={styles.contentSection}><h2>{t.sources}</h2><ul className={styles.sourceLinks}>{doc.relatedLinks.map(link => <li key={link._key}><a href={link.url}>{localize(link.label, locale)} ↗</a></li>)}</ul></section>}
     </div>
     </div>

@@ -14,6 +14,7 @@ import { createPublicationDemo, mockArtwork } from './publication-demo-content.m
 import { orderPublications, spotlightPublications } from '../components/publications/listing-order.ts'
 import { featuredHolders } from '../sanity/studio/FeaturedSlots.ts'
 import { categoryNameKey } from '../sanity/schemaTypes/publications.ts'
+import { mergeSpeechLabels } from '../components/publications/copy.ts'
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
@@ -127,6 +128,32 @@ test('categories are created for one audience; a speech only offers its own audi
   assert.deepEqual(offered({ type: 'global' }), ['publicationCategory-news', 'publicationCategory-event', 'news'])
   assert.deepEqual(offered({ type: 'document', documentId: 'drafts.x', schemaType: 'event' }), ['publicationCategory-event', 'news'])
   assert.deepEqual(offered({ type: 'document', documentId: 'drafts.y', schemaType: 'news' }), ['publicationCategory-news', 'news'])
+})
+
+test('speech labels: CMS wording per language overrides the defaults, empty labels keep them', () => {
+  const cms = { read: { en: ' Watch the lecture ', mr: 'व्याख्यान ऐका' }, allNews: { en: 'All lectures' }, showing: { en: 'Showing all', mr: '{shown} / {total}' }, preview: { en: 'not editable' } }
+
+  const en = mergeSpeechLabels('en', cms), mr = mergeSpeechLabels('mr', cms)
+
+  assert.equal(en.read, 'Watch the lecture')
+  assert.equal(mr.read, 'व्याख्यान ऐका')
+  assert.equal(en.allNews, 'All lectures')
+  assert.equal(mr.allNews, 'सर्व व्याख्याने', 'an English override never shows on Marathi pages')
+  assert.equal(en.showing, 'Showing {shown} of {total}', 'progress text without placeholders keeps the default')
+  assert.equal(mr.showing, '{shown} / {total}')
+  assert.equal(en.preview, 'Draft preview — unpublished content', 'only listed labels are editable')
+  assert.deepEqual(mergeSpeechLabels('mr', undefined), { ...mergeSpeechLabels('mr', {}) })
+  assert.equal(mergeSpeechLabels('mr', undefined).read, 'व्याख्यान पहा')
+})
+
+test('Speeches page Labels tab rejects progress text without its placeholders', async () => {
+  const page = { _id: 'drafts.patientSpeechesPage', _type: 'patientSpeechesPage', reviewStatus: 'approved', heading: { _type: 'localizedString', en: 'Lectures' } }
+
+  const broken = await validate({ ...page, labels: { showing: { en: 'Showing {shown}', mr: '{total} पैकी {shown}' } } })
+  const fine = await validate({ ...page, labels: { read: { _type: 'localizedString', mr: 'व्याख्यान पहा' }, showing: { mr: '{total} पैकी {shown} दाखवत आहे' } } })
+
+  assert(broken.some(marker => marker.path.join('.').startsWith('labels') && marker.message.includes('{shown} and {total}')))
+  assert.deepEqual(fine, [])
 })
 
 test('both speech pages offer an editable heading and the shared SEO object', () => {
