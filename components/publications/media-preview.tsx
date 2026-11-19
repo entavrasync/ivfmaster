@@ -18,11 +18,13 @@ function loadInstagramScript() {
   return instagramScript
 }
 
-export function MediaPreview({ source, images, locale }: { source: PublicationMediaSource; images: PublicationImageValue[]; locale: 'en' | 'mr' }) {
+type MediaLabels = { play: string; loadInstagram: string; openSource: string; unavailable: string }
+/** `labels` carries the page's CMS-editable wording; the defaults apply when it is omitted. */
+export function MediaPreview({ source, images, locale, labels }: { source: PublicationMediaSource; images: PublicationImageValue[]; locale: 'en' | 'mr'; labels?: MediaLabels }) {
   const [playing, setPlaying] = useState(false), [unavailable, setUnavailable] = useState(false)
   const [loading, setLoading] = useState(false)
   const embed = useRef<HTMLDivElement>(null), container = useRef<HTMLDivElement>(null)
-  const t = publicationLabels[locale]
+  const t = labels ?? publicationLabels[locale]
   useEffect(() => {
     if (!playing || source.provider !== 'instagram') return
     let disposed = false

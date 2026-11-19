@@ -8,7 +8,7 @@ import { newsFixture, eventFixture, newsCategory, eventCategory } from './public
 
 const require = createRequire(import.meta.url)
 const groq = createRequire(require.resolve('sanity'))('groq-js')
-const speechesPage = { _id: 'medicalSpeechesPage', _type: 'medicalSpeechesPage', reviewStatus: 'approved', heading: { en: 'Clinical lectures' }, intro: { en: 'Lectures for clinicians.' }, seo: { metaTitle: { en: 'Clinical lecture archive' }, focusKeyword: 'IVF lectures', noIndex: true, visibilityReason: 'Fixture' } }
+const speechesPage = { _id: 'medicalSpeechesPage', _type: 'medicalSpeechesPage', reviewStatus: 'approved', heading: { en: 'Clinical lectures' }, intro: { en: 'Lectures for clinicians.' }, labels: { read: { en: 'Watch the lecture' }, allNews: { en: 'All lectures' } }, seo: { metaTitle: { en: 'Clinical lecture archive' }, focusKeyword: 'IVF lectures', noIndex: true, visibilityReason: 'Fixture' } }
 const records = [speechesPage, newsCategory, eventCategory, ...Object.entries(initial.singletons).map(([type, value]) => ({ ...value, _id: type, _type: type, reviewStatus: 'approved' })),
   ...Object.entries(initial.legacy).map(([type, value]) => ({ ...value, _id: type, _type: type, reviewStatus: 'approved' })),
   ...Array.from({ length: 14 }, (_, i) => ({ ...newsFixture, _id: `fixture-news-${i}`, slug: { current: `institutional-learning-${i}` },

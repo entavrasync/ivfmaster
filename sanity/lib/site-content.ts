@@ -21,8 +21,8 @@ export const getSiteContent = cache(async (locale: string) => {
     read(proceduresHubQuery, 'proceduresPage'), read(globalsQuery, 'siteGlobals'),
     read(contactPageQuery, 'contactPage'),
     read(`*[_type == "educationPage" && _id == "educationPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{${SEO_RAW_PROJECTION}}`, 'educationPage'),
-    read(`*[_type == "medicalSpeechesPage" && _id == "medicalSpeechesPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{eyebrow{en,mr},heading{en,mr},intro{en,mr},${SEO_RAW_PROJECTION}}`, 'medicalSpeechesPage'),
-    read(`*[_type == "patientSpeechesPage" && _id == "patientSpeechesPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{eyebrow{en,mr},heading{en,mr},intro{en,mr},${SEO_RAW_PROJECTION}}`, 'patientSpeechesPage'),
+    read(`*[_type == "medicalSpeechesPage" && _id == "medicalSpeechesPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{eyebrow{en,mr},heading{en,mr},intro{en,mr},labels,${SEO_RAW_PROJECTION}}`, 'medicalSpeechesPage'),
+    read(`*[_type == "patientSpeechesPage" && _id == "patientSpeechesPage" && reviewStatus == "approved" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))][0]{eyebrow{en,mr},heading{en,mr},intro{en,mr},labels,${SEO_RAW_PROJECTION}}`, 'patientSpeechesPage'),
   ])
   if (home && (!resolveSiteImage(at(home, 'hero.desktopImage')) || !resolveSiteImage(at(home, 'hero.mobileImage')))) {
     console.error('[homePage] Published hero is missing a valid desktop or mobile banner. Upload both images and publish Home page; no local artwork will be substituted.')
